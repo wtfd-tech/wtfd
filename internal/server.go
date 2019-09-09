@@ -54,6 +54,7 @@ type MainPageData struct {
 	PageTitle  string
 	Challenges []Challenge
 	User       User
+        IsUser     bool
 }
 
 /**
@@ -116,11 +117,9 @@ func (u *User) New(name, password string) (User, error) {
 
 func mainpage(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "auth")
-	user, there := session.Values["User"].(*User)
-        if !there {
-          user = &User{}
-        }
-        
+	val := session.Values["User"]
+        user := &User{}
+        _, ok := val.(*User)
         t, err := template.ParseFiles("html/index.html")
         if err != nil {
           fmt.Println(err)
@@ -129,6 +128,8 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		PageTitle:  "foss-ag O-Phasen CTF",
 		Challenges: challs,
 		User:       *user,
+                IsUser: ok,
+
 	}
         t.Execute(w,data)
 
@@ -141,7 +142,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 	} else {
 		session, _ := store.Get(r, "auth")
-		if session.Values["User"] != "" {
+                if _, ok := session.Values["User"].(*User); ok {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, "Already logged in")
 		} else {
@@ -186,6 +187,7 @@ func Server() error {
         // Http sturf
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainpage)
+	r.HandleFunc("/login", login)
         // static
         r.PathPrefix("/static").Handler(
           http.StripPrefix("/static/",http.FileServer(http.Dir("html/static"))))

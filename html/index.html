@@ -1,41 +1,71 @@
-<!Doctype html>
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>FOSS-AG CTF</title>
-        <link rel="stylesheet" type="text/css" href="static/style.css">
-        <link rel="stylesheet" type="text/css" href="static/clearsans/clearsans.css">
-    </head>
-    <body class="clearsans">
-        <nav id="header" class="header">
-            <img id="header-img" src="static/logo_red.svg">
-            <div class="clearsans">
-                // FOSS-AG<br/>
-                // <span class="red">CTF</span>
-            </div>
-        </nav>
-        <div id="content">
-          {{range .Challenges}}
-            <div class="challenge">
-                <p class="chall-title">{{.Title}}</p>
-                <p class="score">{{.Points}}p</p>
-                <!-- Beispiel für Uri rendering -->
-                {{if .HasUri}}
-                    <a>{{.Uri}}</a>
-                {{end}}
-            </div>
-            {{end}}
-        </div>
-        <div id="footer">
-            <span class="left">
-                <img id="footer-logo" src="static/logo_green.svg">
-                <p>Mach irgendwas damit, aber so ist's haesslich</p>
-            </span>
-            <span class="center">
-                FOSS-AG CTF
-            </span>
-            <span class="right">
-                Github
-            </span>
-        </div>
-    </body>
+  <head>
+    <title>FOSS-AG CTF</title>
+    <link rel="stylesheet" type="text/css" href="static/style.css" />
+<link rel="stylesheet" type="text/css" href="static/dialog-polyfill.css" />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="static/clearsans/clearsans.css"
+    />
+  </head>
+  <body class="clearsans">
+    <nav id="header" class="header">
+      <img id="header-img" src="static/logo_red.svg" />
+      <div class="clearsans">
+        // FOSS-AG<br />
+        // <span class="red">CTF</span>
+      </div>
+      <div class="right">
+        {{if .IsUser}}
+        <p>{{.User.Name}}</p>
+        {{else}}
+        <button id="loginbutton">Login</button>
+        {{ end }}
+      </div>
+    </nav>
+    <div id="content">
+      {{ range.Challenges }}
+      <div class="challenge">
+        <p class="chall-title">{{.Title}}</p>
+        <p class="score">{{.Points}}p</p>
+        <!-- Beispiel für Uri rendering -->
+        {{if .HasUri}}
+            <a>{{.Uri}}</a>
+        {{end}}
+      </div>
+      {{ end }}
+    </div>
+    <div id="footer">
+      <span class="left">
+        <img id="footer-logo" src="static/logo_green.svg" />
+        <p>Mach irgendwas damit, aber so ist's haesslich</p>
+      </span>
+      <span class="center">
+        FOSS-AG CTF
+      </span>
+      <span class="right">
+        Github
+      </span>
+    </div>
+    <dialog id="logindialog">
+      <form method="POST" action="/login">
+        <section>
+          <p><label for="username">E-Mail:</label>
+          <input type="email" name="username" placeholder="john.doe@tu-dortmund.de"></input>
+          </p>
+          <p><label for="password">Passwort:</label>
+          <input type="password" name="password"></input>
+          </p>
+        </section>
+        <menu>
+          <button id="cancel" type="reset">Cancel</button>
+          <button type="submit">Confirm</button>
+        </menu>
+      </form>
+    </dialog>
+     <script src="static/dialog-polyfill.js"></script>
+    <script src="static/main.js" type="text/javascript"></script>
+  </body>
 </html>
