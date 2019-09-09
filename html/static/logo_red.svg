@@ -1,0 +1,105 @@
+<ns0:svg xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:ns0="http://www.w3.org/2000/svg" xmlns:ns1="http://www.inkscape.org/namespaces/inkscape" xmlns:ns2="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns4="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" height="512" id="svg2250" version="1.1" viewBox="0 0 512 512" width="512" ns2:docname="base.ink.svg" ns1:export-filename="~/basis.png" ns1:export-xdpi="96" ns1:export-ydpi="96" ns1:version="0.92.2 (5c3e80d, 2017-08-06)">
+  <ns0:defs id="defs2244">
+    <ns0:linearGradient id="foss-ag_green">
+      <ns0:stop style="stop-color:#14b967" />
+    </ns0:linearGradient>
+        <ns0:linearGradient id="foss-ag_light-green">
+      <ns0:stop style="stop-color:#14b990" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_neon-green">
+      <ns0:stop style="stop-color:#19eb72" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_red">
+      <ns0:stop style="stop-color:#b82814" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_crimson">
+      <ns0:stop style="stop-color:#b8143d" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_orange">
+      <ns0:stop style="stop-color:#eb4a19" />
+    </ns0:linearGradient>
+      <ns0:linearGradient id="foss-ag_blue">
+      <ns0:stop style="stop-color:#147ab8" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_light-blue">
+      <ns0:stop style="stop-color:#14abb8" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_neon-blue">
+      <ns0:stop style="stop-color:#19a6eb" />
+    </ns0:linearGradient>
+          <ns0:linearGradient id="foss-ag_violet">
+      <ns0:stop style="stop-color:#9a14b8" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_purple">
+      <ns0:stop style="stop-color:#b9148f" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_magenta">
+      <ns0:stop style="stop-color:#eb1995" />
+    </ns0:linearGradient>
+          <ns0:linearGradient id="foss-ag_yellow">
+      <ns0:stop style="stop-color:#ffcc00" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_orange">
+      <ns0:stop style="stop-color:#eb9519" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_neon-yellow">
+      <ns0:stop style="stop-color:#ebdf19" />
+    </ns0:linearGradient>
+          <ns0:linearGradient id="foss-ag_lighter-grey">
+      <ns0:stop style="stop-color:#e5e5e5" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_light-grey">
+      <ns0:stop style="stop-color:#b3b3b3" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_grey">
+      <ns0:stop style="stop-color:#808080" />
+    </ns0:linearGradient>
+     <ns0:linearGradient id="foss-ag_dark-grey">
+      <ns0:stop style="stop-color:#4d4d4d" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="foss-ag_darker-grey">
+      <ns0:stop style="stop-color:#262626" />
+    </ns0:linearGradient>
+    <ns0:linearGradient id="rainbowGradient">
+        <ns0:stop offset="0%" stop-color="#9a14b8" /> 
+        <ns0:stop offset="16.6%" stop-color="#9a14b8" />
+        <ns0:stop offset="16.6%" stop-color="#147ab8" /> 
+        <ns0:stop offset="33.3%" stop-color="#147ab8" />
+        <ns0:stop offset="33.3%" stop-color="#14b967" /> 
+        <ns0:stop offset="50%" stop-color="#14b967" />
+        <ns0:stop offset="50%" stop-color="#ffcc00" /> 
+        <ns0:stop offset="66.6%" stop-color="#ffcc00" />
+        <ns0:stop offset="66.6%" stop-color="#eb9519" /> 
+        <ns0:stop offset="83.3%" stop-color="#eb9519" />
+        <ns0:stop offset="83.3%" stop-color="#b8143d" /> 
+        <ns0:stop offset="100%" stop-color="#b8143d" />
+      </ns0:linearGradient>
+  </ns0:defs>
+  <ns2:namedview bordercolor="#666666" borderlayer="true" borderopacity="1.0" fit-margin-bottom="0" fit-margin-left="0" fit-margin-right="0" fit-margin-top="0" id="base" pagecolor="#ffffff" showgrid="false" showguides="false" units="px" ns1:bbox-nodes="true" ns1:bbox-paths="true" ns1:current-layer="layer2" ns1:cx="175.06364" ns1:cy="171.6681" ns1:document-units="px" ns1:measure-end="0,0" ns1:measure-start="0,0" ns1:object-paths="true" ns1:pageopacity="0.0" ns1:pageshadow="2" ns1:showpageshadow="false" ns1:snap-bbox="true" ns1:snap-bbox-edge-midpoints="true" ns1:snap-bbox-midpoints="true" ns1:snap-center="true" ns1:snap-global="true" ns1:snap-intersection-paths="true" ns1:snap-midpoints="true" ns1:snap-object-midpoints="true" ns1:snap-page="true" ns1:snap-smooth-nodes="true" ns1:snap-text-baseline="true" ns1:window-height="1023" ns1:window-maximized="1" ns1:window-width="1680" ns1:window-x="0" ns1:window-y="27" ns1:zoom="1" />
+  <ns0:metadata id="metadata2247">
+    <rdf:RDF>
+      <ns4:Work rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+        <ns4:license rdf:resource="http://creativecommons.org/licenses/by-nc-sa/4.0/" />
+      </ns4:Work>
+      <ns4:License rdf:about="http://creativecommons.org/licenses/by-nc-sa/4.0/">
+        <ns4:permits rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <ns4:permits rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <ns4:requires rdf:resource="http://creativecommons.org/ns#Notice" />
+        <ns4:requires rdf:resource="http://creativecommons.org/ns#Attribution" />
+        <ns4:prohibits rdf:resource="http://creativecommons.org/ns#CommercialUse" />
+        <ns4:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+        <ns4:requires rdf:resource="http://creativecommons.org/ns#ShareAlike" />
+      </ns4:License>
+    </rdf:RDF>
+  </ns0:metadata>
+
+  <ns0:g id="layer2" style="display:inline" ns1:groupmode="layer" ns1:label="logo_basic">
+    <ns0:rect height="512" id="rect2982-4" style="display:inline;opacity:1;fill:#262626;fill-opacity:1;stroke:none" width="512" x="0" y="0" ns1:export-xdpi="300" ns1:export-ydpi="300" ns1:label="background" />
+    <ns0:path d="m 110.93017,371.92545 c 13.09251,7.55896 26.18501,15.11793 39.27752,22.67689 l 5.41571,-9.38029 c 6.81427,-11.80205 11.87314,-24.63805 16.75523,-37.61962 4.88295,12.98319 9.93975,25.82103 16.7547,37.62302 l 5.41528,9.37885 c 13.0931,-7.55764 26.18517,-15.11707 39.27729,-22.67639 l -5.41528,-9.37886 c -6.72113,-11.64127 -15.16904,-22.30674 -23.74343,-33.0567 13.59647,2.05063 27.05824,4.03779 40.50026,4.0369 l 10.831,-10e-4 c 0.001,-15.11779 4.5e-4,-30.23557 -1.7e-4,-45.35337 l -10.83002,-2.5e-4 c -13.62844,-7e-5 -27.27595,2.03754 -40.95954,4.2969 8.8018,-10.72249 17.39065,-21.52093 24.20401,-33.32386 l 5.41571,-9.38029 c -13.09251,-7.55896 -26.18501,-15.11792 -39.27751,-22.67688 l -5.41571,9.38028 c -6.81422,11.80257 -11.87223,24.63894 -16.757,37.6234 -4.88384,-12.98093 -9.94458,-25.81584 -16.75912,-37.61853 l -5.41231,-9.384 c -13.0931,7.5577 -26.1852,15.11714 -39.27735,22.67648 l 5.41432,9.38054 c 6.72129,11.64242 15.17217,22.3089 23.74871,33.05963 -13.59882,-2.0521 -27.0592,-4.03633 -40.503114,-4.03606 l -10.830942,0.001 c -0.0012,15.11781 -4.18e-4,30.23561 2.59e-4,45.35342 l 10.829967,3.4e-4 c 13.62797,2.7e-4 27.27382,-2.03734 40.95949,-4.30184 -8.80177,10.71867 -17.38805,21.51717 -20.79515,27.41859 z" fill="url(#foss-ag_red)" id="path6107-4-3" stroke="url(#foss-ag_red)" style="fill-opacity:1;stroke-width:0.02;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ns2:nodetypes="ccccccccccccccccccccccccccccccc" ns1:connector-curvature="0" ns1:label="star_left" />
+    <ns0:path d="m 278.17199,371.92545 c 13.09251,7.55896 26.18501,15.11793 39.27752,22.67689 l 5.41571,-9.38029 c 6.81427,-11.80205 11.87314,-24.63805 16.75523,-37.61962 4.88295,12.98319 9.93975,25.82103 16.7547,37.62302 l 5.41528,9.37885 c 13.0931,-7.55764 26.18517,-15.11707 39.27729,-22.67639 l -5.41528,-9.37886 c -6.72113,-11.64127 -15.16904,-22.30674 -23.74343,-33.0567 13.59647,2.05063 27.05824,4.03779 40.50026,4.0369 l 10.831,-10e-4 c 10e-4,-15.11779 4.5e-4,-30.23557 -1.7e-4,-45.35337 l -10.83002,-2.5e-4 c -13.62844,-7e-5 -27.27595,2.03754 -40.95954,4.2969 8.8018,-10.72249 17.39065,-21.52093 24.20401,-33.32386 l 5.41571,-9.38029 c -13.09251,-7.55896 -26.18501,-15.11792 -39.27751,-22.67688 l -5.41571,9.38028 c -6.81422,11.80257 -11.87223,24.63894 -16.757,37.6234 -4.88384,-12.98093 -9.94458,-25.81584 -16.75912,-37.61853 l -5.41231,-9.384 c -13.0931,7.5577 -26.1852,15.11714 -39.27735,22.67648 l 5.41432,9.38054 c 6.72129,11.64242 15.17217,22.3089 23.74871,33.05963 -13.59882,-2.0521 -27.0592,-4.03633 -40.50311,-4.03606 l -10.83095,0.001 c -0.001,15.11781 -4.1e-4,30.23561 2.6e-4,45.35342 l 10.82997,3.4e-4 c 13.62797,2.7e-4 27.27382,-2.03734 40.95949,-4.30184 -8.80177,10.71867 -17.38805,21.51717 -20.79515,27.41859 z" id="path6099-3-7" style="fill:#808080;fill-opacity:1;stroke:#808080;stroke-width:0.02;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ns2:nodetypes="ccccccccccccccccccccccccccccccc" ns1:connector-curvature="0" ns1:label="star_right" />
+    <ns0:path d="m 194.54845,227.08595 c 13.09251,7.55896 26.18501,15.11793 39.27752,22.67689 l 5.41571,-9.38029 c 6.81427,-11.80205 11.87314,-24.63805 16.75523,-37.61962 4.88295,12.98319 9.93975,25.82103 16.7547,37.62302 l 5.41528,9.37885 c 13.0931,-7.55764 26.18517,-15.11707 39.27729,-22.67639 l -5.41528,-9.37886 c -6.72113,-11.64127 -15.16904,-22.30674 -23.74343,-33.0567 13.59647,2.05063 27.05824,4.03779 40.50026,4.0369 l 10.831,-0.001 c 10e-4,-15.11779 4.5e-4,-30.23557 -1.7e-4,-45.35337 l -10.83002,-2.5e-4 c -13.62844,-7e-5 -27.27595,2.03754 -40.95954,4.2969 8.8018,-10.72249 17.39065,-21.52093 24.20401,-33.32386 l 5.41571,-9.38029 C 304.35421,97.36892 291.26171,89.80996 278.16921,82.251 l -5.41571,9.38028 c -6.81422,11.80257 -11.87223,24.63894 -16.757,37.6234 -4.88384,-12.98093 -9.94458,-25.81584 -16.75912,-37.61853 l -5.41231,-9.384 c -13.0931,7.5577 -26.1852,15.11714 -39.27735,22.67648 l 5.41432,9.38054 c 6.72129,11.64242 15.17217,22.3089 23.74871,33.05963 -13.59882,-2.0521 -27.0592,-4.03633 -40.50311,-4.03606 l -10.83095,0.001 c -0.001,15.11781 -4.1e-4,30.23561 2.6e-4,45.35342 l 10.82997,3.4e-4 c 13.62797,2.7e-4 27.27382,-2.03734 40.95949,-4.30184 -8.80177,10.71867 -17.38805,21.51717 -20.79515,27.41859 z" id="path6115-9-1" style="fill:#b3b3b3;fill-opacity:1;stroke:#b3b3b3;stroke-width:0.02;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1" ns2:nodetypes="ccccccccccccccccccccccccccccccc" ns1:connector-curvature="0" ns1:label="star_top" />
+  </ns0:g>
+</ns0:svg>

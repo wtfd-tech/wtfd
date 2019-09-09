@@ -1,0 +1,82 @@
+/* {
+    border-width: 1px;
+    border-color: fuchsia;
+    border-style: solid;
+}*/
+
+body {
+    margin: 64px 0px 0px 0px;
+    background-color: #b3b3b3;
+    color: #4d4d4d;
+    display: flex;
+}
+
+#header {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    margin: 0px;
+    height: 64px;
+    width: 100%;
+    max-height: 64px;
+    display: flex;
+    align-items: center;
+    background-color: #262626;
+    color: #b3b3b3;
+    font-weight: bold;
+    font-size: 12pt;
+    line-height: 13pt;
+    box-shadow: 0px 0px 10px 0px black;
+}
+
+#content {
+    background-color: #e5e5e5;
+    text-align: center;
+    width: 100%;
+    padding-top: 1px;
+    display: flex;
+    /*min-height: 100vh;*/
+}
+
+.challenge {
+    width: 256px;
+    height: 64px;
+    background-color: white;
+    box-shadow: 2.5px 2.5px 5px -2.5px black;
+    margin: 16px;
+}
+
+.chall-title {
+    font-weight: bold;
+}
+
+#footer-logo {
+    height: 48px;
+    border-radius: 24px;
+}
+
+img {
+    height: 100%;
+}
+
+.red {
+    color: #B82814;
+}
+
+.left {
+    width: 33%;
+    float: left;
+    text-align: left;
+}
+
+.center {
+    width: 33%;
+    float: center;
+    text-align: center;
+}
+
+.right {
+    width: 33%;
+    float: right;
+    text-align: right;
+}
