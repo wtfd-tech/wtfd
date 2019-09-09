@@ -28,6 +28,7 @@ var (
 	ErrWrongPassword   = errors.New("Wrong Password")
 	ErrUserNotExisting = errors.New("User with this name does not exist")
 	users              = Users{}
+	sshHost            = "localhost:2222"
 	challs             = Challenges{}
 )
 
@@ -39,6 +40,8 @@ type Challenge struct {
 	Description string `json:"desc"`
 	Flag        string `json:"flag"`
 	Points      int    `json:"points"`
+	Uri         string `json:"uri"`
+	HasUri		bool					// This emerges from Uri != ""
 }
 
 type User struct {
@@ -51,6 +54,20 @@ type MainPageData struct {
 	PageTitle  string
 	Challenges []Challenge
 	User       User
+}
+
+/**
+ * Fill host into each challenge's Uri field and set HasUri
+ */
+func (c Challenges) FillChallengeUri(host string) {
+	for i, _ := range c {
+		if c[i].Uri != "" {
+			c[i].HasUri = true
+			c[i].Uri = fmt.Sprintf(c[i].Uri, host)
+		}else {
+			c[i].HasUri = false
+		}
+	}
 }
 
 func (u *Users) Contains(username string) bool {
@@ -162,6 +179,10 @@ func Server() error {
 	if err := json.Unmarshal(challsFileBytes, &challs); err != nil {
 		return err
 	}
+
+		// Fill in sshHost
+	challs.FillChallengeUri(sshHost)
+
         // Http sturf
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainpage)

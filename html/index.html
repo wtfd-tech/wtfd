@@ -18,6 +18,10 @@
             <div class="challenge">
                 <p class="chall-title">{{.Title}}</p>
                 <p class="score">{{.Points}}p</p>
+                <!-- Beispiel für Uri rendering -->
+                {{if .HasUri}}
+                    <a>{{.Uri}}</a>
+                {{end}}
             </div>
             {{end}}
         </div>
