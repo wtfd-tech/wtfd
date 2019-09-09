@@ -4,6 +4,7 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"errors"
+	"strconv"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -13,6 +14,10 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
+)
+
+const (
+  DefaultPort = int64(80)
 )
 
 var (
@@ -95,12 +100,16 @@ func (u *User) New(name, password string) (User, error) {
 func mainpage(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "auth")
 	user, _ := session.Values["User"].(*User)
-
+        t, err := template.ParseFiles("templates/index.html")
+        if err != nil {
+          fmt.Println(err)
+        }
 	data := MainPageData{
 		PageTitle:  "foss-ag O-Phasen CTF",
 		Challenges: challs,
 		User:       *user,
 	}
+        t.Execute(w,data)
 
 }
 
@@ -115,14 +124,14 @@ func login(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, "Already logged in")
 		} else {
-			u, err := users.Login(r.Form["username"], r.Form["password"])
+			u, err := users.Login(r.Form.Get("username"), r.Form.Get("password"))
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				fmt.Fprintf(w, "Server Error: %v", err)
 			} else {
 				session.Values["User"] = u
 				session.Save(r, w)
-				http.Redirect(w, r, mainpage)
+				http.Redirect(w, r, "/", http.StatusFound)
 
 			}
 
@@ -149,12 +158,16 @@ func Server() error {
 	if err := json.Unmarshal(challsFileBytes, &challs); err != nil {
 		return err
 	}
-
-        // Loading template files
-
-
+        // Http sturf
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainpage)
+        // static
+        fs := http.FileServer(http.Dir("html/static"))
+        http.Handle("/static/", http.StripPrefix("/static", fs))
 
-	return http.ListenAndServe(":80", r)
+        Port := DefaultPort
+        if portenv := os.Getenv("WTFD_PORT"); portenv != "" {
+          Port , _ = strconv.ParseInt(portenv, 10, 64)
+        }
+        return http.ListenAndServe(fmt.Sprintf(":%d",Port), r)
 }
