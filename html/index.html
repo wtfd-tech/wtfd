@@ -14,22 +14,12 @@
             </div>
         </nav>
         <div id="content">
+          {{range .Challenges}}
             <div class="challenge">
-                <p class="chall-title">{{title}}</p>
-                <p class="score">{{score}}p</p>
+                <p class="chall-title">{{.Title}}</p>
+                <p class="score">{{.Points}}p</p>
             </div>
-            <div class="challenge">
-                <p class="chall-title">{{title}}</p>
-                <p class="score">{{score}}p</p>
-            </div>
-            <div class="challenge">
-                <p class="chall-title">{{title}}</p>
-                <p class="score">{{score}}p</p>
-            </div>
-            <div class="challenge">
-                <p class="chall-title">{{title}}</p>
-                <p class="score">{{score}}p</p>
-            </div>
+            {{end}}
         </div>
         <div id="footer">
             <span class="left">

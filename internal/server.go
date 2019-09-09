@@ -99,8 +99,12 @@ func (u *User) New(name, password string) (User, error) {
 
 func mainpage(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "auth")
-	user, _ := session.Values["User"].(*User)
-        t, err := template.ParseFiles("templates/index.html")
+	user, there := session.Values["User"].(*User)
+        if !there {
+          user = &User{}
+        }
+        
+        t, err := template.ParseFiles("html/index.html")
         if err != nil {
           fmt.Println(err)
         }
@@ -162,8 +166,9 @@ func Server() error {
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainpage)
         // static
-        fs := http.FileServer(http.Dir("html/static"))
-        http.Handle("/static/", http.StripPrefix("/static", fs))
+        r.PathPrefix("/static").Handler(
+          http.StripPrefix("/static/",http.FileServer(http.Dir("html/static"))))
+        
 
         Port := DefaultPort
         if portenv := os.Getenv("WTFD_PORT"); portenv != "" {
