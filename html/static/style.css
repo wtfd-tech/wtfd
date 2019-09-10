@@ -9,33 +9,35 @@ body {
     background-color: #b3b3b3;
     color: #4d4d4d;
     display: flex;
+    min-height: calc(100vh - 64px);
+    flex-direction: column;
 }
 
-#header {
+header {
     position: fixed;
     top: 0px;
     left: 0px;
     margin: 0px;
     height: 64px;
     width: 100%;
-    max-height: 64px;
     display: flex;
-    align-items: center;
     background-color: #262626;
     color: #b3b3b3;
-    font-weight: bold;
     font-size: 12pt;
-    line-height: 13pt;
     box-shadow: 0px 0px 10px 0px black;
 }
 
-#content {
+main {
     background-color: #e5e5e5;
     text-align: center;
     width: 100%;
     padding-top: 1px;
+    flex: 1;
+    display: block;
+}
+
+footer {
     display: flex;
-    /*min-height: 100vh;*/
 }
 
 .challenge {
@@ -44,10 +46,39 @@ body {
     background-color: white;
     box-shadow: 2.5px 2.5px 5px -2.5px black;
     margin: 16px;
+    float: left;
+    display: flex;
+    flex-direction: column;
+}
+
+#logo {
+    line-height: 13pt;
+    align-items: center;
+    display: flex;
+    font-weight: bold;
+    font-size: 12pt;
+}
+
+#logo-img {
+    flex-basis: 64px;
+}
+
+#accountinfo {
+    text-align: right;
 }
 
 .chall-title {
+    flex: 1;
     font-weight: bold;
+    margin: 0px;
+}
+
+.score {
+    margin: 0px;
+}
+
+.flexcell {
+    flex: 1;
 }
 
 #footer-logo {
@@ -64,24 +95,8 @@ img {
 }
 
 .left {
-    width: 33%;
-    float: left;
     text-align: left;
-}
-
-.center {
-    width: 33%;
-    float: center;
-    text-align: center;
-}
-
-.right {
-    width: 33%;
-    float: right;
-    margin-left: auto;
-    margin-right: 10px;
-    text-align: right;
-
+    float: left;
 }
 
 

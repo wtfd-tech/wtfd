@@ -11,45 +11,42 @@
     />
   </head>
   <body class="clearsans">
-    <nav id="header" class="header">
-      <img id="header-img" src="static/logo_red.svg" />
-      <div class="clearsans">
-        // FOSS-AG<br />
-        // <span class="red">CTF</span>
+    <header>
+      <div class="flexcell" id="logo">
+        <img id="logo-img" src="static/logo_red.svg" />
+        <div>
+          // FOSS-AG<br />
+          // <span class="red">CTF</span>
+        </div>
       </div>
-      <div class="right">
+      <div class="flexcell" id="accountinfo">
         {{if .IsUser}}
         <p>{{.User.Name}}</p>
         <button id="logoutbutton">Logout</button>
         {{else}}
         <button id="loginbutton">Login</button>
-        {{ end }}
+        {{end}}
       </div>
-    </nav>
-    <div id="content">
+    </header>
+    <main>
       {{ range.Challenges }}
       <div class="challenge">
         <p class="chall-title">{{.Title}}</p>
         <p class="score">{{.Points}}p</p>
-        <!-- Beispiel für Uri rendering -->
-        {{if .HasUri}}
-            <a>{{.Uri}}</a>
-        {{end}}
       </div>
       {{ end }}
-    </div>
-    <div id="footer">
-      <span class="left">
+    </main>
+    <footer>
+      <div class="flexcell" style="text-align: left;">
         <img id="footer-logo" src="static/logo_green.svg" />
-        <p>Mach irgendwas damit, aber so ist's haesslich</p>
-      </span>
-      <span class="center">
-        FOSS-AG CTF
-      </span>
-      <span class="right">
-        Github
-      </span>
-    </div>
+      </div>
+      <div class="flexcell" style="text-align: center;">
+        Powered by WTFd
+      </div>
+      <div class="flexcell" style="text-align: right;">
+        Lizenz o. Social-Media gedoens?
+      </div>
+    </footer>
     <dialog id="logindialog">
       <form method="POST" action="/login">
         <h2>Login to the FOSS-AG CTF</h2>
