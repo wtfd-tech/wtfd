@@ -30,18 +30,48 @@ var (
 	users              = Users{}
 	sshHost            = "localhost:2222"
 	challs             = Challenges{}
+	challcats          = ChallengeCategory{}
 )
 
 type Users []User
 type Challenges []Challenge
+type ChallengeCategories []ChallengeCategory
+
+type JsonFile struct {
+	Categories []ChallengeCategoryJson `json:"categories"`
+	Challenges []ChallengeJson         `json:"challenges"`
+}
+
+type ChallengeCategory struct {
+	Title      string `json:"title"`
+	Challenges Challenges
+}
+
+type ChallengeCategoryJson struct {
+	Title      string   `json:"title"`
+	Challenges []string `json:"challs"`
+}
 
 type Challenge struct {
 	Title       string `json:"title"`
+	Id          string `json:"id"`
 	Description string `json:"desc"`
 	Flag        string `json:"flag"`
 	Points      int    `json:"points"`
 	Uri         string `json:"uri"`
-	HasUri      bool   // This emerges from Uri != ""
+	Deps        []*Challenge
+	HasUri      bool // This emerges from Uri != ""
+}
+
+type ChallengeJson struct {
+	Title       string   `json:"title"`
+	Id          string   `json:"id"`
+	Description string   `json:"desc"`
+	Flag        string   `json:"flag"`
+	Points      int      `json:"points"`
+	Uri         string   `json:"uri"`
+	Deps        []string `json:"deps"`
+	HasUri      bool     // This emerges from Uri != ""
 }
 
 type User struct {
@@ -122,9 +152,9 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	val := session.Values["User"]
 	user := &User{}
 	newuser, ok := val.(*User)
-        if ok {
-        user = newuser
-        }
+	if ok {
+		user = newuser
+	}
 	t, err := template.ParseFiles("html/index.html")
 	if err != nil {
 		fmt.Println(err)
@@ -219,6 +249,59 @@ func logout(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func bContainsA(a string, b []string) bool {
+	for _, c := range b {
+		if a == c {
+			return true
+		}
+
+	}
+	return false
+
+}
+
+func bContainsAllOfA(a, b []string) bool {
+	for _, c := range a {
+		if !bContainsA(c, b) {
+			return false
+		}
+	}
+	return true
+}
+
+func resolveDeps(a []string) []*Challenge {
+	toReturn := []*Challenge{}
+	for _, b := range a {
+		for _, c := range challs {
+			if c.Id == b {
+				toReturn = append(toReturn, &c)
+			}
+		}
+	}
+	return toReturn
+
+}
+
+func resolveChalls(challcat []ChallengeJson){
+	i := 0
+	idsInChalls := []string{}
+	for len(challcat) != 0 {
+//          fmt.Printf("challs: %v, challcat: %v\n",challs,challcat)
+		this := challcat[i]
+		if bContainsAllOfA(this.Deps, idsInChalls) {
+			idsInChalls = append(idsInChalls, this.Id)
+			challs = append(challs, Challenge{Title: this.Title, Id: this.Id, Description: this.Description, Flag: this.Flag, Uri: this.Uri, Points: this.Points, Deps: resolveDeps(this.Deps)})
+			challcat[i] = challcat[len(challcat)-1]
+			challcat = challcat[:len(challcat)-1]
+			i = 0
+		} else {
+			i++
+		}
+
+	}
+
+}
+
 func Server() error {
 	gob.Register(&User{})
 
@@ -228,10 +311,13 @@ func Server() error {
 		return err
 	}
 	defer challsFile.Close()
+	var challsStructure JsonFile
 	challsFileBytes, _ := ioutil.ReadAll(challsFile)
-	if err := json.Unmarshal(challsFileBytes, &challs); err != nil {
+	if err := json.Unmarshal(challsFileBytes, &challsStructure); err != nil {
 		return err
 	}
+	resolveChalls(challsStructure.Challenges)
+
 
 	// Fill in sshHost
 	challs.FillChallengeUri(sshHost)
