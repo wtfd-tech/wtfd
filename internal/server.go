@@ -4,12 +4,12 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"errors"
-	"strconv"
 	"fmt"
 	"html/template"
 	"io/ioutil"
 	"net/http"
 	"os"
+	"strconv"
 
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
@@ -17,13 +17,13 @@ import (
 )
 
 const (
-  DefaultPort = int64(80)
+	DefaultPort = int64(80)
 )
 
 var (
 	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
 	key                = []byte("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-	store              = sessions.NewCookieStore(key)
+	store              = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
 	ErrUserExisting    = errors.New("User with this name exists")
 	ErrWrongPassword   = errors.New("Wrong Password")
 	ErrUserNotExisting = errors.New("User with this name does not exist")
@@ -41,7 +41,7 @@ type Challenge struct {
 	Flag        string `json:"flag"`
 	Points      int    `json:"points"`
 	Uri         string `json:"uri"`
-	HasUri		bool					// This emerges from Uri != ""
+	HasUri      bool   // This emerges from Uri != ""
 }
 
 type User struct {
@@ -54,7 +54,7 @@ type MainPageData struct {
 	PageTitle  string
 	Challenges []Challenge
 	User       User
-        IsUser     bool
+	IsUser     bool
 }
 
 /**
@@ -65,7 +65,7 @@ func (c Challenges) FillChallengeUri(host string) {
 		if c[i].Uri != "" {
 			c[i].HasUri = true
 			c[i].Uri = fmt.Sprintf(c[i].Uri, host)
-		}else {
+		} else {
 			c[i].HasUri = false
 		}
 	}
@@ -73,7 +73,7 @@ func (c Challenges) FillChallengeUri(host string) {
 
 func (u *Users) Contains(username string) bool {
 	_, err := u.Get(username)
-	return err != nil
+	return err == nil
 }
 
 func (u *Users) Get(username string) (User, error) {
@@ -94,6 +94,7 @@ func (u *Users) Login(username, passwd string) (User, error) {
 	if pwdRight := user.ComparePassword(passwd); !pwdRight {
 		return User{}, ErrWrongPassword
 	}
+	fmt.Printf("User login: %s\n", username)
 	return user, nil
 
 }
@@ -102,7 +103,7 @@ func (u *User) ComparePassword(password string) bool {
 	return bcrypt.CompareHashAndPassword(u.Hash, []byte(password)) == nil
 }
 
-func (u *User) New(name, password string) (User, error) {
+func NewUser(name, password string) (User, error) {
 	if users.Contains(name) {
 		return User{}, ErrUserExisting
 	}
@@ -111,6 +112,7 @@ func (u *User) New(name, password string) (User, error) {
 		return User{}, err
 	}
 
+	fmt.Printf("New User added: %s\n", name)
 	return User{Name: name, Hash: hash}, nil
 
 }
@@ -118,20 +120,22 @@ func (u *User) New(name, password string) (User, error) {
 func mainpage(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "auth")
 	val := session.Values["User"]
-        user := &User{}
-        _, ok := val.(*User)
-        t, err := template.ParseFiles("html/index.html")
-        if err != nil {
-          fmt.Println(err)
+	user := &User{}
+	newuser, ok := val.(*User)
+        if ok {
+        user = newuser
         }
+	t, err := template.ParseFiles("html/index.html")
+	if err != nil {
+		fmt.Println(err)
+	}
 	data := MainPageData{
 		PageTitle:  "foss-ag O-Phasen CTF",
 		Challenges: challs,
 		User:       *user,
-                IsUser: ok,
-
+		IsUser:     ok,
 	}
-        t.Execute(w,data)
+	t.Execute(w, data)
 
 }
 
@@ -141,8 +145,12 @@ func login(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Invalid Request")
 
 	} else {
+		if err := r.ParseForm(); err != nil {
+			fmt.Fprintf(w, "ParseForm() err: %v", err)
+			return
+		}
 		session, _ := store.Get(r, "auth")
-                if _, ok := session.Values["User"].(*User); ok {
+		if _, ok := session.Values["User"].(*User); ok {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, "Already logged in")
 		} else {
@@ -163,14 +171,58 @@ func login(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func register(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Invalid Request")
+
+	} else {
+		if err := r.ParseForm(); err != nil {
+			fmt.Fprintf(w, "ParseForm() err: %v", err)
+			return
+		}
+		session, _ := store.Get(r, "auth")
+		if _, ok := session.Values["User"].(*User); ok {
+			w.WriteHeader(http.StatusBadRequest)
+			fmt.Fprintf(w, "Already logged in")
+		} else {
+
+			if len(r.Form.Get("username")) < 5 {
+				w.WriteHeader(http.StatusBadRequest)
+				fmt.Fprintf(w, "Username must be at least 5 characters")
+
+			} else {
+				u, err := NewUser(r.Form.Get("username"), r.Form.Get("password"))
+				if err != nil {
+					w.WriteHeader(http.StatusInternalServerError)
+					fmt.Fprintf(w, "Server Error: %v", err)
+				} else {
+					session.Values["User"] = u
+					users = append(users, u)
+					session.Save(r, w)
+					http.Redirect(w, r, "/", http.StatusFound)
+
+				}
+
+			}
+		}
+
+	}
+
+}
+
 func logout(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "auth")
+	session.Values["User"] = nil
+	session.Save(r, w)
+	http.Redirect(w, r, "/", http.StatusFound)
 
 }
 
 func Server() error {
 	gob.Register(&User{})
 
-        // Loading challs file
+	// Loading challs file
 	challsFile, err := os.Open("challs.json")
 	if err != nil {
 		return err
@@ -181,21 +233,23 @@ func Server() error {
 		return err
 	}
 
-		// Fill in sshHost
+	// Fill in sshHost
 	challs.FillChallengeUri(sshHost)
 
-        // Http sturf
+	// Http sturf
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainpage)
 	r.HandleFunc("/login", login)
-        // static
-        r.PathPrefix("/static").Handler(
-          http.StripPrefix("/static/",http.FileServer(http.Dir("html/static"))))
-        
+	r.HandleFunc("/logout", logout)
+	r.HandleFunc("/register", register)
+	// static
+	r.PathPrefix("/static").Handler(
+		http.StripPrefix("/static/", http.FileServer(http.Dir("html/static"))))
 
-        Port := DefaultPort
-        if portenv := os.Getenv("WTFD_PORT"); portenv != "" {
-          Port , _ = strconv.ParseInt(portenv, 10, 64)
-        }
-        return http.ListenAndServe(fmt.Sprintf(":%d",Port), r)
+	Port := DefaultPort
+	if portenv := os.Getenv("WTFD_PORT"); portenv != "" {
+		Port, _ = strconv.ParseInt(portenv, 10, 64)
+	}
+	fmt.Printf("WTFD Server Starting at port %d\n", Port)
+	return http.ListenAndServe(fmt.Sprintf(":%d", Port), r)
 }
