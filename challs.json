@@ -1,35 +1,47 @@
-[
-  {
-    "title": "asdf",
-    "desc": "aioöhsogöaerghaeörkglkfjgaöoerilgeoörgijk",
-    "flag": "FOSS{b}",
-    "points": 8,
-    "uri": "ssh://asdf@%s"
-  },
-  {
-    "title": "asdf",
-    "desc": "aassddfaassddf",
-    "flag": "FOSS{a}",
-    "points": 1
-  },
-  {
-    "title": "asdf",
-    "desc": "aassddfaassddf",
-    "flag": "FOSS{a}",
-    "points": 1,
-    "uri": "ssh://asdf@%s"
-  },
-  {
-    "title": "asdf",
-    "desc": "aassddfaassddf",
-    "flag": "FOSS{a}",
-    "points": 1,
-    "uri": "ssh://asdf@%s"
-  },
-  {
-    "title": "asdf",
-    "desc": "aassddfaassddf",
-    "flag": "FOSS{a}",
-    "points": 1
-  }
-]
+{
+  "challenges": [
+    {
+      "title": "asdf",
+      "id": "a",
+      "desc": "aioöhsogöaerghaeörkglkfjgaöoerilgeoörgijk",
+      "flag": "FOSS{b}",
+      "points": 8,
+      "uri": "ssh://asdf@%s"
+    },
+    {
+      "title": "asdf",
+      "id": "b",
+      "deps": ["a"],
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "points": 1
+    },
+    {
+      "title": "asdf",
+      "id": "c",
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "deps": ["a", "b"],
+      "points": 1,
+      "uri": "ssh://asdf@%s"
+    },
+    {
+      "title": "asdf",
+      "id": "d",
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "deps": ["a"],
+      "points": 1,
+      "uri": "ssh://asdf@%s"
+    },
+    {
+      "title": "asdf",
+      "id": "e",
+      "deps": ["a", "b"],
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "points": 1
+    }
+  ],
+  "categories": [{ "title": "asdf", "challs": ["c", "e"] }]
+}
