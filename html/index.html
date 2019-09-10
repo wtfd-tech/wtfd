@@ -20,6 +20,7 @@
       <div class="right">
         {{if .IsUser}}
         <p>{{.User.Name}}</p>
+        <button id="logoutbutton">Logout</button>
         {{else}}
         <button id="loginbutton">Login</button>
         {{ end }}
@@ -51,6 +52,7 @@
     </div>
     <dialog id="logindialog">
       <form method="POST" action="/login">
+        <h2>Login to the FOSS-AG CTF</h2>
         <section>
           <p><label for="username">E-Mail:</label>
           <input type="email" name="username" placeholder="john.doe@tu-dortmund.de"></input>
@@ -60,7 +62,25 @@
           </p>
         </section>
         <menu>
-          <button id="cancel" type="reset">Cancel</button>
+          <button id="registerbutton" type="button">Register</button>
+          <button id="logincancelbutton" type="reset">Cancel</button>
+          <button type="submit">Confirm</button>
+        </menu>
+      </form>
+    </dialog>
+    <dialog id="registerdialog">
+      <form method="POST" action="/register">
+        <h2>Register to the FOSS-AG CTF</h2>
+        <section>
+          <p><label for="username">E-Mail:</label>
+          <input type="email" name="username" placeholder="john.doe@tu-dortmund.de"></input>
+          </p>
+          <p><label for="password">Passwort:</label>
+          <input type="password" name="password"></input>
+          </p>
+        </section>
+        <menu>
+          <button id="registercancelbutton" type="reset">Cancel</button>
           <button type="submit">Confirm</button>
         </menu>
       </form>

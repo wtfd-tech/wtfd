@@ -1,9 +1,35 @@
 (function() {
-  var dialog = document.querySelector("dialog");
-  dialogPolyfill.registerDialog(dialog);
   var loginButton = document.getElementById("loginbutton");
-  var loginDialog = document.getElementById("logindialog");
-  loginButton.addEventListener("click", function() {
-    loginDialog.showModal();
-  });
+  if (loginButton != null) {
+    var loginDialogCancelButton = document.getElementById("logincancelbutton");
+    var loginDialog = document.getElementById("logindialog");
+    dialogPolyfill.registerDialog(loginDialog);
+
+    loginButton.addEventListener("click", function() {
+      loginDialog.showModal();
+    });
+    loginDialogCancelButton.addEventListener("click", function() {
+      loginDialog.close();
+    });
+
+    var registerButton = document.getElementById("registerbutton");
+    var registerDialogCancelButton = document.getElementById(
+      "registercancelbutton"
+    );
+    var registerDialog = document.getElementById("registerdialog");
+    dialogPolyfill.registerDialog(registerDialog);
+
+    registerButton.addEventListener("click", function() {
+      loginDialog.close();
+      registerDialog.showModal();
+    });
+    registerDialogCancelButton.addEventListener("click", function() {
+      registerDialog.close();
+    });
+  } else {
+    var logoutButton = document.getElementById("logoutbutton");
+    logoutButton.addEventListener("click", function() {
+      location.href = "/logout";
+    });
+  }
 })();
