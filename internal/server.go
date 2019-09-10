@@ -59,7 +59,9 @@ type Challenge struct {
 	Flag        string `json:"flag"`
 	Points      int    `json:"points"`
 	Uri         string `json:"uri"`
-	Deps        []*Challenge
+	DepCount    int
+	DepIds      []string
+	Deps        []Challenge
 	HasUri      bool // This emerges from Uri != ""
 }
 
@@ -269,28 +271,47 @@ func bContainsAllOfA(a, b []string) bool {
 	return true
 }
 
-func resolveDeps(a []string) []*Challenge {
-	toReturn := []*Challenge{}
+func resolveDeps(a []string) []Challenge {
+	toReturn := []Challenge{}
 	for _, b := range a {
 		for _, c := range challs {
 			if c.Id == b {
-				toReturn = append(toReturn, &c)
+				toReturn = append(toReturn, c)
 			}
 		}
 	}
 	return toReturn
 
 }
+func countDeps(chall Challenge) int{
+	max := 0
+	for _, a := range chall.Deps {
+		depcount := countDeps(a)
+		if depcount > max {
+			max = depcount
+		}
+	}
+        fmt.Printf("%s: %#v\n\n", chall.Id,  max+len(chall.DepIds))
+        return len(chall.DepIds) + max
 
-func resolveChalls(challcat []ChallengeJson){
+}
+
+func countAllDeps(){
+  for i, _ := range challs {
+    challs[i].DepCount = countDeps(challs[i])
+    fmt.Printf("id: %d, depcount: %d\n",challs[i].Id, challs[i].DepCount)
+  }
+}
+
+func resolveChalls(challcat []ChallengeJson) {
 	i := 0
 	idsInChalls := []string{}
 	for len(challcat) != 0 {
-//          fmt.Printf("challs: %v, challcat: %v\n",challs,challcat)
+		//          fmt.Printf("challs: %v, challcat: %v\n",challs,challcat)
 		this := challcat[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
 			idsInChalls = append(idsInChalls, this.Id)
-			challs = append(challs, Challenge{Title: this.Title, Id: this.Id, Description: this.Description, Flag: this.Flag, Uri: this.Uri, Points: this.Points, Deps: resolveDeps(this.Deps)})
+			challs = append(challs, Challenge{Title: this.Title, Id: this.Id, Description: this.Description, Flag: this.Flag, Uri: this.Uri, Points: this.Points, Deps: resolveDeps(this.Deps), DepIds: this.Deps})
 			challcat[i] = challcat[len(challcat)-1]
 			challcat = challcat[:len(challcat)-1]
 			i = 0
@@ -299,7 +320,7 @@ func resolveChalls(challcat []ChallengeJson){
 		}
 
 	}
-
+	countAllDeps()
 }
 
 func Server() error {
@@ -318,9 +339,9 @@ func Server() error {
 	}
 	resolveChalls(challsStructure.Challenges)
 
-
 	// Fill in sshHost
 	challs.FillChallengeUri(sshHost)
+        fmt.Printf("filltest: %#+v", resolveDeps([]string{"d"}))
 
 	// Http sturf
 	r := mux.NewRouter()

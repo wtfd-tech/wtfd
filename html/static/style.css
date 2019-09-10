@@ -6,7 +6,7 @@
 
 body {
     margin: 64px 0px 0px 0px;
-    background-color: #b3b3b3;
+    background-color: #e5e5e5;
     color: #4d4d4d;
     display: flex;
     min-height: calc(100vh - 64px);
@@ -28,7 +28,7 @@ header {
 }
 
 main {
-    background-color: #e5e5e5;
+    z-index: -1;
     text-align: center;
     width: 100%;
     padding-top: 1px;
@@ -38,10 +38,12 @@ main {
 
 footer {
     display: flex;
+    background-color: #b3b3b3;
 }
 
 .challenge {
     width: 256px;
+    z-index: 1;
     height: 64px;
     background-color: white;
     box-shadow: 2.5px 2.5px 5px -2.5px black;
@@ -99,4 +101,39 @@ img {
     float: left;
 }
 
+#svgContainer { 
+	z-index: -1;
+	position:absolute;
+        width: 100%;
+        height: 100%;
+}
+.gridcontainer {
+    display: grid;
+    
+}
 
+.col-0 {
+    grid-column-start: 1;
+    grid-column-end: 1;
+    display: grid;
+}
+.col-1 {
+    grid-column-start: 2;
+    grid-column-end: 2;
+    display: grid;
+}
+.col-2 {
+    grid-column-start: 3;
+    grid-column-end: 3;
+    display: grid;
+}
+.col-3 {
+    grid-column-start: 4;
+    grid-column-end: 4;
+    display: grid;
+}
+.col-4 {
+    grid-column-start: 5;
+    grid-column-end: 5;
+    display: grid;
+}

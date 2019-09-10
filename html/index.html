@@ -11,6 +11,8 @@
     />
   </head>
   <body class="clearsans">
+    <div id="svgContainer"><svg id="svg1" width="0" height="0">
+      </svg></div>
     <header>
       <div class="flexcell" id="logo">
         <img id="logo-img" src="static/logo_red.svg" />
@@ -28,13 +30,35 @@
         {{end}}
       </div>
     </header>
-    <main>
+    <main class="flexcell gridcontainer">
       {{ range.Challenges }}
-      <div class="challenge">
+      <div id="{{.Id}}" class="challenge col-{{.DepCount}}">
         <p class="chall-title">{{.Title}}</p>
         <p class="score">{{.Points}}p</p>
       </div>
       {{ end }}
+
+      <script>
+        function connectAll(){
+          var i = 0
+          var colors =
+          ["#8E83CB",
+          "#6457AD",
+          "#4A3C99",
+          "#332486",
+          "#21146A"];
+          var svg1 = document.getElementById("svg1");
+
+          {{ range.Challenges}}
+          {{if .DepIds}}
+          var color = colors[i % (colors.length-1)];
+            connectElementss(svg1 , {{.DepIds}}, "{{.Id}}",color);
+          i++;
+            {{end}}
+            {{end}}
+        }
+      
+      </script>
     </main>
     <footer>
       <div class="flexcell" style="text-align: left;">

@@ -21,7 +21,7 @@
       "id": "c",
       "desc": "aassddfaassddf",
       "flag": "FOSS{a}",
-      "deps": ["a", "b"],
+      "deps": ["b"],
       "points": 1,
       "uri": "ssh://asdf@%s"
     },
@@ -35,9 +35,33 @@
       "uri": "ssh://asdf@%s"
     },
     {
+      "title": "fsdf",
+      "id": "f",
+      "deps": ["b","c"],
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "points": 1
+    },
+    {
+      "title": "hsdf",
+      "id": "h",
+      "deps": ["b","c"],
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "points": 1
+    },
+    {
+      "title": "nsdf",
+      "id": "n",
+      "deps": ["a"],
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "points": 1
+    },
+    {
       "title": "asdf",
       "id": "e",
-      "deps": ["a", "b"],
+      "deps": ["b"],
       "desc": "aassddfaassddf",
       "flag": "FOSS{a}",
       "points": 1
