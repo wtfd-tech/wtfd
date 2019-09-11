@@ -196,8 +196,38 @@ func ormChallengesSolved(user User) (Challenges, error) {
 
 // Write solved state (user solved chall) in db
 func ormSolvedChallenge(user User, chall Challenge) (error) {
-	// TODO
-	return nil
+	var exists   bool
+	var err      error
+	var relation _ORMChallengesByUser
+	var count    int64
+
+	if exists, err = ormUserExists(user); err != nil {
+		return err
+	}
+
+	if !exists {
+		return ErrUserNotExisting
+	}
+
+	count, err = engine.Where("UserName = ?", user.Name).And("ChallengeName = ?", chall.Id).Count(_ORMChallengesByUser{})
+	if err != nil {
+		return nil
+	}
+
+	if count == 1 {
+		return errors.New("User already solved this challenge")
+	}else if count > 1 {
+		return errors.New("DB-State Error: User solved this challenge multiple times")
+	}
+
+	relation = _ORMChallengesByUser{
+		ChallengeName: chall.Id,
+		UserName: user.Name,
+	}
+
+	_, err = engine.Insert(relation)
+
+	return err
 }
 
 // load a single user from db (search by u.Name)
