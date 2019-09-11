@@ -24,12 +24,16 @@ function addChallEventListener(title) {
                     if (resp === "correct") {
                         location.href = "/";
                     } else {
-                        alert("Wrong flag");
+                        alert(resp);
                     }
                 });
-
-        }
+            flagInput.value = "";
+        };
       flagsubmitbutton.addEventListener("click",eventlistenerfunc);
+
+        detView.addEventListener("close", function () {
+            flagInput.value = "";
+        });
 
         detDescription.innerHTML = "<i>Loading, please wait...</i>";
         detTitle.innerHTML = "LOADING";
