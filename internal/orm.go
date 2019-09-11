@@ -90,17 +90,56 @@ func _ORMGenericError(desc string) error {
 	return errors.New(fmt.Sprintf("ORM Error %s", desc))
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// DB Operations ///////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+// Create new User DB record from a User struct
 func ormNewUser(user User) error {
-	count, err := engine.Count(_ORMUser{Name: user.Name,})
-	if err != nil {
-		return _ORMGenericError(err.Error())
-	}
-
-	if count == 0 {
-		// TODO: Insert user
-	} else {
-		return ErrUserExisting
-	}
-
+	//TODO
 	return nil
 }
+
+// Update existing user record (user.Name) with other values from user
+func ormUpdateUser(user User) error {
+	// TODO
+	return nil
+}
+
+// remove user from db
+func ormDeleteUser(user User) error {
+	// TODO
+	return nil
+}
+
+// check if user exists in db
+func ormUserExists(user User) (bool, error) {
+	// TODO
+	return false, nil
+}
+
+// get Challenges{} solved by user
+func ormChallengesSolved(user User) (Challenges, error) {
+	// TODO
+	return Challenges{}, nil
+}
+
+// Write solved state (user solved chall) in db
+func ormSolvedChallenge(user User, chall Challenge) (error) {
+	// TODO
+	return nil
+}
+
+// load a single user from db (search by u.Name)
+// The remaining fields of u will be filled by this function
+func ormLoadUser(u *User) error {
+	// TODO
+	return nil
+}
+
+// Fills u with all users in db
+func ormLoadAllUsers(u *Users) error {
+	// TODO
+	return nil
+}
+////////////////////////////////////////////////////////////////////////////////
