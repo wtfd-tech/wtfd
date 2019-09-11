@@ -115,8 +115,30 @@ func ormNewUser(user User) error {
 }
 
 // Update existing user record (user.Name) with other values from user
+// Solved challenges WON'T be updated (refer to ormChallengeSolved)
 func ormUpdateUser(user User) error {
-	// TODO
+	var exists bool
+	var err    error
+	var u      _ORMUser
+
+	if exists, err = ormUserExists(user); err != nil {
+		return err
+	}
+
+	if !exists {
+		return ErrUserNotExisting
+	}
+
+	u = _ORMUser{
+		Name: user.Name,
+		Hash: user.Hash,
+		Mail: user.Mail,
+	}
+
+	if _, err = engine.Where("Name = ?", user.Name).Update(&u); err != nil {
+		return err
+	}
+
 	return nil
 }
 
