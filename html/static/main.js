@@ -21,7 +21,7 @@ if (a>0) return 1.0;
   return a;
 }
 const svgNS = "http://www.w3.org/2000/svg";  
-function drawPath(svg, path, startX, startY, endX, endY) {
+function drawPath(svg, path, startX, startY, endX, endY, drawFunction) {
     // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
     var stroke =  parseFloat(path.getAttribute("stroke-width"));
     // check if the svg is big enough to draw the path, if not, set heigh/width
@@ -29,11 +29,16 @@ function drawPath(svg, path, startX, startY, endX, endY) {
     if (svg.getAttribute("width" ) < (startX + stroke) )    svg.setAttributeNS(null, "width", (startX + stroke));
     if (svg.getAttribute("width" ) < (endX   + stroke) )    svg.setAttributeNS(null, "width", (endX   + stroke));
     
-    var deltaX = (endX - startX) * 0.15;
-    var deltaY = (endY - startY) * 0.15;
+    //var deltaX = (endX - startX) * 0.15;
+    //var deltaY = (endY - startY) * 0.15;
+
+    var deltaNum = 25;
+    var deltaX = (endX == startX)?0:deltaNum;
+    var deltaY = (endY == startY)?0:deltaNum;
+
     // for further calculations which ever is the shortest distance
     var delta  =  deltaY < absolute(deltaX) ? deltaY : absolute(deltaX);
-
+    console.log("deltax: "+deltaX+", deltay:"+deltaY+", delta: "+delta);
     // set sweep-flag (counter/clock-wise)
     // if start element is closer to the left edge,
     // draw the first arc counter-clockwise, and the second one clock-wise
@@ -43,30 +48,43 @@ function drawPath(svg, path, startX, startY, endX, endY) {
         arc2 = 0;
     }
     // draw tha pipe-like path
-    // 1. move a bit down, 2. arch,  3. move a bit to the right, 4.arch, 5. move down to the end 
-    path.setAttributeNS(null, "d",  "M"  + startX + " " + startY +
-                    " H" + (startX + delta) +
-                    " A" + delta + " " +  delta + " 0 0 " + arc2 + " " + (startX+2*delta) + " " + (startY + 1*delta) +
-                    " V" + (startY + 2*delta) +
-                    " A" + delta + " " +  delta + " 0 0 " + arc1 + " " + (startX + 3*delta*signum(deltaX)) + " " + (startY + 3*delta) +
-                    " H" + (endX - 3*delta*signum(deltaX)) + 
-                    " A" + delta + " " +  delta + " 0 0 " + arc2 + " " + (endX-2*delta) + " " + (startY + 4*delta) +
-                    " V" + (endY-1*delta) +
-                    " A" + delta + " " +  delta + " 0 0 " + arc1 + " " + (endX-1*delta) + " " + (endY - 0*delta) +
-                    " H" + (endX) );
+    // 1. move a bit down, 2. arch,  3. move a bit to the right, 4.arch, 5. move down to the end
+    if (!drawFunction) {
+        path.setAttributeNS(null, "d", "M" + startX + " " + startY +
+            " H" + (startX + 1 * delta) +
+            " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 2 * delta) + " " + (startY + 1 * delta) +
+            " V" + (endY - 1 * delta) +
+            // " A" + delta + " " +  delta + " 0 0 " + arc1 + " " + (startX + 3*delta*signum(deltaX)) + " " + (startY + 3*delta) +
+            // " H" + (endX - 3*delta*signum(deltaX)) +
+            // " A" + delta + " " +  delta + " 0 0 " + arc2 + " " + (endX-2*delta) + " " + (startY + 4*delta) +
+            // " V" + (endY-1*delta) +
+            " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 3 * delta) + " " + (endY - 0 * delta) +
+            " H" + (endX));
+    } else {
+        path.setAttributeNS(null, "d", "M" + startX + " " + startY +
+            " H" + (startX + delta) +
+            " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 2 * delta) + " " + (startY + 1 * delta) +
+            " V" + (startY + 2 * delta) +
+            " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 3 * delta * signum(deltaX)) + " " + (startY + 3 * delta) +
+            " H" + (endX - 3 * delta * signum(deltaX)) +
+            " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (endX - 2 * delta) + " " + (startY + 4 * delta) +
+            " V" + (endY - 1 * delta) +
+            " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (endX - 1 * delta) + " " + (endY - 0 * delta) +
+            " H" + (endX));
+    }
 }
 
 function connectElementss(svg, startElems, endElem,color){
   elem = document.getElementById(endElem);
   startElems.forEach(function(item){
     selem = document.getElementById(item)
-    connectElements(svg, selem, elem,color)
+    connectElements(svg, selem, elem,color,true)
 
   });
 
 }
 
-function connectElements(svg, startElem, endElem, color) {
+function connectElements(svg, startElem, endElem, color, drawFunction) {
     var path = document.createElementNS(svgNS,"path");
     path.setAttributeNS(null,"d","M0 0");
     path.setAttributeNS(null,"stroke",color);
@@ -98,8 +116,9 @@ function connectElements(svg, startElem, endElem, color) {
         // calculate path's end (x,y) coords
     var endX = endCoord.left;// + 0.5*endElem.offsetWidth - svgLeft;
     var endY = endCoord.top  - 0.5*(endElem.offsetHeight);
+
     // call function for drawing the path
-    drawPath(svg, path, startX, startY, endX, endY);
+    drawPath(svg, path, startX, startY, endX, endY, drawFunction);
 
 }
 
