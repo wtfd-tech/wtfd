@@ -314,6 +314,10 @@ func resolveDeps(a []string) []Challenge {
 }
 func countDeps(chall Challenge) int {
 	max := 0
+        if len(chall.Deps) == 0 {
+          return 1
+
+        }
 	for _, a := range chall.Deps {
 		depcount := countDeps(a)
 		if depcount > max {
