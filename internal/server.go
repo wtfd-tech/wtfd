@@ -313,16 +313,16 @@ func resolveDeps(a []string) []Challenge {
 
 }
 func countDeps(chall Challenge) int {
-	max := 0
+	max := 1
         if len(chall.Deps) == 0 {
-          return 1
+          return 0
 
         }
 	for _, a := range chall.Deps {
 		depcount := countDeps(a)
-		if depcount > max {
-			max = depcount
-		}
+              if depcount+1 > max{
+                max = depcount+1
+              }
 	}
 	//return len(chall.DepIds) + max
 	return max
