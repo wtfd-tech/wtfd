@@ -128,7 +128,23 @@ func ormDeleteUser(user User) error {
 
 // check if user exists in db
 func ormUserExists(user User) (bool, error) {
-	// TODO
+	var count int64
+	var err error
+
+	count, err = engine.Count(_ORMUser{Name: user.Name,})
+	if err != nil {
+		return false, err
+	}
+
+	if count == 0 {
+		return false, nil
+	}
+	if count == 1 {
+		return true, nil
+	} else {
+		return false, errors.New("DB User-table is in an invalid state")
+	}
+
 	return false, nil
 }
 
