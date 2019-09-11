@@ -68,6 +68,7 @@ func ormStart(logFile string) {
 
 	ormSync()
 	ormCreateTestDB()
+	ormTestFunctions()
 }
 
 func ormCreateTestDB() {
@@ -84,6 +85,76 @@ func ormCreateTestDB() {
 
 	engine.Insert(u)
 	engine.Insert(cu)
+}
+
+func ormTestFunctions() {
+	var err error
+
+	// Try to add user twice
+	err = ormNewUser(User{Name: "TestUser",})
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	user := User{
+		Name: "TestUser2",
+		Mail: "test@mailer.ru",
+		Hash: []byte("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"),
+	}
+
+	// Add new user
+	err = ormNewUser(user)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	// Delete first user
+	err = ormDeleteUser(User{Name: "TestUser",})
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	// Edit second user
+	user.Mail = "newMail@legit.ch"
+	err = ormUpdateUser(user)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	// second user solved a challenge
+	err = ormSolvedChallenge(user, Challenge{Id: "KrasseSuperChallenge",})
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	// second user solved another challenge
+	err = ormSolvedChallenge(user, Challenge{Id: "WhackeChallenge",})
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	// second user solved another challenge
+	err = ormSolvedChallenge(user, Challenge{Id: "SuperChallenge",})
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	var challenges []*Challenge
+	challenges, err = ormChallengesSolved(user)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+	for _, c := range challenges {
+		fmt.Printf("Challenge: %s\n", c.Id)
+	}
+
+	loadUser := User{Name: "TestUser2"}
+	err = ormLoadUser(&loadUser)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	fmt.Printf("Name: %s, Mail: %s, Hash: %s\n", user.Name, user.Mail, user.Hash)
 }
 
 func _ORMGenericError(desc string) error {
