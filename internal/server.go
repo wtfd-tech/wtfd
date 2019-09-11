@@ -54,8 +54,7 @@ type ChallengeCategoryJson struct {
 }
 
 type Challenge struct {
-	Title       string `json:"title"`
-	Id          string `json:"id"`
+	Name        string `json:"name"`
 	Description string `json:"desc"`
 	Flag        string `json:"flag"`
 	Points      int    `json:"points"`
@@ -67,8 +66,7 @@ type Challenge struct {
 }
 
 type ChallengeJson struct {
-	Title       string   `json:"title"`
-	Id          string   `json:"id"`
+	Name        string   `json:"name"`
 	Description string   `json:"desc"`
 	Flag        string   `json:"flag"`
 	Points      int      `json:"points"`
@@ -108,7 +106,7 @@ func (c Challenges) FillChallengeUri(host string) {
 
 func (c Challenges) Find(id string) (Challenge, error) {
 	for _, v := range c {
-		if v.Id == id {
+		if v.Name == id {
 			return v, nil
 		}
 	}
@@ -354,7 +352,7 @@ func resolveDeps(a []string) []Challenge {
 	toReturn := []Challenge{}
 	for _, b := range a {
 		for _, c := range challs {
-			if c.Id == b {
+			if c.Name == b {
 				toReturn = append(toReturn, c)
 			}
 		}
@@ -382,7 +380,7 @@ func countDeps(chall Challenge) int {
 func countAllDeps() {
 	for i, _ := range challs {
 		challs[i].DepCount = countDeps(challs[i])
-		fmt.Printf("id: %d, depcount: %d\n", challs[i].Id, challs[i].DepCount)
+		fmt.Printf("id: %d, depcount: %d\n", challs[i].Name, challs[i].DepCount)
 	}
 }
 
@@ -393,8 +391,8 @@ func resolveChalls(challcat []ChallengeJson) {
 		//          fmt.Printf("challs: %v, challcat: %v\n",challs,challcat)
 		this := challcat[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
-			idsInChalls = append(idsInChalls, this.Id)
-			challs = append(challs, Challenge{Title: this.Title, Id: this.Id, Description: this.Description, Flag: this.Flag, Uri: this.Uri, Points: this.Points, Deps: resolveDeps(this.Deps), DepIds: this.Deps})
+			idsInChalls = append(idsInChalls, this.Name)
+			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, Uri: this.Uri, Points: this.Points, Deps: resolveDeps(this.Deps), DepIds: this.Deps})
 			challcat[i] = challcat[len(challcat)-1]
 			challcat = challcat[:len(challcat)-1]
 			i = 0
