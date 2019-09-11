@@ -169,15 +169,15 @@ func ormUserExists(user User) (bool, error) {
 }
 
 // get Challenges{} solved by user (db-state)
-func ormChallengesSolved(user User) ([]*Challenge, error) {
-	challenges := make([]*Challenge, 0)
+func ormChallengesSolved(user User) ([]Challenge, error) {
+	challenges := make([]Challenge, 0)
 
 	engine.Where("UserName = ?", user.Name).Iterate(_ORMChallengesByUser{}, func(i int, bean interface{}) error {
 		relation := bean.(*_ORMChallengesByUser)
 
 		for i, _ := range challs {
 			if challs[i].Name == relation.ChallengeName {
-				challenges = append(challenges, &challs[i])
+				challenges = append(challenges, challs[i])
 			}
 		}
 
@@ -230,6 +230,7 @@ func ormLoadUser(name string) (User, error) {
 	var exists   bool
 	var err      error
 	var user     _ORMUser
+	var u        User
 
 	if exists, err = ormUserExists(User{Name: name}); err != nil {
 		return User{}, err
@@ -243,7 +244,17 @@ func ormLoadUser(name string) (User, error) {
 		return User{}, err
 	}
 
-	return User{Name: user.Name, Hash: user.Hash}, nil
+	u = User{
+		Name: user.Name,
+		Hash: user.Hash,
+	}
+
+	if u.Completed, err = ormChallengesSolved(u); err != nil {
+		return u, err
+	}
+
+
+	return u, nil
 }
 
 ////////////////////////////////////////////////////////////////////////////////
