@@ -230,6 +230,7 @@ func ormLoadUser(name string) (User, error) {
 	var exists   bool
 	var err      error
 	var user     _ORMUser
+	var u        User
 
 	if exists, err = ormUserExists(User{Name: name}); err != nil {
 		return User{}, err
@@ -243,7 +244,17 @@ func ormLoadUser(name string) (User, error) {
 		return User{}, err
 	}
 
-	return User{Name: user.Name, Hash: user.Hash}, nil
+	u = User{
+		Name: user.Name,
+		Hash: user.Hash,
+	}
+
+	if u.Completed, err = ormChallengesSolved(u); err != nil {
+		return u, err
+	}
+
+
+	return u, nil
 }
 
 ////////////////////////////////////////////////////////////////////////////////
