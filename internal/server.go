@@ -120,7 +120,7 @@ func (u *Users) Contains(username string) bool {
 
 func (u User) HasSolvedChallenge(chall Challenge) bool {
     for _, c := range u.Completed {
-      if c.Id == chall.Id {
+      if c.Name == chall.Name {
         return true
       }
     }
@@ -380,7 +380,6 @@ func countDeps(chall Challenge) int {
 func countAllDeps() {
 	for i, _ := range challs {
 		challs[i].DepCount = countDeps(challs[i])
-		fmt.Printf("id: %d, depcount: %d\n", challs[i].Name, challs[i].DepCount)
 	}
 }
 
