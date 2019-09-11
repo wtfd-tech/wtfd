@@ -124,8 +124,7 @@ func ormUpdateUser(user User) error {
 func ormDeleteUser(user User) error {
 	var u _ORMUser
 
-	exists, err := ormUserExists(user)
-	if err != nil {
+	if exists, err = ormUserExists(user); err != nil {
 		return err
 	}
 
@@ -133,13 +132,11 @@ func ormDeleteUser(user User) error {
 		return ErrUserNotExisting
 	}
 
-	_, err = engine.Where("Name = ?", user.Name).Get(&u)
-	if err != nil {
+	if _, err = engine.Where("Name = ?", user.Name).Get(&u); err != nil {
 		return err
 	}
 
-	_, err = engine.Where("Name = ?", user.Name).Delete(&u)
-	if err != nil {
+	if _, err = engine.Where("Name = ?", user.Name).Delete(&u); err != nil {
 		return err
 	}
 
@@ -151,8 +148,7 @@ func ormUserExists(user User) (bool, error) {
 	var count int64
 	var err error
 
-	count, err = engine.Count(_ORMUser{Name: user.Name,})
-	if err != nil {
+	if count, err = engine.Count(_ORMUser{Name: user.Name,}); err != nil {
 		return false, err
 	}
 
