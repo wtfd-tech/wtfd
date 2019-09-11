@@ -1,22 +1,21 @@
 var eventlistenerfunc = function () {
 }
 
-function addChallEventListener(id) {
-    elem = document.getElementById(id);
+function addChallEventListener(title) {
+    elem = document.getElementById(title);
     elem.addEventListener("click", function () {
         detView = document.getElementById("detailview");
-        detContent = document.getElementById("detailcontent")
+        detDescription = document.getElementById("detaildescription");
+        detTitle = document.getElementById("detailtitle");
+        detPoints = document.getElementById("detailpoints");
         flagsubmitbutton = document.getElementById("flagsubmitbutton");
         flagInput = document.getElementById("flaginput");
-        fetch("/detailview/" + id).then(resp => resp.text()).then(function (response) {
-            detContent.innerHTML = response;
-        });
         var stateObj = {foo: "bar"};
-        history.pushState(stateObj, "challenge " + id, id);
+        history.pushState(stateObj, "challenge " + title, title);
         eventlistenerfunc = function () {
             const data = new URLSearchParams();
             data.append("flag", flagInput.text());
-            data.append("challenge", id);
+            data.append("challenge", title);
             fetch("/submitflag", {method: 'post', body: data})
                 .then(resp => resp.text())
                 .then((resp) => {
@@ -28,9 +27,33 @@ function addChallEventListener(id) {
                 });
 
         }
-        detView.showModal();
+
+        detDescription.innerHTML = "<i>Loading, please wait...</i>";
+        detTitle.innerHTML = "LOADING";
+        detPoints.innerHTML = "-";
+        fetch("/detailview/" + title).then(resp => resp.text()).then(function (response) {
+            detDescription.innerHTML = response;
+            detTitle.innerHTML = title;
+            detPoints.innerHTML = "0";
+        });
+        showDialog(detView);
     });
 
+}
+
+function showDialog(dlg) {
+    dlg.showModal();
+    registerBackdropClickHandler(dlg);
+}
+
+function registerBackdropClickHandler(dlg) {
+    Array.prototype.slice.call(document.getElementsByClassName("backdrop")).forEach(function (elem) {
+        elem.addEventListener("click", function () {
+            var stateObj = {foo: "baar"};
+            history.pushState(stateObj, "index", "/");
+            dlg.close();
+        });
+    });
 }
 
 function absolute(a) {
@@ -155,7 +178,7 @@ function connectElements(svg, startElem, endElem, color, drawFunction) {
         dialogPolyfill.registerDialog(loginDialog);
 
         loginButton.addEventListener("click", function () {
-            loginDialog.showModal();
+            showDialog(loginDialog);
         });
         loginDialogCancelButton.addEventListener("click", function () {
             loginDialog.close();
@@ -170,7 +193,7 @@ function connectElements(svg, startElem, endElem, color, drawFunction) {
 
         registerButton.addEventListener("click", function () {
             loginDialog.close();
-            registerDialog.showModal();
+            showDialog(registerDialog);
         });
         registerDialogCancelButton.addEventListener("click", function () {
             registerDialog.close();

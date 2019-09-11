@@ -68,6 +68,7 @@ func ormStart(logFile string) {
 
 	ormSync()
 	ormCreateTestDB()
+	// NOTE: Only use with separate db
 	ormTestFunctions()
 }
 
@@ -317,40 +318,26 @@ func ormSolvedChallenge(user User, chall Challenge) (error) {
 	return err
 }
 
-// load a single user from db (search by u.Name)
+// load a single user from db (search by name)
 // The remaining fields of u will be filled by this function
-func ormLoadUser(u *User) error {
+func ormLoadUser(name string) (User, error) {
 	var exists   bool
 	var err      error
 	var user     _ORMUser
 
 	if exists, err = ormUserExists(*u); err != nil {
-		return err
+		return nil, err
 	}
 
 	if !exists {
-		return ErrUserNotExisting
+		return nil, ErrUserNotExisting
 	}
 
 	if _, err = engine.Where("Name = ?", u.Name).Get(&user); err != nil {
-		return err
+		return nil, err
 	}
 
-	u.Mail = user.Mail
-	u.Hash = user.Hash
-
-	// TODO: Load challenges?
-
-	return nil
+	return User{Name: user.Name, Hash: user.Hash}, nil
 }
 
-// Fills u with all users in db
-// Note: Untested, but should work TM
-func ormLoadAllUsers(u *Users) error {
-	for i, _ := range *u {
-		ormLoadUser(&(*u)[i])
-	}
-
-	return nil
-}
 ////////////////////////////////////////////////////////////////////////////////

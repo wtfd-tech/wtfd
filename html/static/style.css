@@ -120,7 +120,7 @@ img {
     float: left;
 }
 
-#svgContainer { 
+#svgContainer {
 	z-index: -1;
 	position:absolute;
     left: 0px;
@@ -162,4 +162,39 @@ img {
     grid-column-start: 5;
     grid-column-end: 5;
     display: grid;
+}
+
+dialog {
+    border: none;
+    box-shadow: 2.5px 2.5px 10px -2.5px;
+}
+
+dialog + .backdrop {
+    background: rgba(0, 0, 0, .5);
+}
+
+.pointicon {
+    content: url("logo_outline.svg");
+    width: 1em;
+    height: 1em;
+}
+
+#flaginput {
+}
+
+h1 {
+    text-align: center;
+    margin: 0px;
+}
+
+h3 {
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: normal;
+}
+
+#detailpoints {
+    margin-left: .25em;
 }
