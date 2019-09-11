@@ -29,8 +29,9 @@
       </div>
     </header>
     <main class="flexcell gridcontainer">
+      {{ $user := .User }}
       {{ range.Challenges }}
-      <div id="{{.Id}}" class="challenge col-{{.DepCount}}">
+      <div id="{{.Id}}" class="{{if $user.HasSolvedChallenge . }}completed {{end}}challenge col-{{.DepCount}}">
         <p class="chall-title">{{.Title}}</p>
         <p class="score">{{.Points}}p</p>
       </div>

@@ -80,16 +80,16 @@ type ChallengeJson struct {
 type User struct {
 	Name      string
 	Hash      []byte
-	Completed []*Challenge
+	Completed []Challenge
 }
 
 type MainPageData struct {
-	PageTitle  string
-	Challenges []Challenge
-        SelectedChallengeId string
-        HasSelectedChallengeId bool
-	User       User
-	IsUser     bool
+	PageTitle              string
+	Challenges             []Challenge
+	SelectedChallengeId    string
+	HasSelectedChallengeId bool
+	User                   User
+	IsUser                 bool
 }
 
 /**
@@ -118,6 +118,15 @@ func (c Challenges) Find(id string) (Challenge, error) {
 func (u *Users) Contains(username string) bool {
 	_, err := u.Get(username)
 	return err == nil
+}
+
+func (u User) HasSolvedChallenge(chall Challenge) bool {
+    for _, c := range u.Completed {
+      if c.Id == chall.Id {
+        return true
+      }
+    }
+	return false
 }
 
 func (u *Users) Get(username string) (User, error) {
@@ -162,8 +171,8 @@ func NewUser(name, password string) (User, error) {
 }
 
 func mainpage(w http.ResponseWriter, r *http.Request) {
-        vars := mux.Vars(r)
-        hasChall := vars["chall"] != ""
+	vars := mux.Vars(r)
+	hasChall := vars["chall"] != ""
 	session, _ := store.Get(r, "auth")
 	val := session.Values["User"]
 	user := &User{}
@@ -176,14 +185,18 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 	}
 	data := MainPageData{
-		PageTitle:  "foss-ag O-Phasen CTF",
-		Challenges: challs,
-                HasSelectedChallengeId: hasChall,
-                SelectedChallengeId: vars["chall"],
-		User:       *user,
-		IsUser:     ok,
+		PageTitle:              "foss-ag O-Phasen CTF",
+		Challenges:             challs,
+		HasSelectedChallengeId: hasChall,
+		SelectedChallengeId:    vars["chall"],
+		User:                   *user,
+		IsUser:                 ok,
 	}
-	t.Execute(w, data)
+	err = t.Execute(w, data)
+        if err != nil {
+          fmt.Printf("Template error: %v\n", err)
+
+        }
 
 }
 
@@ -214,6 +227,43 @@ func login(w http.ResponseWriter, r *http.Request) {
 			}
 
 		}
+
+	}
+
+}
+
+func submitFlag(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprintf(w, "Invalid Request")
+
+	} else {
+		if err := r.ParseForm(); err != nil {
+			fmt.Fprintf(w, "ParseForm() err: %v", err)
+			return
+		}
+		session, _ := store.Get(r, "auth")
+
+		user, ok := session.Values["User"].(*User)
+		if !ok {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "Server Error: %v", "Not logged in")
+			return
+		}
+		completedChallenge, err := challs.Find(r.Form.Get("challenge"))
+		if err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			fmt.Fprintf(w, "Server Error: %v", err)
+			return
+		}
+		if r.Form.Get("flag") == completedChallenge.Flag {
+			user.Completed = append(user.Completed, completedChallenge)
+			fmt.Fprintf(w, "correct")
+
+		} else {
+			fmt.Fprintf(w, "not correct")
+		}
+		session.Save(r, w)
 
 	}
 
@@ -270,7 +320,7 @@ func logout(w http.ResponseWriter, r *http.Request) {
 func detailview(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	chall, err := challs.Find(vars["chall"])
-        if err != nil {
+	if err != nil {
 		fmt.Fprintf(w, "ServerError: Challenge with is %s not found")
 		w.WriteHeader(http.StatusBadRequest)
 		return
@@ -314,15 +364,15 @@ func resolveDeps(a []string) []Challenge {
 }
 func countDeps(chall Challenge) int {
 	max := 1
-        if len(chall.Deps) == 0 {
-          return 0
+	if len(chall.Deps) == 0 {
+		return 0
 
-        }
+	}
 	for _, a := range chall.Deps {
 		depcount := countDeps(a)
-              if depcount+1 > max{
-                max = depcount+1
-              }
+		if depcount+1 > max {
+			max = depcount + 1
+		}
 	}
 	//return len(chall.DepIds) + max
 	return max
@@ -377,12 +427,13 @@ func Server() error {
 
 	// Http sturf
 	r := mux.NewRouter()
-	r.HandleFunc("/{chall}", mainpage)
 	r.HandleFunc("/", mainpage)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)
 	r.HandleFunc("/register", register)
-        r.HandleFunc("/detailview/{chall}", detailview)
+	r.HandleFunc("/submitflag", submitFlag)
+	r.HandleFunc("/{chall}", mainpage)
+	r.HandleFunc("/detailview/{chall}", detailview)
 	// static
 	r.PathPrefix("/static").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir("html/static"))))
