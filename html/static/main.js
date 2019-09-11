@@ -1,3 +1,17 @@
+function addChallEventListener(id){
+  elem = document.getElementById(id);
+  elem.addEventListener("click", function(){
+    detView = document.getElementById("detailview");
+    detContent = document.getElementById("detailcontent")
+    fetch("/detailview/"+id).then(resp => resp.text()).then(function(response){
+      detContent.innerHTML = response;
+    });
+    var stateObj = { foo: "bar" };
+    history.pushState(stateObj, "challenge "+id, id);
+    detView.showModal();
+  });
+
+}
 function absolute(a){
   return Math.abs(a);
 }
@@ -131,8 +145,19 @@ function connectElements(svg, startElem, endElem, color) {
     svg1.innerHTML= "";
     connectAll();
   });
+
+  var detailview = document.getElementById("detailview");
+  dialogPolyfill.registerDialog(detailview);
+  var detailclosebutton = document.getElementById("detailclosebutton")
+  detailclosebutton.addEventListener("click", function(){
+    detailview.close();
+    var stateObj = { foo: "baar" };
+    history.pushState(stateObj, "index", "/");
+
+  });
+
   svg1.setAttribute("width","0");
   svg1.setAttribute("height","0");
     svg1.innerHTML= "";
-  connectAll();
+  start();
 })();

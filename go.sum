@@ -1,3 +1,5 @@
+github.com/gomarkdown/markdown v0.0.0-20190817180551-b0273bd33515 h1:mnBtqpjWzHChO5YFhgYKo78WvoecAZD4SatIJKOTuWE=
+github.com/gomarkdown/markdown v0.0.0-20190817180551-b0273bd33515/go.mod h1:JDGcbDT52eL4fju3sZ4TeHGsQwhG9nbDV21aMyhwPoA=
 github.com/gorilla/mux v1.7.3 h1:gnP5JzjVOuiZD07fKKToCAOjS0yOpj/qPETTXCCS6hw=
 github.com/gorilla/mux v1.7.3/go.mod h1:1lud6UwP+6orDFRuTfBEV8e9/aOM/c4fVVCaMa2zaAs=
 github.com/gorilla/securecookie v1.1.1 h1:miw7JPhV+b/lAHSXz4qd/nN9jRiAFV5FwjeKyCS8BvQ=

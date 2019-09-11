@@ -11,6 +11,7 @@ import (
 	"os"
 	"strconv"
 
+	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
@@ -85,6 +86,8 @@ type User struct {
 type MainPageData struct {
 	PageTitle  string
 	Challenges []Challenge
+        SelectedChallengeId string
+        HasSelectedChallengeId bool
 	User       User
 	IsUser     bool
 }
@@ -101,6 +104,15 @@ func (c Challenges) FillChallengeUri(host string) {
 			c[i].HasUri = false
 		}
 	}
+}
+
+func (c Challenges) Find(id string) (Challenge, error) {
+	for _, v := range c {
+		if v.Id == id {
+			return v, nil
+		}
+	}
+	return Challenge{}, fmt.Errorf("No challenge with this id")
 }
 
 func (u *Users) Contains(username string) bool {
@@ -150,6 +162,8 @@ func NewUser(name, password string) (User, error) {
 }
 
 func mainpage(w http.ResponseWriter, r *http.Request) {
+        vars := mux.Vars(r)
+        hasChall := vars["chall"] != ""
 	session, _ := store.Get(r, "auth")
 	val := session.Values["User"]
 	user := &User{}
@@ -164,6 +178,8 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	data := MainPageData{
 		PageTitle:  "foss-ag O-Phasen CTF",
 		Challenges: challs,
+                HasSelectedChallengeId: hasChall,
+                SelectedChallengeId: vars["chall"],
 		User:       *user,
 		IsUser:     ok,
 	}
@@ -251,6 +267,19 @@ func logout(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func detailview(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	chall, err := challs.Find(vars["chall"])
+        if err != nil {
+		fmt.Fprintf(w, "ServerError: Challenge with is %s not found")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	md := markdown.ToHTML([]byte(chall.Description), nil, nil)
+	fmt.Fprintf(w, "%s", md)
+
+}
+
 func bContainsA(a string, b []string) bool {
 	for _, c := range b {
 		if a == c {
@@ -283,7 +312,7 @@ func resolveDeps(a []string) []Challenge {
 	return toReturn
 
 }
-func countDeps(chall Challenge) int{
+func countDeps(chall Challenge) int {
 	max := 0
 	for _, a := range chall.Deps {
 		depcount := countDeps(a)
@@ -291,16 +320,16 @@ func countDeps(chall Challenge) int{
 			max = depcount
 		}
 	}
-        fmt.Printf("%s: %#v\n\n", chall.Id,  max+len(chall.DepIds))
-        return len(chall.DepIds) + max
+	fmt.Printf("%s: %#v\n\n", chall.Id, max+len(chall.DepIds))
+	return len(chall.DepIds) + max
 
 }
 
-func countAllDeps(){
-  for i, _ := range challs {
-    challs[i].DepCount = countDeps(challs[i])
-    fmt.Printf("id: %d, depcount: %d\n",challs[i].Id, challs[i].DepCount)
-  }
+func countAllDeps() {
+	for i, _ := range challs {
+		challs[i].DepCount = countDeps(challs[i])
+		fmt.Printf("id: %d, depcount: %d\n", challs[i].Id, challs[i].DepCount)
+	}
 }
 
 func resolveChalls(challcat []ChallengeJson) {
@@ -341,14 +370,15 @@ func Server() error {
 
 	// Fill in sshHost
 	challs.FillChallengeUri(sshHost)
-        fmt.Printf("filltest: %#+v", resolveDeps([]string{"d"}))
 
 	// Http sturf
 	r := mux.NewRouter()
+	r.HandleFunc("/{chall}", mainpage)
 	r.HandleFunc("/", mainpage)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)
 	r.HandleFunc("/register", register)
+        r.HandleFunc("/detailview/{chall}", detailview)
 	// static
 	r.PathPrefix("/static").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir("html/static"))))
