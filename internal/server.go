@@ -326,6 +326,9 @@ func resolveChalls(challcat []ChallengeJson) {
 func Server() error {
 	gob.Register(&User{})
 
+	// Load database
+	ormStart("./dblog")
+
 	// Loading challs file
 	challsFile, err := os.Open("challs.json")
 	if err != nil {
