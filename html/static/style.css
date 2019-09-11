@@ -101,6 +101,9 @@ footer {
 
 .score {
     margin: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .flexcell {
@@ -182,6 +185,7 @@ dialog + .backdrop {
     content: url("logo_outline.svg");
     width: 1em;
     height: 1em;
+    margin-right: .25em;
 }
 
 #flaginput {
@@ -200,6 +204,18 @@ h3 {
     font-weight: normal;
 }
 
+#detailview {
+    width: 512px;
+}
+
 #detailpoints {
-    margin-left: .25em;
+}
+
+#detailclosebutton {
+    float: right;
+    font-size: 16pt;
+}
+
+#detailform {
+    display: flex;
 }
