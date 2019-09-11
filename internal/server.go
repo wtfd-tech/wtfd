@@ -28,13 +28,11 @@ var (
 	ErrUserExisting    = errors.New("User with this name exists")
 	ErrWrongPassword   = errors.New("Wrong Password")
 	ErrUserNotExisting = errors.New("User with this name does not exist")
-	users              = Users{}
 	sshHost            = "localhost:2222"
 	challs             = Challenges{}
 	challcats          = ChallengeCategory{}
 )
 
-type Users []User
 type Challenges []Challenge
 type ChallengeCategories []ChallengeCategory
 
@@ -114,8 +112,8 @@ func (c Challenges) Find(id string) (Challenge, error) {
 	return Challenge{}, fmt.Errorf("No challenge with this id")
 }
 
-func (u *Users) Contains(username string) bool {
-	_, err := u.Get(username)
+func Contains(username string) bool {
+	_, err := ormLoadUser(username)
 	return err == nil
 }
 
@@ -128,18 +126,17 @@ func (u User) HasSolvedChallenge(chall Challenge) bool {
 	return false
 }
 
-func (u *Users) Get(username string) (User, error) {
-	for _, user := range *u {
-		if user.Name == username {
-			return user, nil
-		}
-	}
+func Get(username string) (User, error) {
+  user, err := ormLoadUser(username)
+  if err != nil {
 	return User{}, ErrUserNotExisting
+  }
+  return user, err
 
 }
 
-func (u *Users) Login(username, passwd string) (User, error) {
-	user, err := u.Get(username)
+func Login(username, passwd string) (User, error) {
+	user, err := Get(username)
 	if err != nil {
 		return User{}, err
 	}
@@ -156,7 +153,7 @@ func (u *User) ComparePassword(password string) bool {
 }
 
 func NewUser(name, password string) (User, error) {
-	if users.Contains(name) {
+	if Contains(name) {
 		return User{}, ErrUserExisting
 	}
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 14)
@@ -214,7 +211,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, "Already logged in")
 		} else {
-			u, err := users.Login(r.Form.Get("username"), r.Form.Get("password"))
+			u, err := Login(r.Form.Get("username"), r.Form.Get("password"))
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				fmt.Fprintf(w, "Server Error: %v", err)
@@ -295,7 +292,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "Server Error: %v", err)
 				} else {
 					session.Values["User"] = u
-					users = append(users, u)
+                                        ormNewUser(u)
 					session.Save(r, w)
 					http.Redirect(w, r, "/", http.StatusFound)
 
