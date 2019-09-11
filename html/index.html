@@ -2,8 +2,8 @@
 <html>
   <head>
     <title>FOSS-AG CTF</title>
+    <link rel="stylesheet" type="text/css" href="static/dialog-polyfill.css" />
     <link rel="stylesheet" type="text/css" href="static/style.css" />
-<link rel="stylesheet" type="text/css" href="static/dialog-polyfill.css" />
     <link
       rel="stylesheet"
       type="text/css"
@@ -30,8 +30,8 @@
     </header>
     <main class="flexcell gridcontainer">
       {{ range.Challenges }}
-      <div id="{{.Id}}" class="challenge col-{{.DepCount}}">
-        <p class="chall-title">{{.Title}}</p>
+      <div id="{{.Name}}" class="challenge col-{{.DepCount}}">
+        <p class="chall-title">{{.Name}}</p>
         <p class="score">{{.Points}}p</p>
       </div>
       {{ end }}
@@ -39,7 +39,7 @@
       <script>
         function start(){
           {{ range.Challenges }}
-          addChallEventListener("{{.Id}}");
+          addChallEventListener("{{.Name}}");
           {{end}}
           connectAll();
   {{if .HasSelectedChallengeId }} document.getElementById("{{.SelectedChallengeId}}").click();{{else}}{{end}}
@@ -57,7 +57,7 @@
           {{ range.Challenges}}
           {{if .DepIds}}
           var color = colors[i % (colors.length-1)];
-            connectElementss(svg1 , {{.DepIds}}, "{{.Id}}",color);
+            connectElementss(svg1 , {{.DepIds}}, "{{.Name}}",color);
           i++;
             {{end}}
             {{end}}
