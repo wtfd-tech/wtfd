@@ -272,8 +272,12 @@ func ormLoadUser(u *User) error {
 }
 
 // Fills u with all users in db
+// Note: Untested, but should work TM
 func ormLoadAllUsers(u *Users) error {
-	// TODO
+	for i, _ := range *u {
+		ormLoadUser(&(*u)[i])
+	}
+
 	return nil
 }
 ////////////////////////////////////////////////////////////////////////////////
