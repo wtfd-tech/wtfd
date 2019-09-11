@@ -96,8 +96,22 @@ func _ORMGenericError(desc string) error {
 
 // Create new User DB record from a User struct
 func ormNewUser(user User) error {
-	//TODO
-	return nil
+	exists, err := ormUserExists(user)
+	if err != nil {
+		return err
+	}
+
+	if exists {
+		return ErrUserExisting
+	}
+
+	_, err = engine.Insert(_ORMUser {
+		Name: user.Name,
+		Hash: user.Hash,
+		Mail: user.Mail,
+	})
+
+	return err
 }
 
 // Update existing user record (user.Name) with other values from user
