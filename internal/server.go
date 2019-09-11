@@ -320,8 +320,8 @@ func countDeps(chall Challenge) int {
 			max = depcount
 		}
 	}
-	fmt.Printf("%s: %#v\n\n", chall.Id, max+len(chall.DepIds))
-	return len(chall.DepIds) + max
+	//return len(chall.DepIds) + max
+	return 1 + max
 
 }
 
