@@ -247,7 +247,27 @@ func ormSolvedChallenge(user User, chall Challenge) (error) {
 // load a single user from db (search by u.Name)
 // The remaining fields of u will be filled by this function
 func ormLoadUser(u *User) error {
-	// TODO
+	var exists   bool
+	var err      error
+	var user     _ORMUser
+
+	if exists, err = ormUserExists(*u); err != nil {
+		return err
+	}
+
+	if !exists {
+		return ErrUserNotExisting
+	}
+
+	if _, err = engine.Where("Name = ?", u.Name).Get(&user); err != nil {
+		return err
+	}
+
+	u.Mail = user.Mail
+	u.Hash = user.Hash
+
+	// TODO: Load challenges?
+
 	return nil
 }
 
