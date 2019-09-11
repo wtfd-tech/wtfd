@@ -119,11 +119,11 @@ func (u *Users) Contains(username string) bool {
 }
 
 func (u User) HasSolvedChallenge(chall Challenge) bool {
-    for _, c := range u.Completed {
-      if c.Name == chall.Name {
-        return true
-      }
-    }
+	for _, c := range u.Completed {
+		if c.Name == chall.Name {
+			return true
+		}
+	}
 	return false
 }
 
@@ -191,10 +191,10 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		IsUser:                 ok,
 	}
 	err = t.Execute(w, data)
-        if err != nil {
-          fmt.Printf("Template error: %v\n", err)
+	if err != nil {
+		fmt.Printf("Template error: %v\n", err)
 
-        }
+	}
 
 }
 
