@@ -5,11 +5,11 @@
 }*/
 
 body {
-    margin: 64px 0px 0px 0px;
+    margin: 0px 0px 0px 0px;
     background-color: #e5e5e5;
     color: #4d4d4d;
     display: flex;
-    min-height: calc(100vh - 64px);
+    min-height: 100vh;
     flex-direction: column;
 }
 
@@ -25,9 +25,12 @@ header {
     color: #b3b3b3;
     font-size: 12pt;
     box-shadow: 0px 0px 10px 0px black;
+    z-index: 6;
 }
 
 main {
+    margin-top: 64px;
+    margin-bottom: 64px;
     z-index: 5;
     text-align: center;
     width: 100%;
@@ -37,20 +40,36 @@ main {
 }
 
 footer {
+    position: fixed;
+    bottom: 0px;
+    width: 100vw;
     display: flex;
     background-color: #b3b3b3;
 }
 
+#footer-left {
+    padding-left: 16px;
+}
+
+#footer-center {
+    text-align: center;
+}
+
+#footer-right {
+    text-align: right;
+    padding-right: 16px;
+}
+
 .challenge {
     width: 256px;
-    z-index: 1;
+    /*z-index: 1;*/
     height: 64px;
     background-color: white;
     box-shadow: 2.5px 2.5px 5px -2.5px black;
-    margin: 16px;
+    /*margin: 16px;*/
     float: left;
     display: flex;
-    flex-direction: column;
+    /*flex-direction: column;*/
 }
 
 #logo {
@@ -104,12 +123,19 @@ img {
 #svgContainer { 
 	z-index: -1;
 	position:absolute;
-        width: 100%;
-        height: 100%;
+    left: 0px;
+    top: 64px;
 }
 .gridcontainer {
     display: grid;
-    
+    width: auto;
+    height: auto;
+    grid-auto-columns: 256px;
+    grid-auto-rows: 64px;
+    grid-column-gap: 160px;
+    grid-row-gap: 64px;
+    margin-left: 32px;
+    margin-top: 96px;
 }
 
 .col-0 {
