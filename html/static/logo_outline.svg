@@ -8,11 +8,11 @@
    xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   height="512"
+   height="515"
    id="svg2250"
    version="1.1"
-   viewBox="0 0 512 512"
-   width="512"
+   viewBox="0 0 515 515"
+   width="515"
    sodipodi:docname="logo_outline.svg"
    inkscape:export-filename="~/basis.png"
    inkscape:export-xdpi="96"
@@ -447,8 +447,8 @@
      inkscape:bbox-nodes="true"
      inkscape:bbox-paths="true"
      inkscape:current-layer="layer2"
-     inkscape:cx="-193.9627"
-     inkscape:cy="403.2352"
+     inkscape:cx="108.86573"
+     inkscape:cy="303.2352"
      inkscape:document-units="px"
      inkscape:measure-end="0,0"
      inkscape:measure-start="0,0"
@@ -472,7 +472,7 @@
      inkscape:window-width="1894"
      inkscape:window-x="13"
      inkscape:window-y="43"
-     inkscape:zoom="0.70710678" />
+     inkscape:zoom="2" />
   <metadata
      id="metadata2247">
     <rdf:RDF>
@@ -481,7 +481,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
         <cc:license
            rdf:resource="http://creativecommons.org/licenses/by-nc-sa/4.0/" />
       </cc:Work>
@@ -509,12 +509,11 @@
      style="display:inline"
      inkscape:groupmode="layer"
      inkscape:label="logo_basic">
-    <circle
+    <path
+       style="fill:#ffff00;fill-opacity:0;stroke:#000000;stroke-width:5.96525145;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       d="M 257.5,2.9826256 A 254.51738,254.51738 0 0 0 2.9826256,257.5 254.51738,254.51738 0 0 0 257.5,512.01738 254.51738,254.51738 0 0 0 512.01738,257.5 254.51738,254.51738 0 0 0 257.5,2.9826256 Z"
        id="path3800"
-       cx="256"
-       cy="256"
-       r="256"
-       style="fill:#ffff00;fill-opacity:0;stroke-width:6;stroke-miterlimit:4;stroke-dasharray:none;stroke:#000000;stroke-opacity:1" />
+       inkscape:connector-curvature="0" />
     <path
        d="m 110.93017,371.92545 c 13.09251,7.55896 26.18501,15.11793 39.27752,22.67689 l 5.41571,-9.38029 c 6.81427,-11.80205 11.87314,-24.63805 16.75523,-37.61962 4.88295,12.98319 9.93975,25.82103 16.7547,37.62302 l 5.41528,9.37885 c 13.0931,-7.55764 26.18517,-15.11707 39.27729,-22.67639 l -5.41528,-9.37886 c -6.72113,-11.64127 -15.16904,-22.30674 -23.74343,-33.0567 13.59647,2.05063 27.05824,4.03779 40.50026,4.0369 l 10.831,-10e-4 c 0.001,-15.11779 4.5e-4,-30.23557 -1.7e-4,-45.35337 l -10.83002,-2.5e-4 c -13.62844,-7e-5 -27.27595,2.03754 -40.95954,4.2969 8.8018,-10.72249 17.39065,-21.52093 24.20401,-33.32386 l 5.41571,-9.38029 c -13.09251,-7.55896 -26.18501,-15.11792 -39.27751,-22.67688 l -5.41571,9.38028 c -6.81422,11.80257 -11.87223,24.63894 -16.757,37.6234 -4.88384,-12.98093 -9.94458,-25.81584 -16.75912,-37.61853 l -5.41231,-9.384 c -13.0931,7.5577 -26.1852,15.11714 -39.27735,22.67648 l 5.41432,9.38054 c 6.72129,11.64242 15.17217,22.3089 23.74871,33.05963 -13.59882,-2.0521 -27.0592,-4.03633 -40.503114,-4.03606 l -10.830942,0.001 c -0.0012,15.11781 -4.18e-4,30.23561 2.59e-4,45.35342 l 10.829967,3.4e-4 c 13.62797,2.7e-4 27.27382,-2.03734 40.95949,-4.30184 -8.80177,10.71867 -17.38805,21.51717 -20.79515,27.41859 z"
        fill="url(#foss-ag_green)"
