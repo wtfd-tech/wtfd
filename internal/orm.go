@@ -169,15 +169,15 @@ func ormUserExists(user User) (bool, error) {
 }
 
 // get Challenges{} solved by user (db-state)
-func ormChallengesSolved(user User) ([]*Challenge, error) {
-	challenges := make([]*Challenge, 0)
+func ormChallengesSolved(user User) ([]Challenge, error) {
+	challenges := make([]Challenge, 0)
 
 	engine.Where("UserName = ?", user.Name).Iterate(_ORMChallengesByUser{}, func(i int, bean interface{}) error {
 		relation := bean.(*_ORMChallengesByUser)
 
 		for i, _ := range challs {
 			if challs[i].Name == relation.ChallengeName {
-				challenges = append(challenges, &challs[i])
+				challenges = append(challenges, challs[i])
 			}
 		}
 
