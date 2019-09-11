@@ -1,13 +1,31 @@
+var eventlistenerfunc = function(){}
 function addChallEventListener(id){
   elem = document.getElementById(id);
   elem.addEventListener("click", function(){
     detView = document.getElementById("detailview");
     detContent = document.getElementById("detailcontent")
+    flagsubmitbutton = document.getElementById("flagsubmitbutton");
+    flagInput = document.getElementById("flaginput");
     fetch("/detailview/"+id).then(resp => resp.text()).then(function(response){
       detContent.innerHTML = response;
     });
     var stateObj = { foo: "bar" };
     history.pushState(stateObj, "challenge "+id, id);
+    eventlistenerfunc = function(){
+      const data = new URLSearchParams();
+      data.append("flag", flagInput.text());
+      data.append("challenge", id);
+      fetch("/submitflag", { method: 'post', body: data})
+        .then(resp => resp.text())
+        .then((resp) => {
+          if (resp === "correct"){
+            location.reload();
+          } else {
+            alert("Wrong flag");
+          }
+      });
+
+    }
     detView.showModal();
   });
 
@@ -178,5 +196,6 @@ function connectElements(svg, startElem, endElem, color, drawFunction) {
   svg1.setAttribute("width","0");
   svg1.setAttribute("height","0");
     svg1.innerHTML= "";
+flagsubmitbutton.addEventListener("click", eventlistenerfunc);
   start();
 })();
