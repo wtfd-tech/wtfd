@@ -12,21 +12,24 @@ function addChallEventListener(title) {
         flagInput = document.getElementById("flaginput");
         var stateObj = {foo: "bar"};
         history.pushState(stateObj, "challenge " + title, title);
+        flagsubmitbutton.removeEventListener("click", eventlistenerfunc);
         eventlistenerfunc = function () {
             const data = new URLSearchParams();
-            data.append("flag", flagInput.text());
+            data.append("flag", flagInput.value);
             data.append("challenge", title);
+          console.log("hey, the flag is "+flagInput.value);
             fetch("/submitflag", {method: 'post', body: data})
                 .then(resp => resp.text())
                 .then((resp) => {
                     if (resp === "correct") {
-                        location.reload();
+                        location.href = "/";
                     } else {
                         alert("Wrong flag");
                     }
                 });
 
         }
+      flagsubmitbutton.addEventListener("click",eventlistenerfunc);
 
         detDescription.innerHTML = "<i>Loading, please wait...</i>";
         detTitle.innerHTML = "LOADING";

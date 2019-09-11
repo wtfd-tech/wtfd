@@ -4,6 +4,11 @@
     border-style: solid;
 }*/
 
+.completed {
+
+  background-color: greenyellow !important;
+}
+
 body {
     margin: 0px 0px 0px 0px;
     background-color: #e5e5e5;
