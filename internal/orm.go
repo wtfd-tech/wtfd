@@ -25,7 +25,6 @@ var (
 type _ORMUser struct {
 	Name      string `xorm:"unique"`
 	Hash      []byte
-	Mail	  string
 }
 
 type _ORMChallengesByUser struct {
@@ -67,97 +66,6 @@ func ormStart(logFile string) {
 	engine.SetMapper(core.SameMapper{})
 
 	ormSync()
-	ormCreateTestDB()
-	// NOTE: Only use with separate db
-	ormTestFunctions()
-}
-
-func ormCreateTestDB() {
-	u := &_ORMUser {
-		Name: "TestUser",
-		Hash: []byte("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"),
-		Mail: "test@example.com",
-	}
-
-	cu := &_ORMChallengesByUser {
-		UserName: u.Name,
-		ChallengeName: "chall-d",
-	}
-
-	engine.Insert(u)
-	engine.Insert(cu)
-}
-
-func ormTestFunctions() {
-	var err error
-
-	fmt.Println("----START TEST----")
-	// Try to add user twice
-	err = ormNewUser(User{Name: "TestUser",})
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	user := User{
-		Name: "TestUser2",
-		Mail: "test@mailer.ru",
-		Hash: []byte("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB"),
-	}
-
-	// Add new user
-	err = ormNewUser(user)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	// Delete first user
-	err = ormDeleteUser(User{Name: "TestUser",})
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	// Edit second user
-	user.Mail = "newMail@legit.ch"
-	err = ormUpdateUser(user)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	// second user solved a challenge
-	err = ormSolvedChallenge(user, Challenge{Name: "chall-h",})
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	// second user solved another challenge
-	err = ormSolvedChallenge(user, Challenge{Name: "chall-n",})
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	// second user solved another challenge
-	err = ormSolvedChallenge(user, Challenge{Name: "chall-e",})
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	var challenges []*Challenge
-	challenges, err = ormChallengesSolved(user)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-
-	for _, c := range challenges {
-		fmt.Printf("Challenge: %s\n", c.Name)
-	}
-
-	loadUser := User{Name: "TestUser2"}
-	err = ormLoadUser(&loadUser)
-	if err != nil {
-		fmt.Println(err.Error())
-	}
-	fmt.Printf("Name: %s, Mail: %s, Hash: %s\n", user.Name, user.Mail, user.Hash)
-	fmt.Println("----END TEST----")
 }
 
 func _ORMGenericError(desc string) error {
@@ -182,7 +90,6 @@ func ormNewUser(user User) error {
 	_, err = engine.Insert(_ORMUser {
 		Name: user.Name,
 		Hash: user.Hash,
-		Mail: user.Mail,
 	})
 
 	return err
@@ -206,7 +113,6 @@ func ormUpdateUser(user User) error {
 	u = _ORMUser{
 		Name: user.Name,
 		Hash: user.Hash,
-		Mail: user.Mail,
 	}
 
 	if _, err = engine.Where("Name = ?", user.Name).Update(&u); err != nil {
@@ -325,16 +231,16 @@ func ormLoadUser(name string) (User, error) {
 	var err      error
 	var user     _ORMUser
 
-	if exists, err = ormUserExists(*u); err != nil {
-		return nil, err
+	if exists, err = ormUserExists(User{Name: name}); err != nil {
+		return User{}, err
 	}
 
 	if !exists {
-		return nil, ErrUserNotExisting
+		return User{}, ErrUserNotExisting
 	}
 
-	if _, err = engine.Where("Name = ?", u.Name).Get(&user); err != nil {
-		return nil, err
+	if _, err = engine.Where("Name = ?", name).Get(&user); err != nil {
+		return User{}, err
 	}
 
 	return User{Name: user.Name, Hash: user.Hash}, nil
