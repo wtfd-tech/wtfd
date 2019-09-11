@@ -2,13 +2,11 @@
 <html>
   <head>
     <title>FOSS-AG CTF</title>
+    <link rel="stylesheet" type="text/css" href="static/clearsans/clearsans.css" />
+    <link rel="stylesheet" type="text/css" href="static/fira/fira.css"/>
+    <link rel="stylesheet" type="text/css" href="static/materialdesignicons/css/materialdesignicons.min.css" />
     <link rel="stylesheet" type="text/css" href="static/dialog-polyfill.css" />
     <link rel="stylesheet" type="text/css" href="static/style.css" />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="static/clearsans/clearsans.css"
-    />
   </head>
   <body class="clearsans">
     <header>
@@ -115,9 +113,10 @@
       </form>
     </dialog>
     <dialog id="detailview">
-      <div id="detailcontent">
-      </div>
-      <input type="text" placeholder="FOSS{**********}" id="flaginput"></input>
+      <h1 id="detailtitle"></h1>
+      <h3><span class="pointicon"></span><span id="detailpoints" class="firamono"></span></h3>
+      <div id="detaildescription"></div>
+      <input type="text" placeholder="FOSS{**********}" id="flaginput" class="firamono"></input>
       <button id="flagsubmitbutton">Submit Flag</button>
           <button id="detailclosebutton">Cancel</button>
     </dialog>
