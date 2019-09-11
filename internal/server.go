@@ -79,6 +79,7 @@ type User struct {
 	Name      string
 	Hash      []byte
 	Completed []Challenge
+	Mail      string
 }
 
 type MainPageData struct {
@@ -418,6 +419,9 @@ func Server() error {
 		return err
 	}
 	resolveChalls(challsStructure.Challenges)
+
+	// Load database
+	ormStart("./dblog")
 
 	// Fill in sshHost
 	challs.FillChallengeUri(sshHost)

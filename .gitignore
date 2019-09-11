@@ -29,3 +29,7 @@
 /*.ips
 /*.ipm
 # End of https://www.gitignore.io/api/go,intellij
+
+# DB Files
+state.db
+dblog
