@@ -321,7 +321,7 @@ func countDeps(chall Challenge) int {
 		}
 	}
 	//return len(chall.DepIds) + max
-	return 1 + max
+	return max
 
 }
 
