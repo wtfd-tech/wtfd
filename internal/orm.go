@@ -120,9 +120,29 @@ func ormUpdateUser(user User) error {
 	return nil
 }
 
-// remove user from db
+// remove user from db (matches user.Name)
 func ormDeleteUser(user User) error {
-	// TODO
+	var u _ORMUser
+
+	exists, err := ormUserExists(user)
+	if err != nil {
+		return err
+	}
+
+	if !exists {
+		return ErrUserNotExisting
+	}
+
+	_, err = engine.Where("Name = ?", user.Name).Get(&u)
+	if err != nil {
+		return err
+	}
+
+	_, err = engine.Where("Name = ?", user.Name).Delete(&u)
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 
