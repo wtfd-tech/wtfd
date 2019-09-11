@@ -123,6 +123,8 @@ func ormUpdateUser(user User) error {
 // remove user from db (matches user.Name)
 func ormDeleteUser(user User) error {
 	var u _ORMUser
+	var exists bool
+	var err error
 
 	if exists, err = ormUserExists(user); err != nil {
 		return err
