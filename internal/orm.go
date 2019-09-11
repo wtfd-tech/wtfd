@@ -188,10 +188,24 @@ func ormUserExists(user User) (bool, error) {
 	return false, nil
 }
 
-// get Challenges{} solved by user
-func ormChallengesSolved(user User) (Challenges, error) {
-	// TODO
-	return Challenges{}, nil
+// get Challenges{} solved by user (db-state)
+func ormChallengesSolved(user User) ([]*Challenge, error) {
+	challenges := make([]*Challenge, 0)
+
+	engine.Where("UserName = ?", user.Name).Iterate(_ORMChallengesByUser{}, func(i int, bean interface{}) error {
+		relation := bean.(*_ORMChallengesByUser)
+
+		for i, _ := range challs {
+			if challs[i].Id == relation.ChallengeName {
+				challenges = append(challenges, &challs[i])
+			}
+		}
+
+		return nil
+	})
+
+
+	return challenges, nil
 }
 
 // Write solved state (user solved chall) in db
