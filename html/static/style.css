@@ -4,9 +4,13 @@
     border-style: solid;
 }*/
 
+.not-available {
+
+  background-color: grey !important;
+}
 .completed {
 
-  background-color: greenyellow !important;
+  background-color: #14b967 !important;
 }
 
 body {

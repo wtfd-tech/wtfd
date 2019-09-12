@@ -112,6 +112,21 @@ func (c Challenges) Find(id string) (Challenge, error) {
 	return Challenge{}, fmt.Errorf("No challenge with this id")
 }
 
+func (c Challenge) AllDepsCompleted(u User) bool {
+	for _, ch := range c.Deps {
+		a := false
+		for _, uch := range u.Completed {
+			if uch.Name == ch.Name {
+				a = true
+			}
+		}
+		if a == false {
+			return false
+		}
+	}
+	return true
+}
+
 func Contains(username string) bool {
 	_, err := ormLoadUser(username)
 	return err == nil
@@ -126,7 +141,7 @@ func (u User) HasSolvedChallenge(chall Challenge) bool {
 	return false
 }
 
-func (u User) CalculatePoints() (int) {
+func (u User) CalculatePoints() int {
 	points := 0
 
 	for _, c := range u.Completed {
