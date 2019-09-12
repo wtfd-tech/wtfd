@@ -134,13 +134,14 @@ function connectElementss(svg, startElem, endElems, color) {
     endElems.forEach(function (item) {
       console.log("start: "+startElem+" end: "+item);
         selem = document.getElementById(item)
-        connectElements(svg, elem, selem, color, true)
+        connectElements(svg, elem, selem, color)
 
     });
 
 }
 
-function connectElements(svg, startElem, endElem, color, drawFunction) {
+function connectElements(svg, startElem, endElem, color) {
+    var drawFunction = colnum.get(endElem.id) - colnum.get(startElem.id) > 1
     var path = document.createElementNS(svgNS, "path");
     path.setAttributeNS(null, "d", "M0 0");
     path.setAttributeNS(null, "stroke", color);

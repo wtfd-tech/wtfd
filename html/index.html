@@ -37,6 +37,10 @@
       {{ end }}
 
       <script>
+        var colnum = new Map();
+        {{ range.Challenges}}
+        colnum.set("{{.Name}}","{{.DepCount}}");
+        {{end}}
         function start(){
           {{ range.Challenges }}
           {{ if .AllDepsCompleted $user}}
