@@ -46,17 +46,21 @@
         function connectAll(){
           var i = 0
           var colors =
-          ["#8E83CB",
-          "#6457AD",
-          "#4A3C99",
-          "#332486",
-          "#21146A"];
+          ["#262626",
+          "#4d4d4d",
+          "#808080",
+          "#3b3b3b"];
           var svg1 = document.getElementById("svg1");
 
+          var color = new Map();
           {{ range.Challenges}}
           {{if .DepIds}}
-          var color = colors[i % (colors.length-1)];
-            connectElementss(svg1 , {{.DepIds}}, "{{.Name}}",color);
+          {{if $user.HasSolvedChallenge .}}
+          color.set({{.Name}},"#14b967");
+          {{else}}
+          color.set({{.Name}},colors[i % (colors.length-1)]);
+          {{end}}
+          connectElementss(svg1 , {{.Name}}, {{.DepIds}},color.get({{.Name}}));
           i++;
             {{end}}
             {{end}}

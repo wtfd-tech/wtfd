@@ -127,11 +127,11 @@ func (u User) HasSolvedChallenge(chall Challenge) bool {
 }
 
 func Get(username string) (User, error) {
-  user, err := ormLoadUser(username)
-  if err != nil {
-	return User{}, ErrUserNotExisting
-  }
-  return user, err
+	user, err := ormLoadUser(username)
+	if err != nil {
+		return User{}, ErrUserNotExisting
+	}
+	return user, err
 
 }
 
@@ -292,7 +292,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 					fmt.Fprintf(w, "Server Error: %v", err)
 				} else {
 					session.Values["User"] = u
-                                        ormNewUser(u)
+					ormNewUser(u)
 					session.Save(r, w)
 					http.Redirect(w, r, "/", http.StatusFound)
 
@@ -380,6 +380,21 @@ func countAllDeps() {
 		challs[i].DepCount = countDeps(challs[i])
 	}
 }
+func reverseResolveAllDepIds() {
+	for i, _ := range challs {
+		for j, _ := range challs {
+			if i != j {
+				for _, d := range challs[j].Deps {
+					if d.Name == challs[i].Name {
+						fmt.Printf("%s hat %s als revers dep\n", challs[i].Name, challs[j].Name)
+						challs[i].DepIds = append(challs[i].DepIds, challs[j].Name)
+						break
+					}
+				}
+			}
+		}
+	}
+}
 
 func resolveChalls(challcat []ChallengeJson) {
 	i := 0
@@ -389,7 +404,7 @@ func resolveChalls(challcat []ChallengeJson) {
 		this := challcat[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
 			idsInChalls = append(idsInChalls, this.Name)
-			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, Uri: this.Uri, Points: this.Points, Deps: resolveDeps(this.Deps), DepIds: this.Deps})
+			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, Uri: this.Uri, Points: this.Points, Deps: resolveDeps(this.Deps)})
 			challcat[i] = challcat[len(challcat)-1]
 			challcat = challcat[:len(challcat)-1]
 			i = 0
@@ -399,6 +414,7 @@ func resolveChalls(challcat []ChallengeJson) {
 
 	}
 	countAllDeps()
+	reverseResolveAllDepIds()
 }
 
 func Server() error {

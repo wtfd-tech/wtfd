@@ -1,21 +1,21 @@
 package wtfd
 
 import (
-	"os"
-	"fmt"
 	"errors"
-    _ "github.com/mattn/go-sqlite3"
-    "github.com/go-xorm/xorm"
+	"fmt"
+	"github.com/go-xorm/xorm"
+	_ "github.com/mattn/go-sqlite3"
+	"os"
 	"xorm.io/core"
 )
 
 const (
-	_ORMUserName            = "User"			// Table name for db
+	_ORMUserName            = "User"            // Table name for db
 	_ORMChallengeByUserName = "ChallengeByUser" // Table name for db
 )
 
 var (
-	engine *xorm.Engine
+	engine        *xorm.Engine
 	ErrORMGeneric = errors.New("Database error (check log)")
 )
 
@@ -23,8 +23,8 @@ var (
 // ORM definitions /////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 type _ORMUser struct {
-	Name      string `xorm:"unique"`
-	Hash      []byte
+	Name string `xorm:"unique"`
+	Hash []byte
 }
 
 type _ORMChallengesByUser struct {
@@ -44,11 +44,12 @@ func ormSync() {
 	engine.Sync(_ORMUser{})
 	engine.Sync(_ORMChallengesByUser{})
 }
+
 ////////////////////////////////////////////////////////////////////////////////
 
 func ormStart(logFile string) {
-    var err error
-    engine, err = xorm.NewEngine("sqlite3", "./state.db")
+	var err error
+	engine, err = xorm.NewEngine("sqlite3", "./state.db")
 
 	if err != nil {
 		panic(fmt.Sprintf("Could not start xorm engine: %s\n", err.Error()))
@@ -87,7 +88,7 @@ func ormNewUser(user User) error {
 		return ErrUserExisting
 	}
 
-	_, err = engine.Insert(_ORMUser {
+	_, err = engine.Insert(_ORMUser{
 		Name: user.Name,
 		Hash: user.Hash,
 	})
@@ -99,8 +100,8 @@ func ormNewUser(user User) error {
 // Solved challenges WON'T be updated (refer to ormChallengeSolved)
 func ormUpdateUser(user User) error {
 	var exists bool
-	var err    error
-	var u      _ORMUser
+	var err error
+	var u _ORMUser
 
 	if exists, err = ormUserExists(user); err != nil {
 		return err
@@ -152,7 +153,7 @@ func ormUserExists(user User) (bool, error) {
 	var count int64
 	var err error
 
-	if count, err = engine.Count(_ORMUser{Name: user.Name,}); err != nil {
+	if count, err = engine.Count(_ORMUser{Name: user.Name}); err != nil {
 		return false, err
 	}
 
@@ -184,16 +185,15 @@ func ormChallengesSolved(user User) ([]Challenge, error) {
 		return nil
 	})
 
-
 	return challenges, nil
 }
 
 // Write solved state (user solved chall) in db
-func ormSolvedChallenge(user User, chall Challenge) (error) {
-	var exists   bool
-	var err      error
+func ormSolvedChallenge(user User, chall Challenge) error {
+	var exists bool
+	var err error
 	var relation _ORMChallengesByUser
-	var count    int64
+	var count int64
 
 	if exists, err = ormUserExists(user); err != nil {
 		return err
@@ -210,13 +210,13 @@ func ormSolvedChallenge(user User, chall Challenge) (error) {
 
 	if count == 1 {
 		return errors.New("User already solved this challenge")
-	}else if count > 1 {
+	} else if count > 1 {
 		return errors.New("DB-State Error: User solved this challenge multiple times")
 	}
 
 	relation = _ORMChallengesByUser{
 		ChallengeName: chall.Name,
-		UserName: user.Name,
+		UserName:      user.Name,
 	}
 
 	_, err = engine.Insert(relation)
@@ -227,10 +227,10 @@ func ormSolvedChallenge(user User, chall Challenge) (error) {
 // load a single user from db (search by name)
 // The remaining fields of u will be filled by this function
 func ormLoadUser(name string) (User, error) {
-	var exists   bool
-	var err      error
-	var user     _ORMUser
-	var u        User
+	var exists bool
+	var err error
+	var user _ORMUser
+	var u User
 
 	if exists, err = ormUserExists(User{Name: name}); err != nil {
 		return User{}, err
@@ -252,7 +252,6 @@ func ormLoadUser(name string) (User, error) {
 	if u.Completed, err = ormChallengesSolved(u); err != nil {
 		return u, err
 	}
-
 
 	return u, nil
 }

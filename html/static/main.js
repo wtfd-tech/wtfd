@@ -125,11 +125,12 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction) {
     }
 }
 
-function connectElementss(svg, startElems, endElem, color) {
-    elem = document.getElementById(endElem);
-    startElems.forEach(function (item) {
+function connectElementss(svg, startElem, endElems, color) {
+    elem = document.getElementById(startElem);
+    endElems.forEach(function (item) {
+      console.log("start: "+startElem+" end: "+item);
         selem = document.getElementById(item)
-        connectElements(svg, selem, elem, color, true)
+        connectElements(svg, elem, selem, color, true)
 
     });
 
