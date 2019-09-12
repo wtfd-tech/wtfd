@@ -20,7 +20,7 @@
       <div class="flexcell" id="accountinfo">
         {{if .IsUser}}
           <div class="flexcell">{{.User.Name}}</div>
-          <div class="flexcell firamono"><span class="pointicon"></span> {{.User.CalculatePoints}}</div>
+          <div class="score-right flexcell firamono"><span class="pointicon"></span> {{.User.CalculatePoints}}</div>
           <span class="fakelink flexcell" id="logoutbutton">Logout</span>
         {{else}}
         <span class="fakelink" id="loginbutton">Login</span>

@@ -109,6 +109,12 @@ footer {
     align-items: center;
     justify-content: center;
 }
+.score-right {
+    margin: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+}
 
 .flexcell {
     flex: 1;
