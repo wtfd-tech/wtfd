@@ -77,7 +77,6 @@ type User struct {
 	Name      string
 	Hash      []byte
 	Completed []Challenge
-	Mail      string
 }
 
 type MainPageData struct {
@@ -87,6 +86,7 @@ type MainPageData struct {
 	HasSelectedChallengeId bool
 	User                   User
 	IsUser                 bool
+	Points                 int
 }
 
 /**
@@ -124,6 +124,16 @@ func (u User) HasSolvedChallenge(chall Challenge) bool {
 		}
 	}
 	return false
+}
+
+func (u *User) CalculatePoints() (int) {
+	points := 0
+
+	for _, c := range u.Completed {
+		points += c.Points
+	}
+
+	return points
 }
 
 func Get(username string) (User, error) {
