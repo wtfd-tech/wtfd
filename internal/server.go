@@ -254,6 +254,9 @@ func submitFlag(w http.ResponseWriter, r *http.Request) {
 		}
 		if r.Form.Get("flag") == completedChallenge.Flag {
 			user.Completed = append(user.Completed, completedChallenge)
+			if err = ormSolvedChallenge(*user, completedChallenge); err != nil {
+				fmt.Errorf("ORM Error: %s\n", err.Error())
+			}
 			fmt.Fprintf(w, "correct")
 
 		} else {

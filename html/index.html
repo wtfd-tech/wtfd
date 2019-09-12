@@ -31,7 +31,7 @@
       {{ range.Challenges }}
       <div id="{{.Name}}" class="{{if $user.HasSolvedChallenge . }}completed {{end}}challenge col-{{.DepCount}}">
         <p class="chall-title">{{.Name}}</p>
-        <p class="score">{{.Points}}p</p>
+        <p class="score firamono"><span class="pointicon"></span> {{.Points}}</p>
       </div>
       {{ end }}
 
@@ -117,12 +117,14 @@
       </form>
     </dialog>
     <dialog id="detailview">
+      <span class="mdi mdi-close" id="detailclosebutton"></span>
       <h1 id="detailtitle"></h1>
       <h3><span class="pointicon"></span><span id="detailpoints" class="firamono"></span></h3>
       <div id="detaildescription"></div>
-      <input type="text" placeholder="FOSS{**********}" id="flaginput" class="firamono"></input>
-      <button id="flagsubmitbutton">Submit Flag</button>
-          <button id="detailclosebutton">Cancel</button>
+      <div id="detailform">
+        <input type="text" placeholder="FOSS{**********}" id="flaginput" class="firamono flexcell"></input>
+        <input type="submit" id="flagsubmitbutton" value="Submit Flag"></input>
+      </div>
     </dialog>
     <script src="static/dialog-polyfill.js"></script>
     <script src="static/main.js" type="text/javascript"></script>
