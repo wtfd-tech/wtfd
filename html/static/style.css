@@ -50,6 +50,8 @@ footer {
     width: 100vw;
     display: flex;
     background-color: #b3b3b3;
+    align-self: center;
+    align-items: center;
 }
 
 #footer-left {
@@ -124,6 +126,8 @@ footer {
 #footer-logo {
     height: 48px;
     border-radius: 24px;
+    vertical-align: middle;
+    padding: 2px;
 }
 
 img {
