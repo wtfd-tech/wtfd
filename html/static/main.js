@@ -1,7 +1,7 @@
 var eventlistenerfunc = function () {
 }
 
-function addChallEventListener(title) {
+function addChallEventListener(title, points) {
     elem = document.getElementById(title);
     elem.addEventListener("click", function () {
         detView = document.getElementById("detailview");
@@ -41,7 +41,7 @@ function addChallEventListener(title) {
         fetch("/detailview/" + title).then(resp => resp.text()).then(function (response) {
             detDescription.innerHTML = response;
             detTitle.innerHTML = title;
-            detPoints.innerHTML = "0";
+            detPoints.innerHTML = points;
         });
         showDialog(detView);
     });

@@ -91,6 +91,10 @@ footer {
 
 #accountinfo {
     text-align: right;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    margin-right: 8px;
 }
 
 .chall-title {
@@ -218,4 +222,20 @@ h3 {
 
 #detailform {
     display: flex;
+}
+
+.fakelink {
+    font-size: 10pt;
+}
+
+.fakelink:hover {
+    color: rgb(20, 185, 103);
+    text-decoration: underline;
+    align-self: flex-end;
+}
+
+#loginbutton {
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 16pt;
 }

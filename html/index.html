@@ -19,10 +19,11 @@
       </div>
       <div class="flexcell" id="accountinfo">
         {{if .IsUser}}
-        <p>{{.User.Name}}</p>
-        <button id="logoutbutton">Logout</button>
+          <div class="flexcell">{{.User.Name}}</div>
+          <div class="flexcell firamono"><span class="pointicon"></span> {.User.Points}</div>
+          <span class="fakelink flexcell" id="logoutbutton">Logout</span>
         {{else}}
-        <button id="loginbutton">Login</button>
+        <span class="fakelink" id="loginbutton">Login</span>
         {{end}}
       </div>
     </header>
@@ -38,7 +39,7 @@
       <script>
         function start(){
           {{ range.Challenges }}
-          addChallEventListener("{{.Name}}");
+          addChallEventListener("{{.Name}}", "{{.Points}}");
           {{end}}
           connectAll();
   {{if .HasSelectedChallengeId }} document.getElementById("{{.SelectedChallengeId}}").click();{{else}}{{end}}
