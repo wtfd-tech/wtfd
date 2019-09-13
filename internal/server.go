@@ -444,6 +444,9 @@ func resolveChalls(challcat []ChallengeJson) {
 	countAllDeps()
 	reverseResolveAllDepIds()
 }
+func favicon(w http.ResponseWriter, r *http.Request){
+          http.ServeFile(w,r, "html/static/favicon.ico")
+        }
 
 func Server() error {
 	gob.Register(&User{})
@@ -470,6 +473,7 @@ func Server() error {
 	// Http sturf
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainpage)
+	r.HandleFunc("/favicon.ico", favicon)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)
 	r.HandleFunc("/register", register)
