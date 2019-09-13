@@ -160,6 +160,78 @@ func Get(username string) (User, error) {
 
 }
 
+func resolveDeps(a []string) []Challenge {
+	toReturn := []Challenge{}
+	for _, b := range a {
+		for _, c := range challs {
+			if c.Name == b {
+				toReturn = append(toReturn, c)
+			}
+		}
+	}
+	return toReturn
+
+}
+
+func countDeps(chall Challenge) int {
+	max := 1
+	if len(chall.Deps) == 0 {
+		return 0
+
+	}
+	for _, a := range chall.Deps {
+		depcount := countDeps(a)
+		if depcount+1 > max {
+			max = depcount + 1
+		}
+	}
+	//return len(chall.DepIds) + max
+	return max
+
+}
+
+func countAllDeps() {
+	for i, _ := range challs {
+		challs[i].DepCount = countDeps(challs[i])
+	}
+}
+func reverseResolveAllDepIds() {
+	for i, _ := range challs {
+		for j, _ := range challs {
+			if i != j {
+				for _, d := range challs[j].Deps {
+					if d.Name == challs[i].Name {
+						fmt.Printf("%s hat %s als revers dep\n", challs[i].Name, challs[j].Name)
+						challs[i].DepIds = append(challs[i].DepIds, challs[j].Name)
+						break
+					}
+				}
+			}
+		}
+	}
+}
+
+func resolveChalls(challcat []ChallengeJson) {
+	i := 0
+	idsInChalls := []string{}
+	for len(challcat) != 0 {
+		//          fmt.Printf("challs: %v, challcat: %v\n",challs,challcat)
+		this := challcat[i]
+		if bContainsAllOfA(this.Deps, idsInChalls) {
+			idsInChalls = append(idsInChalls, this.Name)
+			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, Uri: this.Uri, Points: this.Points, Deps: resolveDeps(this.Deps)})
+			challcat[i] = challcat[len(challcat)-1]
+			challcat = challcat[:len(challcat)-1]
+			i = 0
+		} else {
+			i++
+		}
+
+	}
+	countAllDeps()
+	reverseResolveAllDepIds()
+}
+
 func Login(username, passwd string) (User, error) {
 	user, err := Get(username)
 	if err != nil {
@@ -354,99 +426,10 @@ func detailview(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func bContainsA(a string, b []string) bool {
-	for _, c := range b {
-		if a == c {
-			return true
-		}
 
-	}
-	return false
-
+func favicon(w http.ResponseWriter, r *http.Request) {
+	http.ServeFile(w, r, "html/static/favicon.ico")
 }
-
-func bContainsAllOfA(a, b []string) bool {
-	for _, c := range a {
-		if !bContainsA(c, b) {
-			return false
-		}
-	}
-	return true
-}
-
-func resolveDeps(a []string) []Challenge {
-	toReturn := []Challenge{}
-	for _, b := range a {
-		for _, c := range challs {
-			if c.Name == b {
-				toReturn = append(toReturn, c)
-			}
-		}
-	}
-	return toReturn
-
-}
-func countDeps(chall Challenge) int {
-	max := 1
-	if len(chall.Deps) == 0 {
-		return 0
-
-	}
-	for _, a := range chall.Deps {
-		depcount := countDeps(a)
-		if depcount+1 > max {
-			max = depcount + 1
-		}
-	}
-	//return len(chall.DepIds) + max
-	return max
-
-}
-
-func countAllDeps() {
-	for i, _ := range challs {
-		challs[i].DepCount = countDeps(challs[i])
-	}
-}
-func reverseResolveAllDepIds() {
-	for i, _ := range challs {
-		for j, _ := range challs {
-			if i != j {
-				for _, d := range challs[j].Deps {
-					if d.Name == challs[i].Name {
-						fmt.Printf("%s hat %s als revers dep\n", challs[i].Name, challs[j].Name)
-						challs[i].DepIds = append(challs[i].DepIds, challs[j].Name)
-						break
-					}
-				}
-			}
-		}
-	}
-}
-
-func resolveChalls(challcat []ChallengeJson) {
-	i := 0
-	idsInChalls := []string{}
-	for len(challcat) != 0 {
-		//          fmt.Printf("challs: %v, challcat: %v\n",challs,challcat)
-		this := challcat[i]
-		if bContainsAllOfA(this.Deps, idsInChalls) {
-			idsInChalls = append(idsInChalls, this.Name)
-			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, Uri: this.Uri, Points: this.Points, Deps: resolveDeps(this.Deps)})
-			challcat[i] = challcat[len(challcat)-1]
-			challcat = challcat[:len(challcat)-1]
-			i = 0
-		} else {
-			i++
-		}
-
-	}
-	countAllDeps()
-	reverseResolveAllDepIds()
-}
-func favicon(w http.ResponseWriter, r *http.Request){
-          http.ServeFile(w,r, "html/static/favicon.ico")
-        }
 
 func Server() error {
 	gob.Register(&User{})
@@ -490,4 +473,24 @@ func Server() error {
 	}
 	fmt.Printf("WTFD Server Starting at port %d\n", Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", Port), r)
+}
+
+func bContainsA(a string, b []string) bool {
+	for _, c := range b {
+		if a == c {
+			return true
+		}
+
+	}
+	return false
+
+}
+
+func bContainsAllOfA(a, b []string) bool {
+	for _, c := range a {
+		if !bContainsA(c, b) {
+			return false
+		}
+	}
+	return true
 }
