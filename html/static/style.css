@@ -264,6 +264,7 @@ h3 {
     color: rgb(20, 185, 103);
     text-decoration: underline;
     align-self: flex-end;
+    cursor: pointer;
 }
 
 #loginbutton {
