@@ -114,18 +114,36 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction) {
             // " A" + delta + " " +  delta + " 0 0 " + arc2 + " " + (endX-2*delta) + " " + (startY + 4*delta) +
             // " V" + (endY-1*delta) +
             " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 3 * delta) + " " + (endY - 0 * delta) +
-            " H" + (endX));
+            " H" + (endX)
+        );
     } else {
-        path.setAttributeNS(null, "d", "M" + startX + " " + startY +
-            " H" + (startX + delta) +
-            " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 2 * delta) + " " + (startY + 1 * delta) +
-            " V" + (startY + 2 * delta) +
-            " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 3 * delta * signum(deltaX)) + " " + (startY + 3 * delta) +
-            " H" + (endX - 3 * delta * signum(deltaX)) +
-            " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (endX - 2 * delta) + " " + (startY + 4 * delta) +
-            " V" + (endY - 1 * delta) +
-            " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (endX - 1 * delta) + " " + (endY - 0 * delta) +
-            " H" + (endX));
+        if (startY== endY) {
+            //75 is half of grid-column-gap
+            var mid = 75;
+            path.setAttributeNS(null, "d", "M" + startX + " " + startY +
+                " H" + (startX + mid - deltaNum) +
+                " A" + deltaNum + " " + deltaNum + " 0 0 " + arc1 + " " + (startX + mid) + " " + (startY - deltaNum) +
+                " V" + (startY - 2 * deltaNum) +
+                " A" + deltaNum + " " + deltaNum + " 0 0 " + arc2 + " " + (startX + mid + deltaNum) + " " + (startY - 3*deltaNum) +
+                " H" + (endX - mid - deltaNum) +
+                " A" + deltaNum + " " + deltaNum + " 0 0 " + arc2 + " " + (endX - mid) + " " + (endY -  2*deltaNum) +
+                " V" + (endY - deltaNum) +
+                " A" + deltaNum + " " + deltaNum + " 0 0 " + arc1 + " " + (endX - mid + deltaNum) + " " + (endY) +
+                " H" + endX
+            );
+        } else {
+            path.setAttributeNS(null, "d", "M" + startX + " " + startY +
+                " H" + (startX + delta) +
+                " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 2 * delta) + " " + (startY + 1 * delta) +
+                " V" + (startY + 2 * delta) +
+                " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 3 * delta * signum(deltaX)) + " " + (startY + 3 * delta) +
+                " H" + (endX - 3 * delta * signum(deltaX)) +
+                " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (endX - 2 * delta) + " " + (startY + 4 * delta) +
+                " V" + (endY - 1 * delta) +
+                " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (endX - 1 * delta) + " " + (endY - 0 * delta) +
+                " H" + (endX)
+            );
+        }
     }
 }
 

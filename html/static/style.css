@@ -72,9 +72,11 @@ footer {
 }
 
 .challenge {
-    width: 256px;
+    height: 100%;
+    width: 100%;
+    /*width: 256px;*/
     /*z-index: 1;*/
-    height: 64px;
+    /*height: 64px;*/
     background-color: white;
     box-shadow: 2.5px 2.5px 5px -2.5px black;
     /*margin: 16px;*/
@@ -159,10 +161,10 @@ img {
     height: auto;
     grid-auto-columns: 256px;
     grid-auto-rows: 64px;
-    grid-column-gap: 160px;
-    grid-row-gap: 64px;
-    margin-left: 32px;
-    margin-top: 96px;
+    grid-column-gap: 150px;
+    grid-row-gap: 125px;
+    margin-left: 25px;
+    margin-top: 75px;
 }
 
 .col-0 {
