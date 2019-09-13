@@ -2,7 +2,7 @@ var eventlistenerfunc = function () {
 }
 
 function addChallEventListener(title, points) {
-    elem = document.getElementById(title);
+    let elem = document.getElementById(title);
     elem.addEventListener("click", function () {
         detView = document.getElementById("detailview");
         detDescription = document.getElementById("detaildescription");
@@ -14,6 +14,7 @@ function addChallEventListener(title, points) {
         var stateObj = {foo: "bar"};
         history.pushState(stateObj, "challenge " + title, title);
         flagsubmitbutton.removeEventListener("click", eventlistenerfunc);
+
         eventlistenerfunc = function () {
             const data = new URLSearchParams();
             data.append("flag", flagInput.value);
@@ -45,6 +46,17 @@ function addChallEventListener(title, points) {
             detTitle.innerHTML = title;
             detPoints.innerHTML = points;
         });
+        if(elem.getAttribute("class").includes("completed")){
+          flagsubmitbutton.style.display = "none";
+          flagInput.style.display = "none";
+        } else {
+          flagsubmitbutton.style.display = "";
+          flagInput.style.display = "";
+
+        }
+
+
+
         showDialog(detView);
     });
 
