@@ -31,6 +31,8 @@ var (
 	sshHost            = "localhost:2222"
 	challs             = Challenges{}
 	challcats          = ChallengeCategory{}
+        mainpagetemplate = template.New("")
+        leaderboardtemplate = template.New("")
 )
 
 type Challenges []Challenge
@@ -273,10 +275,6 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	if ok {
 		user = newuser
 	}
-	t, err := template.ParseFiles("html/index.html")
-	if err != nil {
-		fmt.Println(err)
-	}
 	data := MainPageData{
 		PageTitle:              "foss-ag O-Phasen CTF",
 		Challenges:             challs,
@@ -285,7 +283,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		User:                   *user,
 		IsUser:                 ok,
 	}
-	err = t.Execute(w, data)
+        err := mainpagetemplate.Execute(w, data)
 	if err != nil {
 		fmt.Printf("Template error: %v\n", err)
 
@@ -426,7 +424,6 @@ func detailview(w http.ResponseWriter, r *http.Request) {
 
 }
 
-
 func favicon(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "html/static/favicon.ico")
 }
@@ -453,6 +450,11 @@ func Server() error {
 	// Fill in sshHost
 	challs.FillChallengeUri(sshHost)
 
+        // Parse Templates
+	mainpagetemplate, err = template.ParseFiles("html/index.html", "html/footer.html", "html/header.html")
+	if err != nil {
+		fmt.Println(err)
+	}
 	// Http sturf
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainpage)

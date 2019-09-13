@@ -1,32 +1,5 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <title>FOSS-AG CTF</title>
-    <link rel="stylesheet" type="text/css" href="static/clearsans/clearsans.css" />
-    <link rel="stylesheet" type="text/css" href="static/fira/fira.css"/>
-    <link rel="stylesheet" type="text/css" href="static/materialdesignicons/css/materialdesignicons.min.css" />
-    <link rel="stylesheet" type="text/css" href="static/dialog-polyfill.css" />
-    <link rel="stylesheet" type="text/css" href="static/style.css" />
-  </head>
-  <body class="clearsans">
-    <header>
-      <div class="flexcell" id="logo">
-        <img id="logo-img" src="static/logo_red.svg" />
-        <div>
-          // FOSS-AG<br />
-          // <span class="red">CTF</span>
-        </div>
-      </div>
-      <div class="flexcell" id="accountinfo">
-        {{if .IsUser}}
-          <div class="flexcell">{{.User.Name}}</div>
-          <div class="score-right flexcell firamono"><span class="pointicon"></span> {{.User.CalculatePoints}}</div>
-          <span class="fakelink flexcell" id="logoutbutton">Logout</span>
-        {{else}}
-        <span class="fakelink" id="loginbutton">Login</span>
-        {{end}}
-      </div>
-    </header>
+{{ template "header" . }}
+
     <main class="flexcell gridcontainer">
       {{ $user := .User }}
       {{ range.Challenges }}
@@ -77,17 +50,6 @@
     </main>
     <div id="svgContainer"><svg id="svg1" width="0" height="0">
       </svg></div>
-    <footer>
-      <div class="flexcell" id="footer-left">
-        <img id="footer-logo" src="static/logo_green.svg" />
-      </div>
-      <div class="flexcell" id="footer-center">
-        Powered by WTFd
-      </div>
-      <div class="flexcell" id="footer-right">
-        Proudly made without PHP, Java, Perl, MySQL and MongoDB
-      </div>
-    </footer>
     <dialog id="logindialog">
       <form method="POST" action="/login">
         <h2>Login to the FOSS-AG CTF</h2>
@@ -136,5 +98,5 @@
     </dialog>
     <script src="static/dialog-polyfill.js"></script>
     <script src="static/main.js" type="text/javascript"></script>
-  </body>
-</html>
+
+{{ template "footer" . }}
