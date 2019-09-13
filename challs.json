@@ -32,7 +32,7 @@
     },
     {
       "name": "chall-f",
-      "deps": ["chall-b","chall-c"],
+      "deps": ["chall-b","chall-c", "chall-d"],
       "desc": "aassddfaassddf",
       "flag": "FOSS{a}",
       "points": 1
