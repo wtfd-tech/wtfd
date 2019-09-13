@@ -229,6 +229,11 @@ dialog + .backdrop {
 #flaginput {
 }
 
+#flagsubmitmsg {
+    color: #B82814;
+    text-align: center;
+}
+
 h1 {
     text-align: center;
     margin: 0px;

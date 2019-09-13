@@ -10,6 +10,7 @@ function addChallEventListener(title, points) {
         detPoints = document.getElementById("detailpoints");
         flagsubmitbutton = document.getElementById("flagsubmitbutton");
         flagInput = document.getElementById("flaginput");
+        msgBox = document.getElementById("flagsubmitmsg");
         var stateObj = {foo: "bar"};
         history.pushState(stateObj, "challenge " + title, title);
         flagsubmitbutton.removeEventListener("click", eventlistenerfunc);
@@ -24,7 +25,7 @@ function addChallEventListener(title, points) {
                     if (resp === "correct") {
                         location.href = "/";
                     } else {
-                        alert(resp);
+                        msgBox.innerHTML = resp;
                     }
                 });
             flagInput.value = "";
@@ -33,6 +34,7 @@ function addChallEventListener(title, points) {
 
         detView.addEventListener("close", function () {
             flagInput.value = "";
+            msgBox.innerHTML = "";
         });
 
         detDescription.innerHTML = "<i>Loading, please wait...</i>";
