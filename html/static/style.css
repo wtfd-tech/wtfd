@@ -4,6 +4,43 @@
     border-style: solid;
 }*/
 
+.button {
+  border: none;
+  color: white;
+  background-color: #555555;
+  padding: 4px;
+}
+.button:hover {
+
+  background-color: #444444;
+
+}
+
+input {
+
+  border: 1px solid;
+  border-color: lightgray;
+
+}
+
+.flagsubmitbutton {
+  transition-duration: 0.2s;
+  background-color: #14b967 !important;
+}
+
+.flagsubmitbutton:hover {
+
+  background-color: #04a957 !important;
+
+}
+
+.flagsubmitbutton-fail {
+  transition-duration: 0.2s;
+  background-color: red !important;
+
+}
+
+
 .not-available {
 
   background-color: grey !important;
