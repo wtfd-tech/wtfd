@@ -4,12 +4,14 @@
       "name": "chall-a",
       "desc": "aioöhsogöaerghaeörkglkfjgaöoerilgeoörgijk",
       "flag": "FOSS{b}",
+      "row": 0,
       "solution": "# You nice person, \nyou just gotta put the b to the a, obviously",
       "points": 8,
       "uri": "ssh://asdf@%s"
     },
     {
       "name": "chall-b",
+      "row": 0,
       "deps": ["chall-a"],
       "desc": "aassddfaassddf",
       "flag": "FOSS{a}",
@@ -18,6 +20,7 @@
     {
       "name": "chall-c",
       "desc": "aassddfaassddf",
+      "row": 0,
       "flag": "FOSS{a}",
       "deps": ["chall-b"],
       "points": 1,
@@ -27,12 +30,14 @@
       "name": "chall-d",
       "desc": "aassddfaassddf",
       "flag": "FOSS{a}",
+      "row": 1,
       "deps": ["chall-a"],
       "points": 1,
       "uri": "ssh://asdf@%s"
     },
     {
       "name": "chall-f",
+      "row": 0,
       "deps": ["chall-b","chall-c", "chall-d"],
       "desc": "aassddfaassddf",
       "flag": "FOSS{a}",
@@ -40,6 +45,7 @@
     },
     {
       "name": "chall-h",
+      "row": 1,
       "deps": ["chall-n","chall-c"],
       "desc": "aassddfaassddf",
       "flag": "FOSS{a}",
@@ -48,6 +54,7 @@
     {
       "name": "chall-n",
       "deps": ["chall-a"],
+      "row": 1,
       "desc": "aassddfaassddf",
       "flag": "FOSS{a}",
       "points": 1
@@ -55,6 +62,7 @@
     {
       "name": "chall-e",
       "deps": ["chall-b"],
+      "row": 2,
       "desc": "aassddfaassddf",
       "flag": "FOSS{a}",
       "points": 1
