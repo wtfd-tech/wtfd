@@ -13,7 +13,7 @@ stages:
   - build
 before_script:
   - go get -u golang.org/x/lint/golint
-  - apt-get update && apt-get install -y make curl gccgo
+  - apt-get update && apt-get install -y make curl
   - export GO111MODULE=auto
 
 unit_tests:
