@@ -1,68 +1,68 @@
-var stateObj = {foo: "baar"};
+const stateObj = {foo: "baar"};
 
-var flagsubmiteventlistenerfunc = function () {
-}
-var solutioneventlistenerfunc = function () {
-}
-var flaginputeventlistenerfunc = function () {
-}
+let flagsubmiteventlistenerfunc = function () {
+};
+let solutioneventlistenerfunc = function () {
+};
+let flaginputeventlistenerfunc = function () {
+};
 
 function addChallEventListener(title, points) {
     let elem = document.getElementById(title);
     elem.addEventListener("click", function () {
-        detView = document.getElementById("detailview");
-        detDescription = document.getElementById("detaildescription");
-        detTitle = document.getElementById("detailtitle");
-        detPoints = document.getElementById("detailpoints");
-        flagsubmitbutton = document.getElementById("flagsubmitbutton");
-        solutionbutton = document.getElementById("solutionbutton");
-        solutiondiv = document.getElementById("solutiondiv");
-        solutioninnerdiv = document.getElementById("solutioninnerdiv");
-        flagInput = document.getElementById("flaginput");
-        msgBox = document.getElementById("flagsubmitmsg");
+        let detView = document.getElementById("detailview");
+        let detDescription = document.getElementById("detaildescription");
+        let detTitle = document.getElementById("detailtitle");
+        let detPoints = document.getElementById("detailpoints");
+        let flagsubmitbutton = document.getElementById("flagsubmitbutton");
+        let solutionbutton = document.getElementById("solutionbutton");
+        let solutiondiv = document.getElementById("solutiondiv");
+        let solutioninnerdiv = document.getElementById("solutioninnerdiv");
+        let flagInput = document.getElementById("flaginput");
+        let msgBox = document.getElementById("flagsubmitmsg");
         history.pushState(stateObj, "challenge " + title, title);
         flagsubmitbutton.removeEventListener("click", flagsubmiteventlistenerfunc);
         flagInput.removeEventListener("keypress", flaginputeventlistenerfunc);
-      solutionbutton.removeEventListener("click", solutioneventlistenerfunc);
+        solutionbutton.removeEventListener("click", solutioneventlistenerfunc);
 
         flagsubmiteventlistenerfunc = function () {
             const data = new URLSearchParams();
             data.append("flag", flagInput.value);
             data.append("challenge", title);
-          console.log("hey, the flag is "+flagInput.value);
+            console.log("hey, the flag is " + flagInput.value);
             fetch("/submitflag", {method: 'post', body: data})
                 .then(resp => resp.text())
                 .then((resp) => {
                     if (resp === "correct") {
                         location.href = "/";
                     } else {
-                      flagsubmitbutton.setAttribute("class","button flagsubmitbutton-fail");
-                      setTimeout(()=>{
-                      flagsubmitbutton.setAttribute("class","button flagsubmitbutton");
-                      },"1000");
+                        flagsubmitbutton.setAttribute("class", "button flagsubmitbutton-fail");
+                        setTimeout(() => {
+                            flagsubmitbutton.setAttribute("class", "button flagsubmitbutton");
+                        }, 1000);
                         msgBox.innerHTML = resp;
                     }
                 });
             flagInput.value = "";
         };
-      flaginputeventlistenerfunc = function(e) {
-        if (e.key === 'Enter'){
-          flaginputeventlistenerfunc();
-        }
-      }
-      solutioneventlistenerfunc = function(){
-        solutioninnerdiv.innerHTML = "<i>Loading, please wait...</i>";
-        fetch("/solutionview/"+title)
-        .then(response => response.text())
-        .then((response)=>{
-          solutioninnerdiv.innerHTML = response;
-        });
+        flaginputeventlistenerfunc = function (e) {
+            if (e.key === 'Enter') {
+                flaginputeventlistenerfunc();
+            }
+        };
+        solutioneventlistenerfunc = function () {
+            solutioninnerdiv.innerHTML = "<i>Loading, please wait...</i>";
+            fetch("/solutionview/" + title)
+                .then(response => response.text())
+                .then((response) => {
+                    solutioninnerdiv.innerHTML = response;
+                });
 
 
-      }
-      flagInput.addEventListener("keypress", flaginputeventlistenerfunc);
-      flagsubmitbutton.addEventListener("click",flagsubmiteventlistenerfunc);
-      solutionbutton.addEventListener("click", solutioneventlistenerfunc);
+        };
+        flagInput.addEventListener("keypress", flaginputeventlistenerfunc);
+        flagsubmitbutton.addEventListener("click", flagsubmiteventlistenerfunc);
+        solutionbutton.addEventListener("click", solutioneventlistenerfunc);
 
 
         detView.addEventListener("close", function () {
@@ -79,18 +79,17 @@ function addChallEventListener(title, points) {
             detTitle.innerHTML = title;
             detPoints.innerHTML = points;
         });
-        if(elem.getAttribute("class").includes("completed")){
-          flagsubmitbutton.style.display = "none";
-          flagInput.style.display = "none";
-          solutionbutton.style.display = "";
-          solutiondiv.style.display = "";
+        if (elem.getAttribute("class").includes("completed")) {
+            flagsubmitbutton.style.display = "none";
+            flagInput.style.display = "none";
+            solutionbutton.style.display = "";
+            solutiondiv.style.display = "";
         } else {
-          flagsubmitbutton.style.display = "";
-          flagInput.style.display = "";
-          solutionbutton.style.display = "none";
-          solutiondiv.style.display = "none";
+            flagsubmitbutton.style.display = "";
+            flagInput.style.display = "";
+            solutionbutton.style.display = "none";
+            solutiondiv.style.display = "none";
         }
-
 
 
         showDialog(detView);
@@ -126,7 +125,7 @@ const svgNS = "http://www.w3.org/2000/svg";
 
 function drawPath(svg, path, startX, startY, endX, endY, drawFunction) {
     // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
-    var stroke = parseFloat(path.getAttribute("stroke-width"));
+    const stroke = parseFloat(path.getAttribute("stroke-width"));
     // check if the svg is big enough to draw the path, if not, set heigh/width
     if (svg.getAttribute("height") < (endY + stroke)) svg.setAttributeNS(null, "height", (endY + stroke));
     if (svg.getAttribute("width") < (startX + stroke)) svg.setAttributeNS(null, "width", (startX + stroke));
@@ -135,18 +134,18 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction) {
     //var deltaX = (endX - startX) * 0.15;
     //var deltaY = (endY - startY) * 0.15;
 
-    var deltaNum = 25;
-    var deltaX = (endX == startX) ? 0 : deltaNum;
-    var deltaY = (endY == startY) ? 0 : deltaNum;
+    const deltaNum = 25;
+    const deltaX = (endX === startX) ? 0 : deltaNum;
+    const deltaY = (endY === startY) ? 0 : deltaNum;
 
     // for further calculations which ever is the shortest distance
-    var delta = deltaY < absolute(deltaX) ? deltaY : absolute(deltaX);
+    const delta = deltaY < absolute(deltaX) ? deltaY : absolute(deltaX);
     console.log("deltax: " + deltaX + ", deltay:" + deltaY + ", delta: " + delta);
     // set sweep-flag (counter/clock-wise)
     // if start element is closer to the left edge,
     // draw the first arc counter-clockwise, and the second one clock-wise
-    var arc1 = 0;
-    var arc2 = 1;
+    let arc1 = 0;
+    let arc2 = 1;
     if (startX > endX) {
         arc1 = 1;
         arc2 = 0;
@@ -166,16 +165,16 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction) {
             " H" + (endX)
         );
     } else {
-        if (startY== endY) {
+        if (startY === endY) {
             //75 is half of grid-column-gap
-            var mid = 75;
+            const mid = 75;
             path.setAttributeNS(null, "d", "M" + startX + " " + startY +
                 " H" + (startX + mid - deltaNum) +
                 " A" + deltaNum + " " + deltaNum + " 0 0 " + arc1 + " " + (startX + mid) + " " + (startY - deltaNum) +
                 " V" + (startY - 2 * deltaNum) +
-                " A" + deltaNum + " " + deltaNum + " 0 0 " + arc2 + " " + (startX + mid + deltaNum) + " " + (startY - 3*deltaNum) +
+                " A" + deltaNum + " " + deltaNum + " 0 0 " + arc2 + " " + (startX + mid + deltaNum) + " " + (startY - 3 * deltaNum) +
                 " H" + (endX - mid - deltaNum) +
-                " A" + deltaNum + " " + deltaNum + " 0 0 " + arc2 + " " + (endX - mid) + " " + (endY -  2*deltaNum) +
+                " A" + deltaNum + " " + deltaNum + " 0 0 " + arc2 + " " + (endX - mid) + " " + (endY - 2 * deltaNum) +
                 " V" + (endY - deltaNum) +
                 " A" + deltaNum + " " + deltaNum + " 0 0 " + arc1 + " " + (endX - mid + deltaNum) + " " + (endY) +
                 " H" + endX
@@ -197,10 +196,10 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction) {
 }
 
 function connectElementss(svg, startElem, endElems, color) {
-    elem = document.getElementById(startElem);
+    let elem = document.getElementById(startElem);
     endElems.forEach(function (item) {
-      console.log("start: "+startElem+" end: "+item);
-        selem = document.getElementById(item)
+        console.log("start: " + startElem + " end: " + item);
+        let selem = document.getElementById(item);
         connectElements(svg, elem, selem, color)
 
     });
@@ -208,38 +207,38 @@ function connectElementss(svg, startElem, endElems, color) {
 }
 
 function connectElements(svg, startElem, endElem, color) {
-    var drawFunction = colnum.get(endElem.id) - colnum.get(startElem.id) > 1
-    var path = document.createElementNS(svgNS, "path");
+    const drawFunction = colnum.get(endElem.id) - colnum.get(startElem.id) > 1;
+    const path = document.createElementNS(svgNS, "path");
     path.setAttributeNS(null, "d", "M0 0");
     path.setAttributeNS(null, "stroke", color);
     path.setAttributeNS(null, "fill", "none");
     path.setAttributeNS(null, "stroke-width", "12px");
     svg.insertBefore(path, svg.lastChild);
-    var svgContainer = document.getElementById("svgContainer");
+    const svgContainer = document.getElementById("svgContainer");
 
     // if first element is lower than the second, swap!
     if (startElem.offsetLeft > endElem.offsetLeft) {
-        var temp = startElem;
+        const temp = startElem;
         startElem = endElem;
         endElem = temp;
     }
 
     // get (top, left) corner coordinates of the svg container   
-    var svgTop = svgContainer.offsetTop;
-    var svgLeft = svgContainer.offsetLeft;
+    //const svgTop = svgContainer.offsetTop; //Unused
+    const svgLeft = svgContainer.offsetLeft;
 
     // get (top, left) coordinates for the two elements
-    var startCoord = {left: startElem.offsetLeft, top: startElem.offsetTop};
-    var endCoord = {left: endElem.offsetLeft, top: endElem.offsetTop};
+    const startCoord = {left: startElem.offsetLeft, top: startElem.offsetTop};
+    const endCoord = {left: endElem.offsetLeft, top: endElem.offsetTop};
 
     // calculate path's start (x,y)  coords
     // we want the x coordinate to visually result in the element's mid point
-    var startX = startCoord.left + startElem.offsetWidth - svgLeft;    // x = left offset + 0.5*width - svg's left offset
-    var startY = startCoord.top - 0.5 * (startElem.offsetHeight);        // y = top offset + height - svg's top offset
+    const startX = startCoord.left + startElem.offsetWidth - svgLeft;    // x = left offset + 0.5*width - svg's left offset
+    const startY = startCoord.top - 0.5 * (startElem.offsetHeight);        // y = top offset + height - svg's top offset
 
     // calculate path's end (x,y) coords
-    var endX = endCoord.left;// + 0.5*endElem.offsetWidth - svgLeft;
-    var endY = endCoord.top - 0.5 * (endElem.offsetHeight);
+    const endX = endCoord.left;// + 0.5*endElem.offsetWidth - svgLeft;
+    const endY = endCoord.top - 0.5 * (endElem.offsetHeight);
 
     // call function for drawing the path
     drawPath(svg, path, startX, startY, endX, endY, drawFunction);
@@ -247,10 +246,11 @@ function connectElements(svg, startElem, endElem, color) {
 }
 
 (function () {
-    var loginButton = document.getElementById("loginbutton");
+    const loginButton = document.getElementById("loginbutton");
     if (loginButton != null) {
-        var loginDialogCancelButton = document.getElementById("logincancelbutton");
-        var loginDialog = document.getElementById("logindialog");
+        const loginDialogCancelButton = document.getElementById("logincancelbutton");
+        const loginDialog = document.getElementById("logindialog");
+        // noinspection JSUnresolvedVariable
         dialogPolyfill.registerDialog(loginDialog);
 
         loginButton.addEventListener("click", function () {
@@ -260,19 +260,20 @@ function connectElements(svg, startElem, endElem, color) {
             loginDialog.close();
         });
 
-        var registerButton = document.getElementById("registerbutton");
-        var registerDialogCancelButton = document.getElementById(
+        const registerButton = document.getElementById("registerbutton");
+        const registerDialogCancelButton = document.getElementById(
             "registercancelbutton"
         );
-        var registerDialog = document.getElementById("registerdialog");
+        const registerDialog = document.getElementById("registerdialog");
+        // noinspection JSUnresolvedVariable
         dialogPolyfill.registerDialog(registerDialog);
 
-        var loginTabButton = document.getElementById("logintabbutton");
+        const loginTabButton = document.getElementById("logintabbutton");
 
-        var loginUserBox = document.getElementById("loginuserbox");
-        var loginPassBox = document.getElementById("loginpassbox");
-        var registerUserBox = document.getElementById("registeruserbox");
-        var registerPassBox = document.getElementById("registerpassbox");
+        const loginUserBox = document.getElementById("loginuserbox");
+        const loginPassBox = document.getElementById("loginpassbox");
+        const registerUserBox = document.getElementById("registeruserbox");
+        const registerPassBox = document.getElementById("registerpassbox");
 
         registerButton.addEventListener("click", function () {
             registerUserBox.value = loginUserBox.value;
@@ -285,19 +286,19 @@ function connectElements(svg, startElem, endElem, color) {
         });
 
         loginTabButton.addEventListener("click", function () {
-           loginUserBox.value = registerUserBox.value;
-           loginPassBox.value = registerPassBox.value;
-           registerDialog.close();
+            loginUserBox.value = registerUserBox.value;
+            loginPassBox.value = registerPassBox.value;
+            registerDialog.close();
             showDialog(loginDialog);
         });
     } else {
-        var logoutButton = document.getElementById("logoutbutton");
+        const logoutButton = document.getElementById("logoutbutton");
         logoutButton.addEventListener("click", function () {
             location.href = "/logout";
         });
     }
 
-    svg1 = document.getElementById("svg1")
+    let svg1 = document.getElementById("svg1");
     window.addEventListener("resize", function () {
         svg1.setAttribute("width", "0");
         svg1.setAttribute("height", "0");
@@ -305,9 +306,10 @@ function connectElements(svg, startElem, endElem, color) {
         connectAll();
     });
 
-    var detailview = document.getElementById("detailview");
+    const detailview = document.getElementById("detailview");
+    // noinspection JSUnresolvedVariable
     dialogPolyfill.registerDialog(detailview);
-    var detailclosebutton = document.getElementById("detailclosebutton")
+    const detailclosebutton = document.getElementById("detailclosebutton");
     detailclosebutton.addEventListener("click", function () {
         detailview.close();
 
@@ -318,6 +320,7 @@ function connectElements(svg, startElem, endElem, color) {
     svg1.setAttribute("width", "0");
     svg1.setAttribute("height", "0");
     svg1.innerHTML = "";
+    // noinspection JSUnresolvedVariable
     flagsubmitbutton.addEventListener("click", flagsubmiteventlistenerfunc);
     start();
 })();
