@@ -55,4 +55,42 @@ function showDialog(dlg) {
             location.href = "/logout";
         });
     }
+
+
+  const loginForm = document.getElementById("loginform");
+  const loginError = document.getElementById("loginerror");
+  loginForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    fetch("/login", {body: new URLSearchParams(new FormData(loginForm)), method: 'post'})
+    .then((resp)=> resp.text())
+    .then((resp) => {
+      if (resp.includes("Server Error")) {
+        loginError.innerHTML = resp;
+        setTimeout(()=>{loginError.innerHTML = "";},"2000")
+      } else {
+        location.href = "/";
+      }
+
+    });
+    return false;
+
+  });
+  const registerForm = document.getElementById("registerform");
+  const registerError = document.getElementById("registererror");
+  registerForm.addEventListener("submit", function(e){
+    e.preventDefault();
+    fetch("/register", {body: new URLSearchParams(new FormData(registerForm)), method: 'post'})
+    .then((resp)=> resp.text())
+    .then((resp) => {
+      if (resp.includes("Server Error")) {
+        registerError.innerHTML = resp;
+        setTimeout(()=>{registerError.innerHTML = "";},"2000")
+      } else {
+        location.href = "/";
+      }
+
+    });
+    return false;
+
+  });
 })();
