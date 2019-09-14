@@ -17,29 +17,25 @@
 }
 
 input {
-    border: 1px solid;
-    border-color: lightgray;
+    border: 1px solid lightgray;
 }
 
 .flagsubmitbutton-fail {
     transition-duration: 0.2s;
     background-color: red !important;
-
 }
 
 
 .not-available {
-
     background-color: grey !important;
 }
 
 .completed {
-
     background-color: #14b967 !important;
 }
 
 body {
-    margin: 0px 0px 0px 0px;
+    margin: 0 0 0 0;
     background-color: #e5e5e5;
     color: #4d4d4d;
     display: flex;
@@ -49,16 +45,16 @@ body {
 
 header {
     position: fixed;
-    top: 0px;
-    left: 0px;
-    margin: 0px;
+    top: 0;
+    left: 0;
+    margin: 0;
     height: 64px;
     width: 100%;
     display: flex;
     background-color: #262626;
     color: #b3b3b3;
     font-size: 12pt;
-    box-shadow: 0px 0px 10px 0px black;
+    box-shadow: 0 0 10px 0 black;
     z-index: 6;
 }
 
@@ -75,7 +71,7 @@ main {
 
 footer {
     position: fixed;
-    bottom: 0px;
+    bottom: 0;
     width: 100vw;
     display: flex;
     background-color: #b3b3b3;
@@ -100,15 +96,12 @@ footer {
 .challenge {
     height: 100%;
     width: 100%;
-    /*width: 256px;*/
-    /*z-index: 1;*/
-    /*height: 64px;*/
     background-color: white;
-    box-shadow: 2.5px 2.5px 5px -2.5px black;
-    /*margin: 16px;*/
     float: left;
     display: flex;
-    /*flex-direction: column;*/
+
+    /*noinspection CssFloatPxLength*/
+    box-shadow: 2.5px 2.5px 5px -2.5px black;
 }
 
 #logo {
@@ -134,18 +127,18 @@ footer {
 .chall-title {
     flex: 1;
     font-weight: bold;
-    margin: 0px;
+    margin: 0;
 }
 
 .score {
-    margin: 0px;
+    margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .score-right {
-    margin: 0px;
+    margin: 0;
     display: flex;
     align-items: center;
     text-align: justify;
@@ -179,7 +172,7 @@ img {
 #svgContainer {
     z-index: -1;
     position: absolute;
-    left: 0px;
+    left: 0;
     top: 64px;
 }
 
@@ -227,8 +220,10 @@ img {
 
 dialog {
     border: none;
-    box-shadow: 2.5px 2.5px 10px -2.5px;
     max-width: 80%;
+
+    /*noinspection CssFloatPxLength*/
+    box-shadow: 2.5px 2.5px 10px -2.5px;
 }
 
 dialog + .backdrop {
@@ -268,16 +263,16 @@ dialog + .backdrop {
 
 h1 {
     text-align: center;
-    margin: 0px;
+    margin: 0;
 }
 
 h2 {
     text-align: center;
-    margin: 0px;
+    margin: 0;
 }
 
 h3 {
-    margin: 0px;
+    margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -286,9 +281,6 @@ h3 {
 
 #detailview {
     width: 512px;
-}
-
-#detailpoints {
 }
 
 .closebtn {
@@ -319,7 +311,6 @@ h3 {
 
 .formgrid {
     display: grid;
-    grid-auto-columns: autp;
     grid-row-gap: 8px;
 }
 
@@ -335,7 +326,7 @@ h3 {
 
 menu {
     float: right;
-    margin: 0px;
+    margin: 0;
 }
 
 .loginclose {
@@ -350,7 +341,7 @@ menu {
 
 .logintab {
     border-style: solid;
-    border-width: 0px;
+    border-width: 0;
     border-bottom-width: 4px;
     border-color: #4d4d4d;
     color: #4d4d4d;
