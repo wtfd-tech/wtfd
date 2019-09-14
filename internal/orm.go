@@ -149,10 +149,9 @@ func ormDeleteUser(user User) error {
 
 // check if user exists in db
 func ormUserExists(user User) (bool, error) {
-	var count int64
-	var err error
-
-	if count, err = engine.Count(_ORMUser{Name: user.Name}); err != nil {
+        count, err := engine.Where("Name = ?", user.Name).Count(_ORMUser{})
+        // fmt.Printf("ormUserExists: user: %v, count: %v, err: %v\n", user, count,err);
+        if err != nil {
 		return false, err
 	}
 
@@ -224,12 +223,12 @@ func ormSolvedChallenge(user User, chall Challenge) error {
 // load a single user from db (search by name)
 // The remaining fields of u will be filled by this function
 func ormLoadUser(name string) (User, error) {
-	var exists bool
-	var err error
 	var user _ORMUser
 	var u User
 
-	if exists, err = ormUserExists(User{Name: name}); err != nil {
+        exists, err := ormUserExists(User{Name: name})
+        // fmt.Printf("ormLoadUser: name: %v, exists: %v, err: %v\n",name, exists,err)
+        if err != nil {
 		return User{}, err
 	}
 
@@ -237,7 +236,8 @@ func ormLoadUser(name string) (User, error) {
 		return User{}, errUserNotExisting
 	}
 
-	if _, err = engine.Where("Name = ?", name).Get(&user); err != nil {
+        if _, err := engine.Where("Name = ?", name).Get(&user); err != nil {
+          // fmt.Printf("User %s seems to not exist", name)
 		return User{}, err
 	}
 
