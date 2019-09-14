@@ -18,16 +18,16 @@ import (
 )
 
 const (
-	DefaultPort = int64(80)
+	defaultPort = int64(80)
 )
 
 var (
 	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
 	key                 = []byte("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 	store               = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
-	ErrUserExisting     = errors.New("User with this name exists")
-	ErrWrongPassword    = errors.New("Wrong Password")
-	ErrUserNotExisting  = errors.New("User with this name does not exist")
+	errUserExisting     = errors.New("User with this name exists")
+	errWrongPassword    = errors.New("Wrong Password")
+	errUserNotExisting  = errors.New("User with this name does not exist")
 	sshHost             = "localhost:2222"
 	challs              = Challenges{}
 	challcats           = ChallengeCategory{}
@@ -35,78 +35,86 @@ var (
 	leaderboardtemplate = template.New("")
 )
 
+// Challenges Array of challenges but in nice with funcitons
 type Challenges []Challenge
-type ChallengeCategories []ChallengeCategory
 
-type JsonFile struct {
-	Categories []ChallengeCategoryJson `json:"categories"`
-	Challenges []ChallengeJson         `json:"challenges"`
+// ChallengeCategories Array of challengeCategories
+type ChallengeCategories []ChallengeCategory 
+
+// JSONFile Challenge JSON File
+type JSONFile struct {
+	Categories []ChallengeCategoryJSON `json:"categories"`
+	Challenges []ChallengeJSON         `json:"challenges"`
 }
 
+// ChallengeCategory as a go struct
 type ChallengeCategory struct {
 	Title      string `json:"title"`
 	Challenges Challenges
 }
 
-type ChallengeCategoryJson struct {
+// ChallengeCategoryJSON ChallengeCategory as JSON
+type ChallengeCategoryJSON struct {
 	Title      string   `json:"title"`
 	Challenges []string `json:"challs"`
 }
 
+// Challenge is a challenge obv
 type Challenge struct {
 	Name        string `json:"name"`
 	Description string `json:"desc"`
 	Flag        string `json:"flag"`
 	Points      int    `json:"points"`
-	Uri         string `json:"uri"`
+	URI         string `json:"uri"`
 	DepCount    int
 	Solution    string `json:"solution"`
-	DepIds      []string
+	DepIDs      []string
 	Deps        []Challenge
-	HasUri      bool // This emerges from Uri != ""
+	HasURI      bool // This emerges from URI != ""
 }
 
-type ChallengeJson struct {
+// ChallengeJSON is Challenge as JSON
+type ChallengeJSON struct {
 	Name        string   `json:"name"`
 	Description string   `json:"desc"`
 	Solution    string   `json:"solution"`
 	Flag        string   `json:"flag"`
 	Points      int      `json:"points"`
-	Uri         string   `json:"uri"`
+	URI         string   `json:"uri"`
 	Deps        []string `json:"deps"`
-	HasUri      bool     // This emerges from Uri != ""
+	HasURI      bool     // This emerges from URI != ""
 }
 
+// User was ist das wohl
 type User struct {
 	Name      string
 	Hash      []byte
 	Completed []Challenge
 }
 
-type MainPageData struct {
+type mainPageData struct {
 	PageTitle              string
 	Challenges             []Challenge
-	SelectedChallengeId    string
-	HasSelectedChallengeId bool
+	SelectedChallengeID    string
+	HasSelectedChallengeID bool
 	User                   User
 	IsUser                 bool
 	Points                 int
 }
 
-/**
- * Fill host into each challenge's Uri field and set HasUri
- */
-func (c Challenges) FillChallengeUri(host string) {
-	for i, _ := range c {
-		if c[i].Uri != "" {
-			c[i].HasUri = true
-			c[i].Uri = fmt.Sprintf(c[i].Uri, host)
+// FillChallengeURI Fill host into each challenge's URI field and set HasURI
+func (c Challenges) FillChallengeURI(host string) {
+	for _, ch := range c {
+		if ch.URI != "" {
+			ch.HasURI = true
+			ch.URI = fmt.Sprintf(ch.URI, host)
 		} else {
-			c[i].HasUri = false
+			ch.HasURI = false
 		}
 	}
 }
 
+// Find finds a challenge from a string
 func (c Challenges) Find(id string) (Challenge, error) {
 	for _, v := range c {
 		if v.Name == id {
@@ -116,6 +124,7 @@ func (c Challenges) Find(id string) (Challenge, error) {
 	return Challenge{}, fmt.Errorf("No challenge with this id")
 }
 
+// AllDepsCompleted checks if User u has completed all Dependent challenges of c
 func (c Challenge) AllDepsCompleted(u User) bool {
 	for _, ch := range c.Deps {
 		a := false
@@ -131,11 +140,13 @@ func (c Challenge) AllDepsCompleted(u User) bool {
 	return true
 }
 
+// Contains looks if a username is in the datenbank
 func Contains(username string) bool {
 	_, err := ormLoadUser(username)
 	return err == nil
 }
 
+// HasSolvedChallenge returns true if u has solved chall
 func (u User) HasSolvedChallenge(chall Challenge) bool {
 	for _, c := range u.Completed {
 		if c.Name == chall.Name {
@@ -145,6 +156,7 @@ func (u User) HasSolvedChallenge(chall Challenge) bool {
 	return false
 }
 
+// CalculatePoints calculates Points of u
 func (u User) CalculatePoints() int {
 	points := 0
 
@@ -155,10 +167,11 @@ func (u User) CalculatePoints() int {
 	return points
 }
 
+// Get gets username based on username
 func Get(username string) (User, error) {
 	user, err := ormLoadUser(username)
 	if err != nil {
-		return User{}, ErrUserNotExisting
+		return User{}, errUserNotExisting
 	}
 	return user, err
 
@@ -189,24 +202,24 @@ func countDeps(chall Challenge) int {
 			max = depcount + 1
 		}
 	}
-	//return len(chall.DepIds) + max
+	//return len(chall.DepIDs) + max
 	return max
 
 }
 
 func countAllDeps() {
-	for i, _ := range challs {
-		challs[i].DepCount = countDeps(challs[i])
+	for _, h := range challs {
+		h.DepCount = countDeps(h)
 	}
 }
-func reverseResolveAllDepIds() {
-	for i, _ := range challs {
-		for j, _ := range challs {
+func reverseResolveAllDepIDs() {
+	for i := range challs {
+		for j := range challs {
 			if i != j {
 				for _, d := range challs[j].Deps {
 					if d.Name == challs[i].Name {
 						fmt.Printf("%s hat %s als revers dep\n", challs[i].Name, challs[j].Name)
-						challs[i].DepIds = append(challs[i].DepIds, challs[j].Name)
+						challs[i].DepIDs = append(challs[i].DepIDs, challs[j].Name)
 						break
 					}
 				}
@@ -215,7 +228,7 @@ func reverseResolveAllDepIds() {
 	}
 }
 
-func resolveChalls(challcat []ChallengeJson) {
+func resolveChalls(challcat []ChallengeJSON) {
 	i := 0
 	idsInChalls := []string{}
 	for len(challcat) != 0 {
@@ -223,7 +236,7 @@ func resolveChalls(challcat []ChallengeJson) {
 		this := challcat[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
 			idsInChalls = append(idsInChalls, this.Name)
-			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, Uri: this.Uri, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution})
+			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution})
 			challcat[i] = challcat[len(challcat)-1]
 			challcat = challcat[:len(challcat)-1]
 			i = 0
@@ -233,9 +246,10 @@ func resolveChalls(challcat []ChallengeJson) {
 
 	}
 	countAllDeps()
-	reverseResolveAllDepIds()
+	reverseResolveAllDepIDs()
 }
 
+// Login checks if password is right for username and returns the User object of it
 func Login(username, passwd string) (User, error) {
 	user, err := Get(username)
 	if err != nil {
@@ -249,13 +263,15 @@ func Login(username, passwd string) (User, error) {
 
 }
 
+// ComparePassword checks if the password is valid
 func (u *User) ComparePassword(password string) bool {
 	return bcrypt.CompareHashAndPassword(u.Hash, []byte(password)) == nil
 }
 
+// NewUser creates a new user and stores it in the database
 func NewUser(name, password string) (User, error) {
 	if Contains(name) {
-		return User{}, ErrUserExisting
+		return User{}, errUserExisting
 	}
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 14)
 	if err != nil {
@@ -277,11 +293,11 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	if ok {
 		user = newuser
 	}
-	data := MainPageData{
+	data := mainPageData{
 		PageTitle:              "foss-ag O-Phasen CTF",
 		Challenges:             challs,
-		HasSelectedChallengeId: hasChall,
-		SelectedChallengeId:    vars["chall"],
+		HasSelectedChallengeID: hasChall,
+		SelectedChallengeID:    vars["chall"],
 		User:                   *user,
 		IsUser:                 ok,
 	}
@@ -352,7 +368,7 @@ func submitFlag(w http.ResponseWriter, r *http.Request) {
 		if r.Form.Get("flag") == completedChallenge.Flag {
 			user.Completed = append(user.Completed, completedChallenge)
 			if err = ormSolvedChallenge(*user, completedChallenge); err != nil {
-				fmt.Errorf("ORM Error: %s\n", err.Error())
+				fmt.Errorf("ORM Error: %s", err)
 			}
 			fmt.Fprintf(w, "correct")
 
@@ -456,6 +472,8 @@ func favicon(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "html/static/favicon.ico")
 }
 
+// Server is the main server func, start it with
+//  log.Fatal(wtfd.Server())
 func Server() error {
 	gob.Register(&User{})
 
@@ -465,7 +483,7 @@ func Server() error {
 		return err
 	}
 	defer challsFile.Close()
-	var challsStructure JsonFile
+	var challsStructure JSONFile
 	challsFileBytes, _ := ioutil.ReadAll(challsFile)
 	if err := json.Unmarshal(challsFileBytes, &challsStructure); err != nil {
 		return err
@@ -476,7 +494,7 @@ func Server() error {
 	ormStart("./dblog")
 
 	// Fill in sshHost
-	challs.FillChallengeUri(sshHost)
+	challs.FillChallengeURI(sshHost)
 
 	// Parse Templates
 	mainpagetemplate, err = template.ParseFiles("html/index.html", "html/footer.html", "html/header.html")
@@ -498,7 +516,7 @@ func Server() error {
 	r.PathPrefix("/static").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir("html/static"))))
 
-	Port := DefaultPort
+	Port := defaultPort
 	if portenv := os.Getenv("WTFD_PORT"); portenv != "" {
 		Port, _ = strconv.ParseInt(portenv, 10, 64)
 	}
