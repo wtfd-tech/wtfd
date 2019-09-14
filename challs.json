@@ -4,6 +4,7 @@
       "name": "chall-a",
       "desc": "aioöhsogöaerghaeörkglkfjgaöoerilgeoörgijk",
       "flag": "FOSS{b}",
+      "solution": "# You nice person, \nyou just gotta put the b to the a, obviously",
       "points": 8,
       "uri": "ssh://asdf@%s"
     },

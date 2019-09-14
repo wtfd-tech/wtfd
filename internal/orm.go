@@ -4,7 +4,7 @@ import (
 	"errors"
 	"fmt"
 	"github.com/go-xorm/xorm"
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/mattn/go-sqlite3" // needed for xorm
 	"os"
 	"xorm.io/core"
 )
@@ -15,8 +15,7 @@ const (
 )
 
 var (
-	engine        *xorm.Engine
-	ErrORMGeneric = errors.New("Database error (check log)")
+	engine *xorm.Engine
 )
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -52,13 +51,13 @@ func ormStart(logFile string) {
 	engine, err = xorm.NewEngine("sqlite3", "./state.db")
 
 	if err != nil {
-		panic(fmt.Sprintf("Could not start xorm engine: %s\n", err.Error()))
+		panic(fmt.Sprintf("Could not start xorm engine: %v", err))
 	}
 
 	if logFile != "" {
 		f, err := os.Create(logFile)
 		if err != nil {
-			fmt.Errorf("Could not create DB Logfile: %s\n", err.Error())
+			fmt.Errorf("Could not create DB Logfile: %v", err)
 		} else {
 			engine.SetLogger(xorm.NewSimpleLogger(f))
 		}
@@ -70,7 +69,7 @@ func ormStart(logFile string) {
 }
 
 func _ORMGenericError(desc string) error {
-	return errors.New(fmt.Sprintf("ORM Error %s", desc))
+	return fmt.Errorf("ORM Error %s", desc)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -85,7 +84,7 @@ func ormNewUser(user User) error {
 	}
 
 	if exists {
-		return ErrUserExisting
+		return errUserExisting
 	}
 
 	_, err = engine.Insert(_ORMUser{
@@ -108,7 +107,7 @@ func ormUpdateUser(user User) error {
 	}
 
 	if !exists {
-		return ErrUserNotExisting
+		return errUserNotExisting
 	}
 
 	u = _ORMUser{
@@ -134,7 +133,7 @@ func ormDeleteUser(user User) error {
 	}
 
 	if !exists {
-		return ErrUserNotExisting
+		return errUserNotExisting
 	}
 
 	if _, err = engine.Where("Name = ?", user.Name).Get(&u); err != nil {
@@ -162,11 +161,9 @@ func ormUserExists(user User) (bool, error) {
 	}
 	if count == 1 {
 		return true, nil
-	} else {
-		return false, errors.New("DB User-table is in an invalid state")
 	}
+	return false, errors.New("DB User-table is in an invalid state")
 
-	return false, nil
 }
 
 // get Challenges{} solved by user (db-state)
@@ -176,9 +173,9 @@ func ormChallengesSolved(user User) ([]Challenge, error) {
 	engine.Where("UserName = ?", user.Name).Iterate(_ORMChallengesByUser{}, func(i int, bean interface{}) error {
 		relation := bean.(*_ORMChallengesByUser)
 
-		for i, _ := range challs {
-			if challs[i].Name == relation.ChallengeName {
-				challenges = append(challenges, challs[i])
+		for _, c := range challs {
+			if c.Name == relation.ChallengeName {
+				challenges = append(challenges, c)
 			}
 		}
 
@@ -200,7 +197,7 @@ func ormSolvedChallenge(user User, chall Challenge) error {
 	}
 
 	if !exists {
-		return ErrUserNotExisting
+		return errUserNotExisting
 	}
 
 	count, err = engine.Where("UserName = ?", user.Name).And("ChallengeName = ?", chall.Name).Count(_ORMChallengesByUser{})
@@ -237,7 +234,7 @@ func ormLoadUser(name string) (User, error) {
 	}
 
 	if !exists {
-		return User{}, ErrUserNotExisting
+		return User{}, errUserNotExisting
 	}
 
 	if _, err = engine.Where("Name = ?", name).Get(&user); err != nil {
