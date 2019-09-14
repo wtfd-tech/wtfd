@@ -276,6 +276,11 @@ h1 {
     margin: 0px;
 }
 
+h2 {
+    text-align: center;
+    margin: 0px;
+}
+
 h3 {
     margin: 0px;
     display: flex;
@@ -291,7 +296,7 @@ h3 {
 #detailpoints {
 }
 
-#detailclosebutton {
+.closebtn {
     float: right;
     font-size: 16pt;
 }
@@ -305,7 +310,7 @@ h3 {
 }
 
 .fakelink:hover {
-    color: rgb(20, 185, 103);
+    color: #14b967;
     text-decoration: underline;
     align-self: flex-end;
     cursor: pointer;
@@ -315,4 +320,57 @@ h3 {
     margin-top: auto;
     margin-bottom: auto;
     font-size: 16pt;
+}
+
+.formgrid {
+    display: grid;
+    grid-auto-columns: autp;
+    grid-row-gap: 8px;
+}
+
+.formgrid label {
+    grid-column: 1;
+    padding-right: 8px;
+}
+
+.formgrid input {
+    grid-column: 2;
+    width: 200px;
+}
+
+menu {
+    float: right;
+    margin: 0px;
+}
+
+.loginclose {
+    float: unset;
+    width: 100%;
+    text-align: right;
+}
+
+.loginswitch {
+    display: flex;
+}
+
+.logintab {
+    border-style: solid;
+    border-width: 0px;
+    border-bottom-width: 4px;
+    border-color: #4d4d4d;
+    color: #4d4d4d;
+}
+
+.logintab:hover {
+    color: #14b967;
+    cursor: pointer;
+}
+
+.logintab.active {
+    border-color: #14b967;
+    color: black;
+}
+
+.logintab.active:hover {
+    color: black;
 }

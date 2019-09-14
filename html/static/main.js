@@ -1,3 +1,5 @@
+var stateObj = {foo: "baar"};
+
 var eventlistenerfunc = function () {
 }
 
@@ -11,7 +13,6 @@ function addChallEventListener(title, points) {
         flagsubmitbutton = document.getElementById("flagsubmitbutton");
         flagInput = document.getElementById("flaginput");
         msgBox = document.getElementById("flagsubmitmsg");
-        var stateObj = {foo: "bar"};
         history.pushState(stateObj, "challenge " + title, title);
         flagsubmitbutton.removeEventListener("click", eventlistenerfunc);
 
@@ -74,7 +75,6 @@ function showDialog(dlg) {
 function registerBackdropClickHandler(dlg) {
     Array.prototype.slice.call(document.getElementsByClassName("backdrop")).forEach(function (elem) {
         elem.addEventListener("click", function () {
-            var stateObj = {foo: "baar"};
             history.pushState(stateObj, "index", "/");
             dlg.close();
         });
@@ -124,14 +124,14 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction) {
     // 1. move a bit down, 2. arch,  3. move a bit to the right, 4.arch, 5. move down to the end
     if (!drawFunction) {
         path.setAttributeNS(null, "d", "M" + startX + " " + startY +
-            " H" + (startX + 1 * delta) +
-            " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 2 * delta) + " " + (startY + 1 * delta) +
-            " V" + (endY - 1 * delta) +
+            " H" + (startX + delta) +
+            " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 2 * delta) + " " + (startY + delta) +
+            " V" + (endY - delta) +
             // " A" + delta + " " +  delta + " 0 0 " + arc1 + " " + (startX + 3*delta*signum(deltaX)) + " " + (startY + 3*delta) +
             // " H" + (endX - 3*delta*signum(deltaX)) +
             // " A" + delta + " " +  delta + " 0 0 " + arc2 + " " + (endX-2*delta) + " " + (startY + 4*delta) +
             // " V" + (endY-1*delta) +
-            " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 3 * delta) + " " + (endY - 0 * delta) +
+            " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 3 * delta) + " " + endY +
             " H" + (endX)
         );
     } else {
@@ -152,13 +152,13 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction) {
         } else {
             path.setAttributeNS(null, "d", "M" + startX + " " + startY +
                 " H" + (startX + delta) +
-                " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 2 * delta) + " " + (startY + 1 * delta) +
+                " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 2 * delta) + " " + (startY + delta) +
                 " V" + (startY + 2 * delta) +
                 " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 3 * delta * signum(deltaX)) + " " + (startY + 3 * delta) +
                 " H" + (endX - 3 * delta * signum(deltaX)) +
                 " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (endX - 2 * delta) + " " + (startY + 4 * delta) +
-                " V" + (endY - 1 * delta) +
-                " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (endX - 1 * delta) + " " + (endY - 0 * delta) +
+                " V" + (endY - delta) +
+                " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (endX - delta) + " " + endY +
                 " H" + (endX)
             );
         }
@@ -236,12 +236,28 @@ function connectElements(svg, startElem, endElem, color) {
         var registerDialog = document.getElementById("registerdialog");
         dialogPolyfill.registerDialog(registerDialog);
 
+        var loginTabButton = document.getElementById("logintabbutton");
+
+        var loginUserBox = document.getElementById("loginuserbox");
+        var loginPassBox = document.getElementById("loginpassbox");
+        var registerUserBox = document.getElementById("registeruserbox");
+        var registerPassBox = document.getElementById("registerpassbox");
+
         registerButton.addEventListener("click", function () {
+            registerUserBox.value = loginUserBox.value;
+            registerPassBox.value = loginPassBox.value;
             loginDialog.close();
             showDialog(registerDialog);
         });
         registerDialogCancelButton.addEventListener("click", function () {
             registerDialog.close();
+        });
+
+        loginTabButton.addEventListener("click", function () {
+           loginUserBox.value = registerUserBox.value;
+           loginPassBox.value = registerPassBox.value;
+           registerDialog.close();
+            showDialog(loginDialog);
         });
     } else {
         var logoutButton = document.getElementById("logoutbutton");
@@ -263,7 +279,7 @@ function connectElements(svg, startElem, endElem, color) {
     var detailclosebutton = document.getElementById("detailclosebutton")
     detailclosebutton.addEventListener("click", function () {
         detailview.close();
-        var stateObj = {foo: "baar"};
+
         history.pushState(stateObj, "index", "/");
 
     });
