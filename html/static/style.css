@@ -188,6 +188,35 @@ img {
     margin-top: 75px;
 }
 
+.row-0 {
+    grid-row-start: 1;
+    grid-row-end: 1;
+    display: grid;
+}
+
+.row-1 {
+    grid-row-start: 2;
+    grid-row-end: 2;
+    display: grid;
+}
+
+.row-2 {
+    grid-row-start: 3;
+    grid-row-end: 3;
+    display: grid;
+}
+
+.row-3 {
+    grid-row-start: 4;
+    grid-row-end: 4;
+    display: grid;
+}
+
+.row-4 {
+    grid-row-start: 5;
+    grid-row-end: 5;
+    display: grid;
+}
 .col-0 {
     grid-column-start: 1;
     grid-column-end: 1;
