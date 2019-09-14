@@ -39,7 +39,7 @@ var (
 type Challenges []Challenge
 
 // ChallengeCategories Array of challengeCategories
-type ChallengeCategories []ChallengeCategory 
+type ChallengeCategories []ChallengeCategory
 
 // JSONFile Challenge JSON File
 type JSONFile struct {
@@ -171,7 +171,7 @@ func (u User) CalculatePoints() int {
 func Get(username string) (User, error) {
 	user, err := ormLoadUser(username)
 	if err != nil {
-          fmt.Printf("Get Error: username: %v, user: %v, err: %v\n",username,user,err)
+		fmt.Printf("Get Error: username: %v, user: %v, err: %v\n", username, user, err)
 		return User{}, err
 	}
 	return user, err
@@ -219,7 +219,7 @@ func reverseResolveAllDepIDs() {
 			if i != j {
 				for _, d := range challs[j].Deps {
 					if d.Name == challs[i].Name {
-//						fmt.Printf("%s hat %s als revers dep\n", challs[i].Name, challs[j].Name)
+						//						fmt.Printf("%s hat %s als revers dep\n", challs[i].Name, challs[j].Name)
 						challs[i].DepIDs = append(challs[i].DepIDs, challs[j].Name)
 						break
 					}

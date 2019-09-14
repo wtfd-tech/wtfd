@@ -149,9 +149,9 @@ func ormDeleteUser(user User) error {
 
 // check if user exists in db
 func ormUserExists(user User) (bool, error) {
-        count, err := engine.Where("Name = ?", user.Name).Count(_ORMUser{})
-        // fmt.Printf("ormUserExists: user: %v, count: %v, err: %v\n", user, count,err);
-        if err != nil {
+	count, err := engine.Where("Name = ?", user.Name).Count(_ORMUser{})
+	// fmt.Printf("ormUserExists: user: %v, count: %v, err: %v\n", user, count,err);
+	if err != nil {
 		return false, err
 	}
 
@@ -226,9 +226,9 @@ func ormLoadUser(name string) (User, error) {
 	var user _ORMUser
 	var u User
 
-        exists, err := ormUserExists(User{Name: name})
-        // fmt.Printf("ormLoadUser: name: %v, exists: %v, err: %v\n",name, exists,err)
-        if err != nil {
+	exists, err := ormUserExists(User{Name: name})
+	// fmt.Printf("ormLoadUser: name: %v, exists: %v, err: %v\n",name, exists,err)
+	if err != nil {
 		return User{}, err
 	}
 
@@ -236,8 +236,8 @@ func ormLoadUser(name string) (User, error) {
 		return User{}, errUserNotExisting
 	}
 
-        if _, err := engine.Where("Name = ?", name).Get(&user); err != nil {
-          // fmt.Printf("User %s seems to not exist", name)
+	if _, err := engine.Where("Name = ?", name).Get(&user); err != nil {
+		// fmt.Printf("User %s seems to not exist", name)
 		return User{}, err
 	}
 
