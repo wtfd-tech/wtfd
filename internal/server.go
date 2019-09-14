@@ -417,7 +417,7 @@ func solutionview(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	chall, err := challs.Find(vars["chall"])
 	if err != nil {
-		fmt.Fprintf(w, "ServerError: Challenge with is %s not found")
+		fmt.Fprintf(w, "ServerError: Challenge with is %s not found", vars["chall"])
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
@@ -443,7 +443,7 @@ func detailview(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	chall, err := challs.Find(vars["chall"])
 	if err != nil {
-		fmt.Fprintf(w, "ServerError: Challenge with is %s not found")
+		fmt.Fprintf(w, "ServerError: Challenge with is %s not found", vars["chall"])
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
