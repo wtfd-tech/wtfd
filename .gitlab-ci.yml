@@ -1,0 +1,34 @@
+image: golang
+
+cache:
+  paths:
+    - /apt-cache
+    - /go/src/github.com
+    - /go/src/golang.org
+    - /go/src/google.golang.org
+    - /go/src/gopkg.in
+
+stages:
+  - test
+  - build
+before_script:
+  - go get -u golang.org/x/lint/golint
+  - apt-get update && apt-get install -y make curl gccgo
+  - export GO111MODULE=auto
+
+unit_tests:
+  stage: test
+  script:
+    - go test -short $(go list ./... | grep -v /vendor/)
+
+
+lint_code:
+  stage: test
+  allow_failure: true
+  script:
+    - golint -set_exit_status $(go list ./... | grep -v /vendor/)
+
+build:
+  stage: build
+  script:
+    - go build cmd/wtfd.go
