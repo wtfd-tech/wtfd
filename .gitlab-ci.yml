@@ -22,6 +22,11 @@ unit_tests:
     - go test -short $(go list ./... | grep -v /vendor/)
 
 
+coverage:
+  stage: test
+  script:
+    - go test -cover $(go list  ./... | grep -v /vendor/)
+
 lint_code:
   stage: test
   allow_failure: true
