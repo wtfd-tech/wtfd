@@ -12,7 +12,7 @@
       <script>
         var colnum = new Map();
         {{ range.Challenges}}
-        colnum.set("{{.Name}}","{{.DepCount}}");
+colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
         {{end}}
         function start(){
           {{if .IsUser}}{{else}}document.getElementById("loginbutton").click();{{end}}
@@ -30,6 +30,7 @@
           ["#262626",
           "#4d4d4d",
           "#808080",
+          "#606060",
           "#3b3b3b"];
           var svg1 = document.getElementById("svg1");
 
