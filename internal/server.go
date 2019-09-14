@@ -104,12 +104,12 @@ type mainPageData struct {
 
 // FillChallengeURI Fill host into each challenge's URI field and set HasURI
 func (c Challenges) FillChallengeURI(host string) {
-	for _, ch := range c {
-		if ch.URI != "" {
-			ch.HasURI = true
-			ch.URI = fmt.Sprintf(ch.URI, host)
+	for i := range c {
+		if c[i].URI != "" {
+			c[i].HasURI = true
+			c[i].URI = fmt.Sprintf(c[i].URI, host)
 		} else {
-			ch.HasURI = false
+			c[i].HasURI = false
 		}
 	}
 }
@@ -208,8 +208,8 @@ func countDeps(chall Challenge) int {
 }
 
 func countAllDeps() {
-	for _, h := range challs {
-		h.DepCount = countDeps(h)
+	for i, _ := range challs {
+		challs[i].DepCount = countDeps(challs[i])
 	}
 }
 func reverseResolveAllDepIDs() {
@@ -256,7 +256,7 @@ func Login(username, passwd string) (User, error) {
 		return User{}, err
 	}
 	if pwdRight := user.ComparePassword(passwd); !pwdRight {
-		return User{}, ErrWrongPassword
+		return User{}, errWrongPassword
 	}
 	fmt.Printf("User login: %s\n", username)
 	return user, nil

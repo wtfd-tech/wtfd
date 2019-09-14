@@ -84,7 +84,7 @@ func ormNewUser(user User) error {
 	}
 
 	if exists {
-		return ErrUserExisting
+		return errUserExisting
 	}
 
 	_, err = engine.Insert(_ORMUser{
@@ -107,7 +107,7 @@ func ormUpdateUser(user User) error {
 	}
 
 	if !exists {
-		return ErrUserNotExisting
+		return errUserNotExisting
 	}
 
 	u = _ORMUser{
@@ -133,7 +133,7 @@ func ormDeleteUser(user User) error {
 	}
 
 	if !exists {
-		return ErrUserNotExisting
+		return errUserNotExisting
 	}
 
 	if _, err = engine.Where("Name = ?", user.Name).Get(&u); err != nil {
@@ -197,7 +197,7 @@ func ormSolvedChallenge(user User, chall Challenge) error {
 	}
 
 	if !exists {
-		return ErrUserNotExisting
+		return errUserNotExisting
 	}
 
 	count, err = engine.Where("UserName = ?", user.Name).And("ChallengeName = ?", chall.Name).Count(_ORMChallengesByUser{})
@@ -234,7 +234,7 @@ func ormLoadUser(name string) (User, error) {
 	}
 
 	if !exists {
-		return User{}, ErrUserNotExisting
+		return User{}, errUserNotExisting
 	}
 
 	if _, err = engine.Where("Name = ?", name).Get(&user); err != nil {
