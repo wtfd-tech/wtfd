@@ -147,7 +147,7 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction, nothingin
     }
     // draw tha pipe-like path
     // 1. move a bit down, 2. arch,  3. move a bit to the right, 4.arch, 5. move down to the end
-    if (drawFunction = 0) {
+    if (!drawFunction) {
         path.setAttributeNS(null, "d", "M" + startX + " " + startY +
             " H" + (startX + delta) +
             " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 2 * delta) + " " + (startY + delta) +
