@@ -67,7 +67,7 @@ type Challenge struct {
 	Points      int    `json:"points"`
 	URI         string `json:"uri"`
 	DepCount    int
-        Row         int
+	Row         int
 	Solution    string `json:"solution"`
 	DepIDs      []string
 	Deps        []Challenge
@@ -81,7 +81,7 @@ type ChallengeJSON struct {
 	Solution    string   `json:"solution"`
 	Flag        string   `json:"flag"`
 	Points      int      `json:"points"`
-        Row         int      `json:"row"`
+	Row         int      `json:"row"`
 	URI         string   `json:"uri"`
 	Deps        []string `json:"deps"`
 	HasURI      bool     // This emerges from URI != ""
@@ -239,7 +239,7 @@ func resolveChalls(challcat []ChallengeJSON) {
 		this := challcat[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
 			idsInChalls = append(idsInChalls, this.Name)
-                        challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, Row: this.Row})
+			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, Row: this.Row})
 			challcat[i] = challcat[len(challcat)-1]
 			challcat = challcat[:len(challcat)-1]
 			i = 0
