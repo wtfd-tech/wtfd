@@ -51,42 +51,45 @@
     <div id="svgContainer"><svg id="svg1" width="0" height="0">
       </svg></div>
     <dialog id="logindialog">
+      <div class="mdi mdi-close closebtn loginclose" id="logincancelbutton"></div>
+      <h2 class="loginswitch">
+        <span class="flexcell logintab active">Login</span>
+        <span class="flexcell logintab" id="registerbutton">Register</span>
+      </h2>
       <form method="POST" action="/login">
-        <h2>Login to the FOSS-AG CTF</h2>
-        <section>
-          <p><label for="username">E-Mail:</label>
-          <input type="email" name="username" placeholder="john.doe@tu-dortmund.de"></input>
-          </p>
-          <p><label for="password">Passwort:</label>
-          <input type="password" name="password"></input>
-          </p>
-        </section>
+        <p class="formgrid">
+          <label for="username">E-Mail:</label>
+          <input id="loginuserbox" type="email" name="username" placeholder="john.doe@tu-dortmund.de"/>
+
+          <label for="password">Password:</label>
+          <input id="loginpassbox" type="password" name="password"/>
+        </p>
         <menu>
-          <button class="button" id="registerbutton" type="button">Register</button>
-          <button class="button" id="logincancelbutton" type="reset">Cancel</button>
-          <button class="button" type="submit">Confirm</button>
+          <button class="button" type="submit">Login</button>
         </menu>
       </form>
     </dialog>
     <dialog id="registerdialog">
+      <div class="mdi mdi-close closebtn loginclose" id="registercancelbutton"></div>
+      <h2 class="loginswitch">
+        <span class="flexcell logintab" id="logintabbutton">Login</span>
+        <span class="flexcell logintab active">Register</span>
+      </h2>
       <form method="POST" action="/register">
-        <h2>Register to the FOSS-AG CTF</h2>
-        <section>
-          <p><label for="username">E-Mail:</label>
-          <input type="email" name="username" placeholder="john.doe@tu-dortmund.de"></input>
-          </p>
-          <p><label for="password">Passwort:</label>
-          <input type="password" name="password"></input>
-          </p>
-        </section>
+        <p class="formgrid">
+          <label for="username">E-Mail:</label>
+          <input id="registeruserbox" type="email" name="username" placeholder="john.doe@tu-dortmund.de"/>
+
+          <label for="password">Password:</label>
+          <input id="registerpassbox" type="password" name="password"/>
+        </p>
         <menu>
-          <button class="button" id="registercancelbutton" type="reset">Cancel</button>
-          <button class="button" type="submit">Confirm</button>
+          <button class="button" type="submit">Register</button>
         </menu>
       </form>
     </dialog>
     <dialog id="detailview">
-      <span class="mdi mdi-close" id="detailclosebutton"></span>
+      <span class="mdi mdi-close closebtn" id="detailclosebutton"></span>
       <h1 id="detailtitle"></h1>
       <h3><span class="pointicon"></span><span id="detailpoints" class="firamono"></span></h3>
       <div id="detaildescription"></div>
