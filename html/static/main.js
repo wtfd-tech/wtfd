@@ -1,5 +1,7 @@
 var flagsubmiteventlistenerfunc = function () {
 }
+var solutioneventlistenerfunc = function () {
+}
 var flaginputeventlistenerfunc = function () {
 }
 
@@ -12,12 +14,15 @@ function addChallEventListener(title, points) {
         detPoints = document.getElementById("detailpoints");
         flagsubmitbutton = document.getElementById("flagsubmitbutton");
         solutionbutton = document.getElementById("solutionbutton");
+        solutiondiv = document.getElementById("solutiondiv");
+        solutioninnerdiv = document.getElementById("solutioninnerdiv");
         flagInput = document.getElementById("flaginput");
         msgBox = document.getElementById("flagsubmitmsg");
         var stateObj = {foo: "bar"};
         history.pushState(stateObj, "challenge " + title, title);
         flagsubmitbutton.removeEventListener("click", flagsubmiteventlistenerfunc);
-        flaginputeventlistenerfunc.removeEventListener("keypress", flaginputeventlistenerfunc);
+        flagInput.removeEventListener("keypress", flaginputeventlistenerfunc);
+      solutionbutton.removeEventListener("click", solutioneventlistenerfunc);
 
         flagsubmiteventlistenerfunc = function () {
             const data = new URLSearchParams();
@@ -44,13 +49,25 @@ function addChallEventListener(title, points) {
           flaginputeventlistenerfunc();
         }
       }
+      solutioneventlistenerfunc = function(){
+        solutioninnerdiv.innerHTML = "<i>Loading, please wait...</i>";
+        fetch("/solutionview/"+title)
+        .then(response => response.text())
+        .then((response)=>{
+          solutioninnerdiv.innerHTML = response;
+        });
+
+
+      }
       flagInput.addEventListener("keypress", flaginputeventlistenerfunc);
       flagsubmitbutton.addEventListener("click",flagsubmiteventlistenerfunc);
+      solutionbutton.addEventListener("click", solutioneventlistenerfunc);
 
 
         detView.addEventListener("close", function () {
             flagInput.value = "";
             msgBox.innerHTML = "";
+            solutioninnerdiv.innerHTML = "";
         });
 
         detDescription.innerHTML = "<i>Loading, please wait...</i>";
@@ -65,11 +82,12 @@ function addChallEventListener(title, points) {
           flagsubmitbutton.style.display = "none";
           flagInput.style.display = "none";
           solutionbutton.style.display = "";
+          solutiondiv.style.display = "";
         } else {
           flagsubmitbutton.style.display = "";
           flagInput.style.display = "";
           solutionbutton.style.display = "none";
-
+          solutiondiv.style.display = "none";
         }
 
 
@@ -284,6 +302,6 @@ function connectElements(svg, startElem, endElem, color) {
     svg1.setAttribute("width", "0");
     svg1.setAttribute("height", "0");
     svg1.innerHTML = "";
-    flagsubmitbutton.addEventListener("click", eventlistenerfunc);
+    flagsubmitbutton.addEventListener("click", flagsubmiteventlistenerfunc);
     start();
 })();

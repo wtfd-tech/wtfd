@@ -23,16 +23,16 @@ const (
 
 var (
 	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
-	key                = []byte("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-	store              = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
-	ErrUserExisting    = errors.New("User with this name exists")
-	ErrWrongPassword   = errors.New("Wrong Password")
-	ErrUserNotExisting = errors.New("User with this name does not exist")
-	sshHost            = "localhost:2222"
-	challs             = Challenges{}
-	challcats          = ChallengeCategory{}
-        mainpagetemplate = template.New("")
-        leaderboardtemplate = template.New("")
+	key                 = []byte("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+	store               = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
+	ErrUserExisting     = errors.New("User with this name exists")
+	ErrWrongPassword    = errors.New("Wrong Password")
+	ErrUserNotExisting  = errors.New("User with this name does not exist")
+	sshHost             = "localhost:2222"
+	challs              = Challenges{}
+	challcats           = ChallengeCategory{}
+	mainpagetemplate    = template.New("")
+	leaderboardtemplate = template.New("")
 )
 
 type Challenges []Challenge
@@ -60,6 +60,7 @@ type Challenge struct {
 	Points      int    `json:"points"`
 	Uri         string `json:"uri"`
 	DepCount    int
+	Solution    string `json:"solution"`
 	DepIds      []string
 	Deps        []Challenge
 	HasUri      bool // This emerges from Uri != ""
@@ -68,6 +69,7 @@ type Challenge struct {
 type ChallengeJson struct {
 	Name        string   `json:"name"`
 	Description string   `json:"desc"`
+	Solution    string   `json:"solution"`
 	Flag        string   `json:"flag"`
 	Points      int      `json:"points"`
 	Uri         string   `json:"uri"`
@@ -221,7 +223,7 @@ func resolveChalls(challcat []ChallengeJson) {
 		this := challcat[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
 			idsInChalls = append(idsInChalls, this.Name)
-			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, Uri: this.Uri, Points: this.Points, Deps: resolveDeps(this.Deps)})
+			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, Uri: this.Uri, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution})
 			challcat[i] = challcat[len(challcat)-1]
 			challcat = challcat[:len(challcat)-1]
 			i = 0
@@ -283,7 +285,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		User:                   *user,
 		IsUser:                 ok,
 	}
-        err := mainpagetemplate.Execute(w, data)
+	err := mainpagetemplate.Execute(w, data)
 	if err != nil {
 		fmt.Printf("Template error: %v\n", err)
 
@@ -411,6 +413,32 @@ func logout(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func solutionview(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	chall, err := challs.Find(vars["chall"])
+	if err != nil {
+		fmt.Fprintf(w, "ServerError: Challenge with is %s not found")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	session, _ := store.Get(r, "auth")
+	u, ok := session.Values["User"].(*User)
+	if !ok {
+		fmt.Fprintf(w, "ServerError: not logged in")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	if !u.HasSolvedChallenge(chall) {
+		fmt.Fprintf(w, "did you just try to pull a sneaky on me?")
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	md := markdown.ToHTML([]byte(chall.Solution), nil, nil)
+	fmt.Fprintf(w, "%s", md)
+
+}
+
 func detailview(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	chall, err := challs.Find(vars["chall"])
@@ -450,7 +478,7 @@ func Server() error {
 	// Fill in sshHost
 	challs.FillChallengeUri(sshHost)
 
-        // Parse Templates
+	// Parse Templates
 	mainpagetemplate, err = template.ParseFiles("html/index.html", "html/footer.html", "html/header.html")
 	if err != nil {
 		fmt.Println(err)
@@ -465,6 +493,7 @@ func Server() error {
 	r.HandleFunc("/submitflag", submitFlag)
 	r.HandleFunc("/{chall}", mainpage)
 	r.HandleFunc("/detailview/{chall}", detailview)
+	r.HandleFunc("/solutionview/{chall}", solutionview)
 	// static
 	r.PathPrefix("/static").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir("html/static"))))
