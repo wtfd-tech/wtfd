@@ -21,7 +21,7 @@
           {{end}}
           {{end}}
           connectAll();
-  {{if .HasSelectedChallengeId }} document.getElementById("{{.SelectedChallengeId}}").click();{{else}}{{end}}
+  {{if .HasSelectedChallengeID }} document.getElementById("{{.SelectedChallengeID}}").click();{{else}}{{end}}
         }
         function connectAll(){
           var i = 0
@@ -34,13 +34,13 @@
 
           var color = new Map();
           {{ range.Challenges}}
-          {{if .DepIds}}
+          {{if .DepIDs}}
           {{if $user.HasSolvedChallenge .}}
           color.set({{.Name}},"#14b967");
           {{else}}
           color.set({{.Name}},colors[i % (colors.length-1)]);
           {{end}}
-          connectElementss(svg1 , {{.Name}}, {{.DepIds}},color.get({{.Name}}));
+          connectElementss(svg1 , {{.Name}}, {{.DepIDs}},color.get({{.Name}}));
           i++;
             {{end}}
             {{end}}
