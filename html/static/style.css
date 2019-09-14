@@ -5,35 +5,37 @@
 }*/
 
 .button {
-  border: none;
-  color: white;
-  background-color: #555555;
-  padding: 4px;
-  transition-duration: 0.2s;
+    border: none;
+    color: white;
+    background-color: #555555;
+    padding: 4px;
+    transition-duration: 0.2s;
 }
+
 .button:hover {
     background-color: #14b967;
 }
 
 input {
-  border: 1px solid;
-  border-color: lightgray;
+    border: 1px solid;
+    border-color: lightgray;
 }
 
 .flagsubmitbutton-fail {
-  transition-duration: 0.2s;
-  background-color: red !important;
+    transition-duration: 0.2s;
+    background-color: red !important;
 
 }
 
 
 .not-available {
 
-  background-color: grey !important;
+    background-color: grey !important;
 }
+
 .completed {
 
-  background-color: #14b967 !important;
+    background-color: #14b967 !important;
 }
 
 body {
@@ -141,6 +143,7 @@ footer {
     align-items: center;
     justify-content: center;
 }
+
 .score-right {
     margin: 0px;
     display: flex;
@@ -174,11 +177,12 @@ img {
 }
 
 #svgContainer {
-	z-index: -1;
-	position:absolute;
+    z-index: -1;
+    position: absolute;
     left: 0px;
     top: 64px;
 }
+
 .gridcontainer {
     display: grid;
     width: auto;
@@ -196,21 +200,25 @@ img {
     grid-column-end: 1;
     display: grid;
 }
+
 .col-1 {
     grid-column-start: 2;
     grid-column-end: 2;
     display: grid;
 }
+
 .col-2 {
     grid-column-start: 3;
     grid-column-end: 3;
     display: grid;
 }
+
 .col-3 {
     grid-column-start: 4;
     grid-column-end: 4;
     display: grid;
 }
+
 .col-4 {
     grid-column-start: 5;
     grid-column-end: 5;
@@ -242,9 +250,10 @@ dialog + .backdrop {
         transform: rotate(360deg);
     }
 }
+
 .pointicon:hover {
-    animation-name:            rotate;
-    animation-duration:        3s;
+    animation-name: rotate;
+    animation-duration: 3s;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
 }
