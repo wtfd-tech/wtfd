@@ -15,6 +15,7 @@
         colnum.set("{{.Name}}","{{.DepCount}}");
         {{end}}
         function start(){
+          {{if .IsUser}}{{else}}document.getElementById("loginbutton").click();{{end}}
           {{ range.Challenges }}
           {{ if .AllDepsCompleted $user}}
           addChallEventListener("{{.Name}}", "{{.Points}}");
