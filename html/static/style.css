@@ -9,28 +9,15 @@
   color: white;
   background-color: #555555;
   padding: 4px;
+  transition-duration: 0.2s;
 }
 .button:hover {
-
-  background-color: #444444;
-
+    background-color: #14b967;
 }
 
 input {
-
   border: 1px solid;
   border-color: lightgray;
-
-}
-
-.flagsubmitbutton {
-  transition-duration: 0.2s;
-}
-
-.flagsubmitbutton:hover {
-
-  background-color: #04a957 !important;
-
 }
 
 .flagsubmitbutton-fail {
