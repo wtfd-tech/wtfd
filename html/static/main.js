@@ -1,4 +1,6 @@
-var eventlistenerfunc = function () {
+var flagsubmiteventlistenerfunc = function () {
+}
+var flaginputeventlistenerfunc = function () {
 }
 
 function addChallEventListener(title, points) {
@@ -9,13 +11,15 @@ function addChallEventListener(title, points) {
         detTitle = document.getElementById("detailtitle");
         detPoints = document.getElementById("detailpoints");
         flagsubmitbutton = document.getElementById("flagsubmitbutton");
+        solutionbutton = document.getElementById("solutionbutton");
         flagInput = document.getElementById("flaginput");
         msgBox = document.getElementById("flagsubmitmsg");
         var stateObj = {foo: "bar"};
         history.pushState(stateObj, "challenge " + title, title);
-        flagsubmitbutton.removeEventListener("click", eventlistenerfunc);
+        flagsubmitbutton.removeEventListener("click", flagsubmiteventlistenerfunc);
+        flaginputeventlistenerfunc.removeEventListener("keypress", flaginputeventlistenerfunc);
 
-        eventlistenerfunc = function () {
+        flagsubmiteventlistenerfunc = function () {
             const data = new URLSearchParams();
             data.append("flag", flagInput.value);
             data.append("challenge", title);
@@ -35,7 +39,14 @@ function addChallEventListener(title, points) {
                 });
             flagInput.value = "";
         };
-      flagsubmitbutton.addEventListener("click",eventlistenerfunc);
+      flaginputeventlistenerfunc = function(e) {
+        if (e.key === 'Enter'){
+          flaginputeventlistenerfunc();
+        }
+      }
+      flagInput.addEventListener("keypress", flaginputeventlistenerfunc);
+      flagsubmitbutton.addEventListener("click",flagsubmiteventlistenerfunc);
+
 
         detView.addEventListener("close", function () {
             flagInput.value = "";
@@ -53,9 +64,11 @@ function addChallEventListener(title, points) {
         if(elem.getAttribute("class").includes("completed")){
           flagsubmitbutton.style.display = "none";
           flagInput.style.display = "none";
+          solutionbutton.style.display = "";
         } else {
           flagsubmitbutton.style.display = "";
           flagInput.style.display = "";
+          solutionbutton.style.display = "none";
 
         }
 
