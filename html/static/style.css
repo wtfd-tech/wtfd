@@ -294,6 +294,11 @@ h3 {
 
 .fakelink {
     font-size: 10pt;
+    text-decoration: none;
+}
+
+a.fakelink {
+    color: #4d4d4d;
 }
 
 .fakelink:hover {
