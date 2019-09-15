@@ -22,9 +22,9 @@
         {{if .IsUser}}
           <div class="flexcell">{{.User.Name}}</div>
           <div class="score-right flexcell firamono"><span class="pointicon"></span> {{.User.CalculatePoints}}</div>
-          <span class="fakelink flexcell" id="logoutbutton">Logout</span>
+          <span class="link flexcell" id="logoutbutton">Logout</span>
         {{else}}
-        <span class="fakelink" id="loginbutton">Login</span>
+        <span class="link" id="loginbutton"><span class="mdi mdi-login-variant"></span> Login</span>
         {{end}}
       </div>
     <dialog id="logindialog">
@@ -43,7 +43,7 @@
           <input id="loginpassbox" type="password" name="password"/>
         </p>
         <menu>
-          <button class="button" type="submit" id="loginsubmit">Login</button>
+          <button class="button" type="submit" id="loginsubmit"><span class="mdi mdi-login-variant"></span> Login</button>
         </menu>
       </form>
     </dialog>
@@ -63,7 +63,7 @@
           <input id="registerpassbox" type="password" name="password"/>
         </p>
         <menu>
-          <button class="button" type="submit" id="registersubmit">Register</button>
+          <button class="button" type="submit" id="registersubmit"><span class="mdi mdi-account-plus"></span> Register</button>
         </menu>
       </form>
     </dialog>

@@ -299,25 +299,34 @@ h3 {
     font-size: 16pt;
 }
 
+.closebtn:hover {
+    color: #B82814;
+}
+
 #detailform {
     display: flex;
 }
 
-.fakelink {
+.link {
     font-size: 10pt;
     text-decoration: none;
     transition-duration: 0.2s;
 }
 
-a.fakelink {
+a.link {
     color: #4d4d4d;
 }
 
-.fakelink:hover {
+.link:hover {
     color: #14b967;
     text-decoration: underline;
     align-self: flex-end;
     cursor: pointer;
+}
+
+.link.sociallink {
+    margin-right: 1em;
+    float: left;
 }
 
 #loginbutton {
