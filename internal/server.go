@@ -492,7 +492,10 @@ func Server() error {
 	resolveChalls(challsStructure.Challenges)
 
 	// Load database
-	ormStart("./dblog")
+	err = ormStart("./dblog")
+	if err != nil {
+		return err
+	}
 
 	// Fill in sshHost
 	challs.FillChallengeURI(sshHost)
@@ -500,7 +503,7 @@ func Server() error {
 	// Parse Templates
 	mainpagetemplate, err = template.ParseFiles("html/index.html", "html/footer.html", "html/header.html")
 	if err != nil {
-		fmt.Println(err)
+		return err
 	}
 	// Http sturf
 	r := mux.NewRouter()
