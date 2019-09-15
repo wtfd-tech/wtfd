@@ -88,24 +88,24 @@ func TestChallenges(t *testing.T) {
 	if challn.DepIDs[0] != "chall-h" {
 		t.Errorf("ChallDepID is wrong: %v", fmt.Errorf("%v has %v as reverse dep instead of chall-h", challn, challn.DepIDs[0]))
 	}
-        if !challn.HasURI {
+	if !challn.HasURI {
 		t.Errorf("ChallHasUri is wrong: %v", fmt.Errorf("challn.HasURI is false instead of true"))
-        }
-        if challn.URI != fmt.Sprintf("ssh://asdf@%s",sshHost) {
-		t.Errorf("ChallUri is wrong: %v", fmt.Errorf("challn.URI is %v instead of 'ssh://asdf@%s'",challn.URI,sshHost))
+	}
+	if challn.URI != fmt.Sprintf("ssh://asdf@%s", sshHost) {
+		t.Errorf("ChallUri is wrong: %v", fmt.Errorf("challn.URI is %v instead of 'ssh://asdf@%s'", challn.URI, sshHost))
 
-      }
-      t.Run("TestAllDepsCompleted", func(t *testing.T){
+	}
+	t.Run("TestAllDepsCompleted", func(t *testing.T) {
 
-        un := User{Name: "a" ,Completed: []Challenge{Challenge{Name: "chall-b"}}}
-        uy := User{Name: "a" ,Completed: []Challenge{Challenge{Name: "chall-a"}}}
-        if challn.AllDepsCompleted(un) {
-	t.Errorf("AllDepsCompleted is wrong: %v", fmt.Errorf("user hasn't completed dependent but AllDepsCompleted thinks it has"))
-        }
-        if !challn.AllDepsCompleted(uy) {
-	t.Errorf("AllDepsCompleted is wrong: %v", fmt.Errorf("user has completed dependent but AllDepsCompleted thinks it hasn't"))
-        }
+		un := User{Name: "a", Completed: []Challenge{Challenge{Name: "chall-b"}}}
+		uy := User{Name: "a", Completed: []Challenge{Challenge{Name: "chall-a"}}}
+		if challn.AllDepsCompleted(un) {
+			t.Errorf("AllDepsCompleted is wrong: %v", fmt.Errorf("user hasn't completed dependent but AllDepsCompleted thinks it has"))
+		}
+		if !challn.AllDepsCompleted(uy) {
+			t.Errorf("AllDepsCompleted is wrong: %v", fmt.Errorf("user has completed dependent but AllDepsCompleted thinks it hasn't"))
+		}
 
-      })
+	})
 
 }
