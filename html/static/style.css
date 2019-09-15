@@ -25,7 +25,16 @@
 }
 
 input {
-    border: 1px solid lightgray;
+    border: 1px solid #B3B3B3;
+    transition-duration: 0.2s;
+}
+
+input:hover {
+    border-color: #4D4D4D;
+}
+
+input:focus {
+    border-color: #14b967;
 }
 
 .not-available {
@@ -297,6 +306,7 @@ h3 {
 .fakelink {
     font-size: 10pt;
     text-decoration: none;
+    transition-duration: 0.2s;
 }
 
 a.fakelink {
@@ -352,6 +362,7 @@ menu {
     border-bottom-width: 4px;
     border-color: #4d4d4d;
     color: #4d4d4d;
+    transition-duration: 0.2s;
 }
 
 .logintab:hover {
