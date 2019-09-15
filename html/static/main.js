@@ -36,9 +36,9 @@ function addChallEventListener(title, points) {
                     if (resp === "correct") {
                         location.href = "/";
                     } else {
-                        flagsubmitbutton.setAttribute("class", "button flagsubmitbutton-fail");
+                        flagsubmitbutton.setAttribute("class", "button fail");
                         setTimeout(() => {
-                            flagsubmitbutton.setAttribute("class", "button flagsubmitbutton");
+                            flagsubmitbutton.setAttribute("class", "button");
                         }, 1000);
                         msgBox.innerHTML = resp;
                     }

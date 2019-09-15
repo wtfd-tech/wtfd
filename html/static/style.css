@@ -16,15 +16,17 @@
     background-color: #14b967;
 }
 
+.button:active {
+    background-color: #138240;
+}
+
+.button.fail {
+    background-color: red;
+}
+
 input {
     border: 1px solid lightgray;
 }
-
-.flagsubmitbutton-fail {
-    transition-duration: 0.2s;
-    background-color: red !important;
-}
-
 
 .not-available {
     background-color: grey !important;

@@ -59,6 +59,7 @@ function showDialog(dlg) {
 
   const loginForm = document.getElementById("loginform");
   const loginError = document.getElementById("loginerror");
+  const loginSubmit = document.getElementById("loginsubmit");
   loginForm.addEventListener("submit", function(e){
     e.preventDefault();
     fetch("/login", {body: new URLSearchParams(new FormData(loginForm)), method: 'post'})
@@ -66,7 +67,11 @@ function showDialog(dlg) {
     .then((resp) => {
       if (resp.includes("Server Error")) {
         loginError.innerHTML = resp;
-        setTimeout(()=>{loginError.innerHTML = "";},"2000")
+        loginSubmit.setAttribute("class", "button fail");
+        setTimeout(()=>{
+            loginError.innerHTML = "";
+            loginSubmit.setAttribute("class", "button");
+        },2000);
       } else {
         location.href = "/";
       }
@@ -77,6 +82,7 @@ function showDialog(dlg) {
   });
   const registerForm = document.getElementById("registerform");
   const registerError = document.getElementById("registererror");
+  const registerSubmit = document.getElementById("registersubmit")
   registerForm.addEventListener("submit", function(e){
     e.preventDefault();
     fetch("/register", {body: new URLSearchParams(new FormData(registerForm)), method: 'post'})
@@ -84,7 +90,11 @@ function showDialog(dlg) {
     .then((resp) => {
       if (resp.includes("Server Error")) {
         registerError.innerHTML = resp;
-        setTimeout(()=>{registerError.innerHTML = "";},"2000")
+        registerSubmit.setAttribute("class", "button fail");
+        setTimeout(()=>{
+            registerError.innerHTML = "";
+            registerSubmit.setAttribute("class", "button");
+        },"2000")
       } else {
         location.href = "/";
       }
