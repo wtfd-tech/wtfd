@@ -58,9 +58,8 @@ func ormStart(logFile string) error {
 		f, err := os.Create(logFile)
 		if err != nil {
 			return err
-		} else {
-			engine.SetLogger(xorm.NewSimpleLogger(f))
 		}
+		engine.SetLogger(xorm.NewSimpleLogger(f))
 	}
 
 	engine.SetMapper(core.SameMapper{})
