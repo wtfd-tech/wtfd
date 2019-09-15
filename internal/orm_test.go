@@ -16,14 +16,14 @@ func TestMain(m *testing.M) {
 	err := ormStart("./testdblog")
 	if err != nil {
 		fmt.Printf("Database Creation failed: %v", err)
-	os.Exit(1)
+		os.Exit(1)
 	}
 	os.Exit(m.Run())
 
 }
 func TestUserCreation(t *testing.T) {
 
-  err := ormNewUser(u)
+	err := ormNewUser(u)
 	if err != nil {
 		t.Errorf("Database UserCreate failed: %v", err)
 

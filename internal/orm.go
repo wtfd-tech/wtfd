@@ -51,13 +51,13 @@ func ormStart(logFile string) error {
 	engine, err = xorm.NewEngine("sqlite3", "./state.db")
 
 	if err != nil {
-          return err
+		return err
 	}
 
 	if logFile != "" {
 		f, err := os.Create(logFile)
 		if err != nil {
-                  return err
+			return err
 		} else {
 			engine.SetLogger(xorm.NewSimpleLogger(f))
 		}
@@ -66,7 +66,7 @@ func ormStart(logFile string) error {
 	engine.SetMapper(core.SameMapper{})
 
 	ormSync()
-        return nil
+	return nil
 }
 
 func _ORMGenericError(desc string) error {
@@ -151,7 +151,7 @@ func ormDeleteUser(user User) error {
 // check if user exists in db
 func ormUserExists(user User) (bool, error) {
 	count, err := engine.Where("Name = ?", user.Name).Count(_ORMUser{})
-	fmt.Printf("ormUserExists: user: %v, count: %v, err: %v\n", user, count,err);
+	//fmt.Printf("ormUserExists: user: %v, count: %v, err: %v\n", user, count, err)
 	if err != nil {
 		return false, err
 	}
