@@ -5,9 +5,6 @@ stages:
   - build
 before_script:
   - export GOPATH=/cache/go
-  - go get -u golang.org/x/lint/golint
-  - apt-get update && apt-get install -y make curl
-
 
 unit_tests:
   stage: test
@@ -18,7 +15,8 @@ lint_code:
   stage: test
   allow_failure: true
   script:
-    - golint -set_exit_status $(go list ./... | grep -v /vendor/)
+    - go get -u golang.org/x/lint/golint
+    - /cache/go/bin/golint -set_exit_status $(go list ./... | grep -v /vendor/)
 
 build:
   stage: build
