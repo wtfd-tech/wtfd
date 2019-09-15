@@ -16,11 +16,19 @@
         {{end}}
         function start(){
           {{if .IsUser}}{{else}}document.getElementById("loginbutton").click();{{end}}
-          {{ range.Challenges }}
-          {{ if .AllDepsCompleted $user}}
-          addChallEventListener("{{.Name}}", "{{.Points}}");
-          {{end}}
-          {{end}}
+          {{ if .IsUser }}
+              {{ range.Challenges }}
+                  {{ if .AllDepsCompleted $user}}
+                    addChallEventListener("{{.Name}}", "{{.Points}}");
+                  {{end}}
+              {{end}}
+          {{ else }}
+            {{ range.Challenges }}
+                document.getElementById({{.Name}}).addEventListener("click", function () {
+                    document.getElementById("loginbutton").click();
+                });
+            {{ end }}
+          {{ end }}
           connectAll();
   {{if .HasSelectedChallengeID }} document.getElementById("{{.SelectedChallengeID}}").click();{{else}}{{end}}
         }
