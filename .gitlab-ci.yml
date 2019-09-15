@@ -16,13 +16,8 @@ before_script:
   - apt-get update && apt-get install -y make curl
   - export GO111MODULE=auto
 
+
 unit_tests:
-  stage: test
-  script:
-    - go test -short $(go list ./... | grep -v /vendor/)
-
-
-coverage:
   stage: test
   script:
     - go test -cover $(go list  ./... | grep -v /vendor/)
