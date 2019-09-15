@@ -1,0 +1,111 @@
+package wtfd
+
+import (
+	"encoding/json"
+	"fmt"
+	"testing"
+)
+
+func TestChallenges(t *testing.T) {
+	jsonstring := `{
+  "challenges": [
+    {
+      "name": "chall-a",
+      "desc": "aioöhsogöaerghaeörkglkfjgaöoerilgeoörgijk",
+      "flag": "FOSS{b}",
+      "solution": "# You nice person, \nyou just gotta put the b to the a, obviously",
+      "points": 8,
+      "uri": "ssh://asdf@%s"
+    },
+    {
+      "name": "chall-b",
+      "deps": ["chall-a"],
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "points": 1
+    },
+    {
+      "name": "chall-c",
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "deps": ["chall-b"],
+      "points": 1,
+      "uri": "ssh://asdf@%s"
+    },
+    {
+      "name": "chall-d",
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "deps": ["chall-a"],
+      "points": 1,
+      "uri": "ssh://asdf@%s"
+    },
+    {
+      "name": "chall-f",
+      "deps": ["chall-b","chall-c", "chall-d"],
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "points": 1
+    },
+    {
+      "name": "chall-h",
+      "deps": ["chall-n","chall-c"],
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "points": 1
+    },
+    {
+      "name": "chall-n",
+      "deps": ["chall-a"],
+      "desc": "aassddfaassddf",
+      "uri": "ssh://asdf@%s",
+      "flag": "FOSS{a}",
+      "points": 1
+    },
+    {
+      "name": "chall-e",
+      "deps": ["chall-b"],
+      "desc": "aassddfaassddf",
+      "flag": "FOSS{a}",
+      "points": 1
+    }
+  ],
+  "categories": [{ "title": "asdf", "challs": ["c", "e"] }]
+}`
+	var challsStructure JSONFile
+	if err := json.Unmarshal([]byte(jsonstring), &challsStructure); err != nil {
+		t.Errorf("JSON Unmarshal Error: %v", err)
+	}
+	resolveChalls(challsStructure.Challenges)
+	challs.FillChallengeURI(sshHost)
+	challn, err := challs.Find("chall-n")
+	if err != nil {
+		t.Errorf("Chall not found err: %v", err)
+	}
+	if challn.DepCount != 1 {
+		t.Errorf("ChallDepCount is wrong: %v", fmt.Errorf("%v has %v deps instead of 2", challn, challn.DepCount))
+	}
+	if challn.DepIDs[0] != "chall-h" {
+		t.Errorf("ChallDepID is wrong: %v", fmt.Errorf("%v has %v as reverse dep instead of chall-h", challn, challn.DepIDs[0]))
+	}
+        if !challn.HasURI {
+		t.Errorf("ChallHasUri is wrong: %v", fmt.Errorf("challn.HasURI is false instead of true"))
+        }
+        if challn.URI != fmt.Sprintf("ssh://asdf@%s",sshHost) {
+		t.Errorf("ChallUri is wrong: %v", fmt.Errorf("challn.URI is %v instead of 'ssh://asdf@%s'",challn.URI,sshHost))
+
+      }
+      t.Run("TestAllDepsCompleted", func(t *testing.T){
+
+        un := User{Name: "a" ,Completed: []Challenge{Challenge{Name: "chall-b"}}}
+        uy := User{Name: "a" ,Completed: []Challenge{Challenge{Name: "chall-a"}}}
+        if challn.AllDepsCompleted(un) {
+	t.Errorf("AllDepsCompleted is wrong: %v", fmt.Errorf("user hasn't completed dependent but AllDepsCompleted thinks it has"))
+        }
+        if !challn.AllDepsCompleted(uy) {
+	t.Errorf("AllDepsCompleted is wrong: %v", fmt.Errorf("user has completed dependent but AllDepsCompleted thinks it hasn't"))
+        }
+
+      })
+
+}
