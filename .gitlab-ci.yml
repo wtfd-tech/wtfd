@@ -1,20 +1,12 @@
 image: golang
 
-cache:
-  paths:
-    - /apt-cache
-    - /go/src/github.com
-    - /go/src/golang.org
-    - /go/src/google.golang.org
-    - /go/src/gopkg.in
-
 stages:
   - test
   - build
 before_script:
+  - export GOPATH=/cache/go
   - go get -u golang.org/x/lint/golint
   - apt-get update && apt-get install -y make curl
-  - export GO111MODULE=auto
 
 
 unit_tests:
@@ -32,3 +24,8 @@ build:
   stage: build
   script:
     - go build cmd/wtfd.go
+  artifacts:
+    paths:
+      - wtfd
+      - html/*
+      - challs.json
