@@ -85,6 +85,7 @@ function showDialog(dlg) {
   const registerSubmit = document.getElementById("registersubmit")
   registerForm.addEventListener("submit", function(e){
     e.preventDefault();
+    console.log(new URLSearchParams(new FormData(registerForm)))
     fetch("/register", {body: new URLSearchParams(new FormData(registerForm)), method: 'post'})
     .then((resp)=> resp.text())
     .then((resp) => {

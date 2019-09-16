@@ -22,8 +22,10 @@ var (
 // ORM definitions /////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 type _ORMUser struct {
-	Name string `xorm:"unique"`
-	Hash []byte
+	Name        string `xorm:"unique"`
+	DisplayName string `xorm:"unique"`
+	Hash        []byte
+	Points      int
 }
 
 type _ORMChallengesByUser struct {
@@ -88,8 +90,10 @@ func ormNewUser(user User) error {
 	}
 
 	_, err = engine.Insert(_ORMUser{
-		Name: user.Name,
-		Hash: user.Hash,
+		Name:        user.Name,
+		Hash:        user.Hash,
+		DisplayName: user.DisplayName,
+		Points:      0,
 	})
 
 	return err
@@ -111,8 +115,10 @@ func ormUpdateUser(user User) error {
 	}
 
 	u = _ORMUser{
-		Name: user.Name,
-		Hash: user.Hash,
+		Name:        user.Name,
+		Hash:        user.Hash,
+		DisplayName: user.DisplayName,
+		Points:      user.Points,
 	}
 
 	if _, err = engine.Where("Name = ?", user.Name).Update(&u); err != nil {
@@ -150,6 +156,23 @@ func ormDeleteUser(user User) error {
 // check if user exists in db
 func ormUserExists(user User) (bool, error) {
 	count, err := engine.Where("Name = ?", user.Name).Count(_ORMUser{})
+	//fmt.Printf("ormUserExists: user: %v, count: %v, err: %v\n", user, count, err)
+	if err != nil {
+		return false, err
+	}
+
+	if count == 0 {
+		return false, nil
+	}
+	if count == 1 {
+		return true, nil
+	}
+	return false, errors.New("DB User-table is in an invalid state")
+
+}
+
+func ormDisplayNameExists(name string) (bool, error) {
+	count, err := engine.Where("DisplayName = ?", name).Count(_ORMUser{})
 	//fmt.Printf("ormUserExists: user: %v, count: %v, err: %v\n", user, count, err)
 	if err != nil {
 		return false, err
@@ -220,6 +243,17 @@ func ormSolvedChallenge(user User, chall Challenge) error {
 	return err
 }
 
+func ormAllUsersSortedByPoints() ([]_ORMUser, error) {
+	var a []_ORMUser
+	err := engine.Desc("Points").Find(&a)
+	if err != nil {
+		return a, err
+
+	}
+	return a, nil
+
+}
+
 // load a single user from db (search by name)
 // The remaining fields of u will be filled by this function
 func ormLoadUser(name string) (User, error) {
@@ -242,8 +276,10 @@ func ormLoadUser(name string) (User, error) {
 	}
 
 	u = User{
-		Name: user.Name,
-		Hash: user.Hash,
+		Name:        user.Name,
+		Hash:        user.Hash,
+		DisplayName: user.DisplayName,
+		Points:      user.Points,
 	}
 
 	if u.Completed, err = ormChallengesSolved(u); err != nil {

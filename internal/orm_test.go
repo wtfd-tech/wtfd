@@ -7,8 +7,8 @@ import (
 )
 
 var (
-	u         User      = User{Name: "testuser", Hash: []byte("a")}
-	fakeu     User      = User{Name: "faketestuser", Hash: []byte("a")} // No Challenges because new users dont have any
+	u         User      = User{DisplayName: "asdf", Name: "testuser", Hash: []byte("a")}
+	fakeu     User      = User{DisplayName: "aasdf", Name: "faketestuser", Hash: []byte("a")} // No Challenges because new users dont have any
 	testchall Challenge = Challenge{Name: "testchall", Flag: "testflag"}
 )
 
@@ -54,7 +54,7 @@ func TestUserExists(t *testing.T) {
 
 func TestUserDeletion(t *testing.T) {
 
-	deleteTestUser := User{Name: "deletetestuser"}
+	deleteTestUser := User{Name: "deletetestuser", DisplayName: "deleteTestUser"}
 _:
 	ormNewUser(deleteTestUser)
 	err := ormDeleteUser(deleteTestUser)
