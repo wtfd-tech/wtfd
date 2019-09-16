@@ -20,6 +20,7 @@ function addChallEventListener(title, points) {
         let solutioninnerdiv = document.getElementById("solutioninnerdiv");
         let flagInput = document.getElementById("flaginput");
         let msgBox = document.getElementById("flagsubmitmsg");
+        let checkLoading = document.getElementById("checkloading");
         history.pushState(stateObj, "challenge " + title, title);
         flagsubmitbutton.removeEventListener("click", flagsubmiteventlistenerfunc);
         flagInput.removeEventListener("keypress", flaginputeventlistenerfunc);
@@ -27,12 +28,14 @@ function addChallEventListener(title, points) {
 
         flagsubmiteventlistenerfunc = function () {
             const data = new URLSearchParams();
+            checkLoading.style.display = "block";
             data.append("flag", flagInput.value);
             data.append("challenge", title);
             console.log("hey, the flag is " + flagInput.value);
             fetch("/submitflag", {method: 'post', body: data})
                 .then(resp => resp.text())
                 .then((resp) => {
+                    checkLoading.style.display = "none";
                     if (resp === "correct") {
                         location.href = "/";
                     } else {

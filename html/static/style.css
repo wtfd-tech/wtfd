@@ -371,7 +371,34 @@ h3 {
 .selected-big-link.big-link {
 
     color: #14b967;
+  }
 
+.loadingbar {
+    margin-top: 1px;
+    margin-bottom: 1px;
+    height: 1px;
+    width: 100%;
+    background-color: #14b967;
+
+    animation-name: left-right;
+    animation-duration: 1s;
+    animation-direction: alternate;
+    animation-iteration-count: infinite;
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes left-right {
+    from {
+        float: left;
+        width: 5%;
+    }
+    50% {
+        width: 100%;
+    }
+    to {
+        float: right;
+        width: 5%;
+    }
 }
 
 .big-link {
@@ -383,6 +410,7 @@ h3 {
     color: #b3b3b3;
     margin-right: 30px;
 }
+
 .link {
     font-size: 10pt;
     text-decoration: none;
