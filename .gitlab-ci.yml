@@ -21,7 +21,7 @@ lint_code:
 build:
   stage: build
   script:
-    - go build cmd/wtfd.go
+    - go build -x cmd/wtfd.go
   artifacts:
     paths:
       - wtfd
