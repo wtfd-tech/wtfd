@@ -90,10 +90,10 @@ type ChallengeJSON struct {
 
 // User was ist das wohl
 type User struct {
-	Name      string
-	Hash      []byte
-        DisplayName string
-	Completed []Challenge
+	Name        string
+	Hash        []byte
+	DisplayName string
+	Completed   []Challenge
 }
 
 type mainPageData struct {

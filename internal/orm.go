@@ -22,9 +22,9 @@ var (
 // ORM definitions /////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 type _ORMUser struct {
-	Name string `xorm:"unique"`
-        DisplayName string `xorm:"unique"`
-	Hash []byte
+	Name        string `xorm:"unique"`
+	DisplayName string `xorm:"unique"`
+	Hash        []byte
 }
 
 type _ORMChallengesByUser struct {
@@ -260,9 +260,9 @@ func ormLoadUser(name string) (User, error) {
 	}
 
 	u = User{
-		Name: user.Name,
-		Hash: user.Hash,
-                DisplayName: user.DisplayName,
+		Name:        user.Name,
+		Hash:        user.Hash,
+		DisplayName: user.DisplayName,
 	}
 
 	if u.Completed, err = ormChallengesSolved(u); err != nil {
