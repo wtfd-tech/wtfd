@@ -89,8 +89,9 @@ func ormNewUser(user User) error {
 	}
 
 	_, err = engine.Insert(_ORMUser{
-		Name: user.Name,
-		Hash: user.Hash,
+		Name:        user.Name,
+		Hash:        user.Hash,
+		DisplayName: user.DisplayName,
 	})
 
 	return err
@@ -112,8 +113,9 @@ func ormUpdateUser(user User) error {
 	}
 
 	u = _ORMUser{
-		Name: user.Name,
-		Hash: user.Hash,
+		Name:        user.Name,
+		Hash:        user.Hash,
+		DisplayName: user.DisplayName,
 	}
 
 	if _, err = engine.Where("Name = ?", user.Name).Update(&u); err != nil {
