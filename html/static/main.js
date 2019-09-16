@@ -118,7 +118,7 @@ function signum(a) {
 
 const svgNS = "http://www.w3.org/2000/svg";
 
-function drawPath(svg, path, startX, startY, endX, endY, drawFunction) {
+function drawPath(svg, path, startX, startY, endX, endY, drawFunction, nothinginbetween) {
     // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
     const stroke = parseFloat(path.getAttribute("stroke-width"));
     // check if the svg is big enough to draw the path, if not, set heigh/width
@@ -162,6 +162,10 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction) {
     } else {
         if (startY === endY) {
             //75 is half of grid-column-gap
+            if (nothinginbetween) {
+            path.setAttributeNS(null, "d", "M" +startX + " " + startY + " H" + endX);
+
+            } else {
             const mid = 75;
             path.setAttributeNS(null, "d", "M" + startX + " " + startY +
                 " H" + (startX + mid - deltaNum) +
@@ -174,6 +178,7 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction) {
                 " A" + deltaNum + " " + deltaNum + " 0 0 " + arc1 + " " + (endX - mid + deltaNum) + " " + (endY) +
                 " H" + endX
             );
+            }
         } else {
             path.setAttributeNS(null, "d", "M" + startX + " " + startY +
                 " H" + (startX + delta) +
@@ -201,8 +206,23 @@ function connectElementss(svg, startElem, endElems, color) {
 
 }
 
+function isInbetween(startElem){
+vals = colnum.values();
+    a = vals.next();
+  let done = false
+  while(!done){
+    console.log(a.value.row, startElem.row, a.value.col, parseInt(startElem.col)+1);
+    if(a.value.row === startElem.row && a.value.col === startElem.col+1) return true;
+    a = vals.next();
+    done = a.done;
+  }
+  return false;
+
+}
+
 function connectElements(svg, startElem, endElem, color) {
-    const drawFunction = colnum.get(endElem.id) - colnum.get(startElem.id) > 1;
+    const drawFunction = colnum.get(endElem.id).col - colnum.get(startElem.id).col > 1;
+    
     const path = document.createElementNS(svgNS, "path");
     path.setAttributeNS(null, "d", "M0 0");
     path.setAttributeNS(null, "stroke", color);
@@ -236,7 +256,7 @@ function connectElements(svg, startElem, endElem, color) {
     const endY = endCoord.top - 0.5 * (endElem.offsetHeight);
 
     // call function for drawing the path
-    drawPath(svg, path, startX, startY, endX, endY, drawFunction);
+    drawPath(svg, path, startX, startY, endX, endY, drawFunction, !isInbetween(colnum.get(startElem.id)));
 
 }
 

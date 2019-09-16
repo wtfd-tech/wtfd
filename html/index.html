@@ -3,7 +3,7 @@
     <main class="flexcell gridcontainer">
       {{ $user := .User }}
       {{ range.Challenges }}
-      <div id="{{.Name}}" class="{{if $user.HasSolvedChallenge . }}completed {{end}}{{if .AllDepsCompleted $user}}{{else}}not-available{{end}} challenge col-{{.DepCount}}">
+      <div id="{{.Name}}" class="{{if $user.HasSolvedChallenge . }}completed {{end}}{{if .AllDepsCompleted $user}}{{else}}not-available{{end}} challenge row-{{.Row}} col-{{.DepCount}}">
         <p class="chall-title">{{.Name}}</p>
         <p class="score firamono"><span class="pointicon"></span> {{.Points}}</p>
       </div>
@@ -12,7 +12,7 @@
       <script>
         var colnum = new Map();
         {{ range.Challenges}}
-        colnum.set("{{.Name}}","{{.DepCount}}");
+colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
         {{end}}
         function start(){
           {{if .IsUser}}{{else}}document.getElementById("loginbutton").click();{{end}}
@@ -38,6 +38,7 @@
           ["#262626",
           "#4d4d4d",
           "#808080",
+          "#606060",
           "#3b3b3b"];
           var svg1 = document.getElementById("svg1");
 
