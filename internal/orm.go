@@ -192,17 +192,21 @@ func ormDisplayNameExists(name string) (bool, error) {
 func ormChallengesSolved(user User) ([]Challenge, error) {
 	var challenges []Challenge
 
+	fmt.Printf("%s Solved following Challenges\n", user.Name)
 	engine.Where("UserName = ?", user.Name).Iterate(_ORMChallengesByUser{}, func(i int, bean interface{}) error {
 		relation := bean.(*_ORMChallengesByUser)
 
 		for _, c := range challs {
 			if c.Name == relation.ChallengeName {
 				challenges = append(challenges, c)
+				fmt.Println(relation.ChallengeName)
 			}
 		}
 
 		return nil
 	})
+
+	fmt.Println("---")
 
 	return challenges, nil
 }
