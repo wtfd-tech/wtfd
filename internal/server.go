@@ -139,12 +139,14 @@ type leaderboardPageData struct {
 	User          User
 	IsUser        bool
 	Points        int
+	Leaderboard   bool
 	AllUsers      []_ORMUser
 	GeneratedName string
 }
 type mainPageData struct {
 	PageTitle              string
 	Challenges             []Challenge
+	Leaderboard            bool
 	SelectedChallengeID    string
 	HasSelectedChallengeID bool
 	GeneratedName          string
@@ -434,6 +436,7 @@ func leaderboardpage(w http.ResponseWriter, r *http.Request) {
 	data := leaderboardPageData{
 		PageTitle:     "foss-ag O-Phasen CTF",
 		GeneratedName: genu,
+		Leaderboard:   true,
 		AllUsers:      allUsers,
 		User:          *user,
 		IsUser:        ok,

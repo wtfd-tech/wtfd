@@ -24,21 +24,14 @@
       c.height = 800;
 
       var chart = new Chart(c, {
-        type: 'line',
+        type: 'horizontalBar',
         data: {
           labels: [{{ range .AllUsers }}{{ .DisplayName }},{{end}}],
-          datasets: [ { data: [{{ range .AllUsers }}{{ .Points }},{{end}}]}]
+          datasets: [ { label: "Points", data: [{{ range .AllUsers }}{{ .Points }},{{end}}]}]
         },
         options: {
               mantainAspectRatio: false,
-              responsive: true,
-        scales: {
-            yAxes: [{
-                ticks: {
-                    beginAtZero:true
-                }
-            }]
-        }
+              responsive: true
     }
     });
     })();

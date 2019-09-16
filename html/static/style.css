@@ -136,6 +136,19 @@ footer {
     animation-timing-function: linear;
 }
 
+#siteselect {
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    align-items: center;
+}
+#siteselectcol {
+    text-align: right;
+    flex-direction: row;
+    display: flex;
+}
+
 #accountinfo {
     text-align: right;
     display: flex;
@@ -355,22 +368,28 @@ h3 {
     display: flex;
 }
 
+.selected-big-link.big-link {
+
+    color: #14b967;
+
+}
+
 .big-link {
-    font-size: 30pt;
+    margin-top: auto;
+    margin-bottom: auto;
+    font-size: 16pt;
     text-decoration: none;
     transition-duration: 0.2s;
-    color: #4d4d4d;
+    color: #b3b3b3;
     margin-right: 30px;
 }
 .link {
     font-size: 10pt;
     text-decoration: none;
     transition-duration: 0.2s;
-}
-
-a.link {
     color: #4d4d4d;
 }
+
 
 .big-link:hover {
     color: #14b967;

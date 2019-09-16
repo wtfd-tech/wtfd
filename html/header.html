@@ -19,12 +19,14 @@
         </div>
       </div>
       <div class="flexcell" id="siteselect">
-        <a class="big-link" href="/">Challenges</a>
-        <a class="big-link" href="/leaderboard">Leaderboard</a>
+      <div class="flexcell" id="siteselectcol">
+        <a class="big-link {{if .Leaderboard}}{{else}}selected-big-link{{end}}" href="/">Challenges</a>
+        <a class="big-link {{if .Leaderboard}}selected-big-link{{end}}" href="/leaderboard">Leaderboard</a>
+      </div>
       </div>
       <div class="flexcell" id="accountinfo">
         {{if .IsUser}}
-          <div class="flexcell">{{.User.Name}}</div>
+          <div class="flexcell">{{.User.DisplayName}}</div>
           <div class="score-right flexcell firamono"><span class="pointicon"></span> {{.User.Points}}</div>
           <span class="link flexcell" id="logoutbutton">Logout</span>
         {{else}}
