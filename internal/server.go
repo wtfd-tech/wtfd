@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"sort"
 	"strconv"
 
 	"github.com/gomarkdown/markdown"
@@ -67,6 +68,7 @@ type Challenge struct {
 	Points      int    `json:"points"`
 	URI         string `json:"uri"`
 	DepCount    int
+	MinRow		int
 	Row         int
 	Solution    string `json:"solution"`
 	DepIDs      []string
@@ -81,7 +83,6 @@ type ChallengeJSON struct {
 	Solution    string   `json:"solution"`
 	Flag        string   `json:"flag"`
 	Points      int      `json:"points"`
-	Row         int      `json:"row"`
 	URI         string   `json:"uri"`
 	Deps        []string `json:"deps"`
 	HasURI      bool     // This emerges from URI != ""
@@ -231,6 +232,48 @@ func reverseResolveAllDepIDs() {
 	}
 }
 
+func calculateMinRowNum(chall Challenge) int {
+	if chall.MinRow != -1 {return chall.MinRow}
+	chall.MinRow = 0
+	for i := range chall.Deps {
+		val := calculateMinRowNum(chall.Deps[i])
+		if val >= chall.MinRow {
+			chall.MinRow = val+1
+		}
+	}
+	return chall.MinRow
+}
+
+func calculateRowNums() {
+	maxcol := 0
+	for i := range challs {
+		if challs[i].DepCount > maxcol {maxcol = challs[i].DepCount}
+		calculateMinRowNum(challs[i])
+	}
+
+	challmatrix := make([][]Challenge, maxcol+1)
+	for i := range challmatrix {
+		challmatrix[i] = []Challenge{}
+	}
+
+	for i := range challs {
+		challmatrix[challs[i].DepCount] = append(challmatrix[challs[i].DepCount], challs[i])
+	}
+	for col := range challmatrix {
+		sort.Slice(challmatrix[col], func(i, j int) bool {
+			return challmatrix[col][i].MinRow < challmatrix[col][j].MinRow
+		})
+		row := 0
+		for e := range challmatrix[col] {
+			if challmatrix[col][e].MinRow > row {
+				row = challmatrix[col][e].MinRow
+			}
+			challmatrix[col][e].Row = row
+			row++
+		}
+	}
+}
+
 func resolveChalls(challcat []ChallengeJSON) {
 	i := 0
 	idsInChalls := []string{}
@@ -239,7 +282,7 @@ func resolveChalls(challcat []ChallengeJSON) {
 		this := challcat[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
 			idsInChalls = append(idsInChalls, this.Name)
-			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, Row: this.Row})
+			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, MinRow: -1, Row: -1})
 			challcat[i] = challcat[len(challcat)-1]
 			challcat = challcat[:len(challcat)-1]
 			i = 0
@@ -250,6 +293,7 @@ func resolveChalls(challcat []ChallengeJSON) {
 	}
 	countAllDeps()
 	reverseResolveAllDepIDs()
+	calculateRowNums()
 }
 
 // Login checks if password is right for username and returns the User object of it
