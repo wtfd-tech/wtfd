@@ -96,6 +96,12 @@ type User struct {
 	Completed   []Challenge
 }
 
+type leaderboardPageData struct {
+	PageTitle              string
+	User                   User
+	IsUser                 bool
+	Points                 int
+}
 type mainPageData struct {
 	PageTitle              string
 	Challenges             []Challenge
