@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"os"
 	"sort"
@@ -34,6 +35,42 @@ var (
 	challcats           = ChallengeCategory{}
 	mainpagetemplate    = template.New("")
 	leaderboardtemplate = template.New("")
+	coolNames           = [...]string{
+		"Anstruther's Dark Prophecy",
+		"The Unicorn Invasion of Dundee",
+		"Angus McFife",
+		"Quest for the Hammer of Glory",
+		"Magic Dragon",
+		"Silent Tears of Frozen Princess",
+		"Amulet of Justice",
+		"Hail to Crail",
+		"Beneath Cowdenbeath",
+		"The Epic Rage of Furious Thunder",
+		"Infernus Ad Astra",
+		"Rise of the Chaos Wizards",
+		"Legend of the Astral Hammer",
+		"Goblin King of the Darkstorm Galaxy",
+		"The Hollywood Hootsman",
+		"Victorious Eagle Warfare",
+		"Questlords of Inverness, Ride to the Galactic Fortress!",
+		"Universe on Fire",
+		"Heroes (of Dundee)",
+		"Apocalypse 1992",
+		"The Siege of Dunkeld (In Hoots We Trust)",
+		"Masters of the Galaxy",
+		"The Land of Unicorns",
+		"Power of the Laser Dragon Fire",
+		"Legendary Enchanted Jetpack",
+		"Gloryhammer",
+		"Hootsforce",
+		"Battle for Eternity",
+		"The Fires of Ancient Cosmic Destiny",
+		"Dundaxian Overture",
+		"The Battle of Cowdenbeath",
+		"Return of the Astral Demigod of Unst",
+		"The Knife of Evil",
+		"Transmission",
+	}
 )
 
 // Challenges Array of challenges but in nice with funcitons
@@ -68,7 +105,7 @@ type Challenge struct {
 	Points      int    `json:"points"`
 	URI         string `json:"uri"`
 	DepCount    int
-	MinRow		int
+	MinRow      int
 	Row         int
 	Solution    string `json:"solution"`
 	DepIDs      []string
@@ -97,16 +134,17 @@ type User struct {
 }
 
 type leaderboardPageData struct {
-	PageTitle              string
-	User                   User
-	IsUser                 bool
-	Points                 int
+	PageTitle string
+	User      User
+	IsUser    bool
+	Points    int
 }
 type mainPageData struct {
 	PageTitle              string
 	Challenges             []Challenge
 	SelectedChallengeID    string
 	HasSelectedChallengeID bool
+	GeneratedName          string
 	User                   User
 	IsUser                 bool
 	Points                 int
@@ -151,9 +189,9 @@ func (c Challenge) AllDepsCompleted(u User) bool {
 }
 
 // Contains looks if a username is in the datenbank
-func Contains(username string) bool {
-	_, err := ormLoadUser(username)
-	return err == nil
+func Contains(username, displayname string) bool {
+	count, _ := ormUserExists(User{Name: username, DisplayName: displayname})
+	return count
 }
 
 // HasSolvedChallenge returns true if u has solved chall
@@ -240,12 +278,14 @@ func reverseResolveAllDepIDs() {
 }
 
 func calculateMinRowNum(chall Challenge) int {
-	if chall.MinRow != -1 {return chall.MinRow}
+	if chall.MinRow != -1 {
+		return chall.MinRow
+	}
 	chall.MinRow = 0
 	for i := range chall.Deps {
 		val := calculateMinRowNum(chall.Deps[i])
 		if val >= chall.MinRow {
-			chall.MinRow = val+1
+			chall.MinRow = val + 1
 		}
 	}
 	return chall.MinRow
@@ -254,7 +294,9 @@ func calculateMinRowNum(chall Challenge) int {
 func calculateRowNums() {
 	maxcol := 0
 	for i := range challs {
-		if challs[i].DepCount > maxcol {maxcol = challs[i].DepCount}
+		if challs[i].DepCount > maxcol {
+			maxcol = challs[i].DepCount
+		}
 		calculateMinRowNum(challs[i])
 	}
 
@@ -323,8 +365,8 @@ func (u *User) ComparePassword(password string) bool {
 }
 
 // NewUser creates a new user object
-func NewUser(name, password string) (User, error) {
-	if Contains(name) {
+func NewUser(name, password, displayname string) (User, error) {
+	if Contains(name, displayname) {
 		return User{}, errUserExisting
 	}
 	hash, err := bcrypt.GenerateFromPassword([]byte(password), 14)
@@ -333,7 +375,36 @@ func NewUser(name, password string) (User, error) {
 	}
 
 	fmt.Printf("New User added: %s\n", name)
-	return User{Name: name, Hash: hash}, nil
+	return User{Name: name, Hash: hash, DisplayName: displayname}, nil
+
+}
+
+func generateUserName() (string, error) {
+
+	var name string
+	for _, s := range coolNames {
+		if exists, err := ormDisplayNameExists(s); !exists {
+			if err != nil {
+				return "", err
+
+			}
+			name = s
+			break
+		}
+	}
+	for name == "" {
+		name = strconv.FormatInt(rand.Int63(), 10)
+		if exists, err := ormDisplayNameExists(name); !exists {
+			if err != nil {
+				return "", err
+
+			}
+			name = ""
+
+		}
+
+	}
+	return name, nil
 
 }
 
@@ -343,19 +414,28 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	session, _ := store.Get(r, "auth")
 	val := session.Values["User"]
 	user := &User{}
+	genu := ""
+        var err error
 	newuser, ok := val.(*User)
 	if ok {
 		user = newuser
+	} else {
+		genu, err = generateUserName()
+		if err != nil {
+			fmt.Fprintf(w, "Error: %v", err)
+		}
+
 	}
 	data := mainPageData{
 		PageTitle:              "foss-ag O-Phasen CTF",
 		Challenges:             challs,
+		GeneratedName:          genu,
 		HasSelectedChallengeID: hasChall,
 		SelectedChallengeID:    vars["chall"],
 		User:                   *user,
 		IsUser:                 ok,
 	}
-	err := mainpagetemplate.Execute(w, data)
+	err = mainpagetemplate.Execute(w, data)
 	if err != nil {
 		fmt.Printf("Template error: %v\n", err)
 
@@ -456,7 +536,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 				fmt.Fprintf(w, "Username must be at least 5 characters")
 
 			} else {
-				u, err := NewUser(r.Form.Get("username"), r.Form.Get("password"))
+				u, err := NewUser(r.Form.Get("username"), r.Form.Get("password"), r.Form.Get("displayname"))
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
 					fmt.Fprintf(w, "Server Error: %v", err)
