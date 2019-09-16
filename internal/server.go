@@ -131,6 +131,7 @@ type User struct {
 	Hash        []byte
 	DisplayName string
 	Completed   []Challenge
+	Points      int
 }
 
 type leaderboardPageData struct {
@@ -204,15 +205,15 @@ func (u User) HasSolvedChallenge(chall Challenge) bool {
 	return false
 }
 
-// CalculatePoints calculates Points of u
-func (u User) CalculatePoints() int {
+// CalculatePoints calculates Points and updates user.Points
+func (u *User) CalculatePoints() {
 	points := 0
 
 	for _, c := range u.Completed {
 		points += c.Points
 	}
 
-	return points
+	u.Points = points
 }
 
 // Get gets username based on username
@@ -501,9 +502,17 @@ func submitFlag(w http.ResponseWriter, r *http.Request) {
 		}
 		if r.Form.Get("flag") == completedChallenge.Flag {
 			user.Completed = append(user.Completed, completedChallenge)
+
 			if err = ormSolvedChallenge(*user, completedChallenge); err != nil {
 				fmt.Errorf("ORM Error: %s", err)
 			}
+
+			user.CalculatePoints()
+
+			if err = ormUpdateUser(*user); err != nil {
+				fmt.Errorf("ORM Error: %s", err)
+			}
+
 			fmt.Fprintf(w, "correct")
 
 		} else {

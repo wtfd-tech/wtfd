@@ -21,7 +21,7 @@
       <div class="flexcell" id="accountinfo">
         {{if .IsUser}}
           <div class="flexcell">{{.User.Name}}</div>
-          <div class="score-right flexcell firamono"><span class="pointicon"></span> {{.User.CalculatePoints}}</div>
+          <div class="score-right flexcell firamono"><span class="pointicon"></span> {{.User.Points}}</div>
           <span class="link flexcell" id="logoutbutton">Logout</span>
         {{else}}
         <span class="link" id="loginbutton"><span class="mdi mdi-login-variant"></span> Login</span>

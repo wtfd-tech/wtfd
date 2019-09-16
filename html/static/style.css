@@ -126,6 +126,14 @@ footer {
 
 #logo-img {
     flex-basis: 64px;
+    border-radius: 32px;
+}
+
+#logo-img:hover {
+    animation-name: rotate;
+    animation-duration: 3s;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
 }
 
 #accountinfo {

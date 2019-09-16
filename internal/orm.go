@@ -25,6 +25,7 @@ type _ORMUser struct {
 	Name        string `xorm:"unique"`
 	DisplayName string `xorm:"unique"`
 	Hash        []byte
+	Points		int
 }
 
 type _ORMChallengesByUser struct {
@@ -89,8 +90,10 @@ func ormNewUser(user User) error {
 	}
 
 	_, err = engine.Insert(_ORMUser{
-		Name: user.Name,
-		Hash: user.Hash,
+		Name:        user.Name,
+		Hash:        user.Hash,
+		DisplayName: user.DisplayName,
+		Points: 0,
 	})
 
 	return err
@@ -112,8 +115,10 @@ func ormUpdateUser(user User) error {
 	}
 
 	u = _ORMUser{
-		Name: user.Name,
-		Hash: user.Hash,
+		Name:        user.Name,
+		Hash:        user.Hash,
+		DisplayName: user.DisplayName,
+		Points:      user.Points,
 	}
 
 	if _, err = engine.Where("Name = ?", user.Name).Update(&u); err != nil {
@@ -263,6 +268,7 @@ func ormLoadUser(name string) (User, error) {
 		Name:        user.Name,
 		Hash:        user.Hash,
 		DisplayName: user.DisplayName,
+		Points:		 user.Points,
 	}
 
 	if u.Completed, err = ormChallengesSolved(u); err != nil {
