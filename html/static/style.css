@@ -88,6 +88,7 @@ footer {
     background-color: #b3b3b3;
     align-self: center;
     align-items: center;
+    padding-bottom: .1em;
     z-index: 6;
 }
 
