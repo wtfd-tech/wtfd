@@ -30,9 +30,12 @@
           datasets: [ { label: "Points", data: [{{ range .AllUsers }}{{ .Points }},{{end}}]}]
         },
         options: {
-              mantainAspectRatio: false,
-              responsive: true
-    }
+          legend: {
+              display: false,
+          },
+          mantainAspectRatio: false,
+          responsive: true,
+        },
     });
     })();
   </script>
