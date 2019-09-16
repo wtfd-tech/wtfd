@@ -357,7 +357,7 @@ h3 {
 
 .loadingbar {
     margin-top: 1px;
-    display: flex;
+    margin-bottom: 1px;
     height: 1px;
     width: 100%;
     background-color: #14b967;

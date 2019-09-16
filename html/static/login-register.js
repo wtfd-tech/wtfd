@@ -60,12 +60,16 @@ function showDialog(dlg) {
   const loginForm = document.getElementById("loginform");
   const loginError = document.getElementById("loginerror");
   const loginSubmit = document.getElementById("loginsubmit");
+  const loginLoading = document.getElementById("loginloading");
+
   loginForm.addEventListener("submit", function(e){
+    loginLoading.style.display = "block";
     e.preventDefault();
     fetch("/login", {body: new URLSearchParams(new FormData(loginForm)), method: 'post'})
     .then((resp)=> resp.text())
     .then((resp) => {
       if (resp.includes("Server Error")) {
+        loginLoading.style.display = "none";
         loginError.innerHTML = resp;
         loginSubmit.setAttribute("class", "button fail");
         setTimeout(()=>{
@@ -83,12 +87,16 @@ function showDialog(dlg) {
   const registerForm = document.getElementById("registerform");
   const registerError = document.getElementById("registererror");
   const registerSubmit = document.getElementById("registersubmit")
+  const registerLoading = document.getElementById("registerloading");
+
   registerForm.addEventListener("submit", function(e){
+    registerLoading.style.display = "block";
     e.preventDefault();
     console.log(new URLSearchParams(new FormData(registerForm)))
     fetch("/register", {body: new URLSearchParams(new FormData(registerForm)), method: 'post'})
     .then((resp)=> resp.text())
     .then((resp) => {
+      registerLoading.style.display = "none";
       if (resp.includes("Server Error")) {
         registerError.innerHTML = resp;
         registerSubmit.setAttribute("class", "button fail");
