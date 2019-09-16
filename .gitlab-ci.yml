@@ -1,21 +1,10 @@
 image: golang
 
-cache:
-  paths:
-    - /apt-cache
-    - /go/src/github.com
-    - /go/src/golang.org
-    - /go/src/google.golang.org
-    - /go/src/gopkg.in
-
 stages:
   - test
   - build
 before_script:
-  - go get -u golang.org/x/lint/golint
-  - apt-get update && apt-get install -y make curl
-  - export GO111MODULE=auto
-
+  - export GOPATH=/cache/go
 
 unit_tests:
   stage: test
@@ -26,9 +15,15 @@ lint_code:
   stage: test
   allow_failure: true
   script:
-    - golint -set_exit_status $(go list ./... | grep -v /vendor/)
+    - go get -u golang.org/x/lint/golint
+    - /cache/go/bin/golint -set_exit_status $(go list ./... | grep -v /vendor/)
 
 build:
   stage: build
   script:
     - go build cmd/wtfd.go
+  artifacts:
+    paths:
+      - wtfd
+      - html/*
+      - challs.json
