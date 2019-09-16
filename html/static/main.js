@@ -21,6 +21,7 @@ function addChallEventListener(title, points) {
         let flagInput = document.getElementById("flaginput");
         let msgBox = document.getElementById("flagsubmitmsg");
         let checkLoading = document.getElementById("checkloading");
+        let challUri = document.getElementById("challuri");
         history.pushState(stateObj, "challenge " + title, title);
         flagsubmitbutton.removeEventListener("click", flagsubmiteventlistenerfunc);
         flagInput.removeEventListener("keypress", flaginputeventlistenerfunc);
@@ -94,6 +95,13 @@ function addChallEventListener(title, points) {
             solutiondiv.style.display = "none";
         }
 
+        challUri.style.display = "none";
+        fetch("/uriview/" + title).then(resp => resp.text()).then(function (response) {
+            if(response != "") {
+                challUri.style.display = "";
+                challUri.href = response;
+            }
+        });
 
         showDialog(detView);
     });

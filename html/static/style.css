@@ -495,3 +495,8 @@ menu {
 .logintab.active:hover {
     color: black;
 }
+
+.challengelink {
+    margin-left: 5%;
+    color: #14b967;
+}
