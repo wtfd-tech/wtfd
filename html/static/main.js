@@ -47,7 +47,7 @@ function addChallEventListener(title, points) {
         };
         flaginputeventlistenerfunc = function (e) {
             if (e.key === 'Enter') {
-                flaginputeventlistenerfunc();
+                flagsubmiteventlistenerfunc();
             }
         };
         solutioneventlistenerfunc = function () {
