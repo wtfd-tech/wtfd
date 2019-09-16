@@ -650,6 +650,17 @@ func detailview(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func uriview(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	chall, err := challs.Find(vars["chall"])
+	if err != nil {
+		fmt.Fprintf(w, "ServerError: Challenge with is %s not found", vars["chall"])
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	fmt.Fprint(w, chall.URI)
+}
+
 func favicon(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "html/static/favicon.ico")
 }
@@ -702,6 +713,7 @@ func Server() error {
 	r.HandleFunc("/{chall}", mainpage)
 	r.HandleFunc("/detailview/{chall}", detailview)
 	r.HandleFunc("/solutionview/{chall}", solutionview)
+	r.HandleFunc("/uriview/{chall}", uriview)
 	// static
 	r.PathPrefix("/static").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir("html/static"))))
