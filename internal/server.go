@@ -92,6 +92,7 @@ type ChallengeJSON struct {
 type User struct {
 	Name      string
 	Hash      []byte
+        DisplayName string
 	Completed []Challenge
 }
 

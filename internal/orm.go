@@ -23,6 +23,7 @@ var (
 ////////////////////////////////////////////////////////////////////////////////
 type _ORMUser struct {
 	Name string `xorm:"unique"`
+        DisplayName string `xorm:"unique"`
 	Hash []byte
 }
 
@@ -165,6 +166,23 @@ func ormUserExists(user User) (bool, error) {
 
 }
 
+func ormDisplayNameExists(name string) (bool, error) {
+	count, err := engine.Where("DisplayName = ?", name).Count(_ORMUser{})
+	//fmt.Printf("ormUserExists: user: %v, count: %v, err: %v\n", user, count, err)
+	if err != nil {
+		return false, err
+	}
+
+	if count == 0 {
+		return false, nil
+	}
+	if count == 1 {
+		return true, nil
+	}
+	return false, errors.New("DB User-table is in an invalid state")
+
+}
+
 // get Challenges{} solved by user (db-state)
 func ormChallengesSolved(user User) ([]Challenge, error) {
 	var challenges []Challenge
@@ -244,6 +262,7 @@ func ormLoadUser(name string) (User, error) {
 	u = User{
 		Name: user.Name,
 		Hash: user.Hash,
+                DisplayName: user.DisplayName,
 	}
 
 	if u.Completed, err = ormChallengesSolved(u); err != nil {
