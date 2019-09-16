@@ -94,6 +94,7 @@ type User struct {
 	Hash        []byte
 	DisplayName string
 	Completed   []Challenge
+	Points      int
 }
 
 type leaderboardPageData struct {
