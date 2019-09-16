@@ -135,10 +135,12 @@ type User struct {
 }
 
 type leaderboardPageData struct {
-	PageTitle string
-	User      User
-	IsUser    bool
-	Points    int
+	PageTitle     string
+	User          User
+	IsUser        bool
+	Points        int
+	AllUsers      []_ORMUser
+	GeneratedName string
 }
 type mainPageData struct {
 	PageTitle              string
@@ -409,6 +411,40 @@ func generateUserName() (string, error) {
 
 }
 
+func leaderboardpage(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "auth")
+	val := session.Values["User"]
+	user := &User{}
+	genu := ""
+	var err error
+	newuser, ok := val.(*User)
+	if ok {
+		user = newuser
+	} else {
+		genu, err = generateUserName()
+		if err != nil {
+			fmt.Fprintf(w, "Error: %v", err)
+		}
+
+	}
+	allUsers, err := ormAllUsersSortedByPoints()
+	if err != nil {
+		fmt.Fprintf(w, "Error: %v", err)
+	}
+	data := leaderboardPageData{
+		PageTitle:     "foss-ag O-Phasen CTF",
+		GeneratedName: genu,
+		AllUsers:      allUsers,
+		User:          *user,
+		IsUser:        ok,
+	}
+	err = leaderboardtemplate.Execute(w, data)
+	if err != nil {
+		fmt.Printf("Template error: %v\n", err)
+
+	}
+
+}
 func mainpage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	hasChall := vars["chall"] != ""
@@ -416,7 +452,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	val := session.Values["User"]
 	user := &User{}
 	genu := ""
-        var err error
+	var err error
 	newuser, ok := val.(*User)
 	if ok {
 		user = newuser
@@ -647,9 +683,14 @@ func Server() error {
 	if err != nil {
 		return err
 	}
+	leaderboardtemplate, err = template.ParseFiles("html/leaderboard.html", "html/footer.html", "html/header.html")
+	if err != nil {
+		return err
+	}
 	// Http sturf
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainpage)
+	r.HandleFunc("/leaderboard", leaderboardpage)
 	r.HandleFunc("/favicon.ico", favicon)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)

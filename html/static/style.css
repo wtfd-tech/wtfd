@@ -196,6 +196,16 @@ img {
     top: 64px;
 }
 
+.gridcontainer-leader {
+    display: grid;
+    width: auto;
+    height: 100%;
+}
+
+table {
+  height: 1px;
+
+}
 .gridcontainer {
     display: grid;
     width: auto;
@@ -345,6 +355,13 @@ h3 {
     display: flex;
 }
 
+.big-link {
+    font-size: 30pt;
+    text-decoration: none;
+    transition-duration: 0.2s;
+    color: #4d4d4d;
+    margin-right: 30px;
+}
 .link {
     font-size: 10pt;
     text-decoration: none;
@@ -355,6 +372,12 @@ a.link {
     color: #4d4d4d;
 }
 
+.big-link:hover {
+    color: #14b967;
+    text-decoration: underline;
+    align-self: flex-end;
+    cursor: pointer;
+}
 .link:hover {
     color: #14b967;
     text-decoration: underline;

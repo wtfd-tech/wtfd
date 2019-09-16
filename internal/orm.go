@@ -25,7 +25,7 @@ type _ORMUser struct {
 	Name        string `xorm:"unique"`
 	DisplayName string `xorm:"unique"`
 	Hash        []byte
-	Points		int
+	Points      int
 }
 
 type _ORMChallengesByUser struct {
@@ -93,7 +93,7 @@ func ormNewUser(user User) error {
 		Name:        user.Name,
 		Hash:        user.Hash,
 		DisplayName: user.DisplayName,
-		Points: 0,
+		Points:      0,
 	})
 
 	return err
@@ -243,6 +243,17 @@ func ormSolvedChallenge(user User, chall Challenge) error {
 	return err
 }
 
+func ormAllUsersSortedByPoints() ([]_ORMUser, error) {
+	var a []_ORMUser
+	err := engine.Desc("Points").Find(&a)
+	if err != nil {
+		return a, err
+
+	}
+	return a, nil
+
+}
+
 // load a single user from db (search by name)
 // The remaining fields of u will be filled by this function
 func ormLoadUser(name string) (User, error) {
@@ -268,7 +279,7 @@ func ormLoadUser(name string) (User, error) {
 		Name:        user.Name,
 		Hash:        user.Hash,
 		DisplayName: user.DisplayName,
-		Points:		 user.Points,
+		Points:      user.Points,
 	}
 
 	if u.Completed, err = ormChallengesSolved(u); err != nil {
