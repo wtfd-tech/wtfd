@@ -218,16 +218,18 @@ function connectElementss(svg, startElem, endElems, color) {
 }
 
 function isInbetween(startElem){
+  return new Promise(function(resolve,reject){
 vals = colnum.values();
     a = vals.next();
-  let done = false
-  while(!done){
-    console.log(a.value.row, startElem.row, a.value.col, parseInt(startElem.col)+1);
-    if(a.value.row === startElem.row && a.value.col === startElem.col+1) return true;
+  while(!a.done){
+    console.log(a.value, startElem, a.value.col, parseInt(startElem.col)+1, a.value.row === startElem.row && parseInt(a.value.col)-1 === parseInt(startElem.col));
+    if(a.value.row === startElem.row && parseInt(a.value.col)-1 === parseInt(startElem.col)) resolve(true);
     a = vals.next();
-    done = a.done;
+    if(a.done){
+  resolve(false);
+    }
   }
-  return false;
+  });
 
 }
 
@@ -266,8 +268,12 @@ function connectElements(svg, startElem, endElem, color) {
     const endX = endCoord.left;// + 0.5*endElem.offsetWidth - svgLeft;
     const endY = endCoord.top - 0.5 * (endElem.offsetHeight);
 
+  console.log(startElem);
+    isInbetween(colnum.get(startElem.id)).then((ibt) => {
+    drawPath(svg, path, startX, startY, endX, endY, drawFunction, !ibt);
+
+    });
     // call function for drawing the path
-    drawPath(svg, path, startX, startY, endX, endY, drawFunction, !isInbetween(colnum.get(startElem.id)));
 
 }
 

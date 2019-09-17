@@ -282,14 +282,17 @@ func reverseResolveAllDepIDs() {
 	}
 }
 
-func calculateMinRowNum(chall Challenge) int {
+func calculateMinRowNum(chall *Challenge) int {
 	if chall.MinRow != -1 {
 		return chall.MinRow
 	}
-	chall.MinRow = 0
-	for i := range chall.Deps {
-		val := calculateMinRowNum(chall.Deps[i])
-		if val >= chall.MinRow {
+	chall.MinRow = len(chall.Deps)-1
+        if chall.MinRow < 0 {
+          chall.MinRow = 0
+        }
+	for _, d := range chall.Deps {
+		val := calculateMinRowNum(&d)
+		if val > chall.MinRow {
 			chall.MinRow = val + 1
 		}
 	}
@@ -302,16 +305,16 @@ func calculateRowNums() {
 		if challs[i].DepCount > maxcol {
 			maxcol = challs[i].DepCount
 		}
-		calculateMinRowNum(challs[i])
+		calculateMinRowNum(&challs[i])
 	}
 
-	challmatrix := make([][]Challenge, maxcol+1)
+	challmatrix := make([][]*Challenge, maxcol+1)
 	for i := range challmatrix {
-		challmatrix[i] = []Challenge{}
+		challmatrix[i] = []*Challenge{}
 	}
 
 	for i := range challs {
-		challmatrix[challs[i].DepCount] = append(challmatrix[challs[i].DepCount], challs[i])
+		challmatrix[challs[i].DepCount] = append(challmatrix[challs[i].DepCount], &challs[i])
 	}
 	for col := range challmatrix {
 		sort.Slice(challmatrix[col], func(i, j int) bool {
