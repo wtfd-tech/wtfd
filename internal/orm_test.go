@@ -20,7 +20,7 @@ func TestMain(m *testing.M) {
 		fmt.Printf("Database Creation failed: %v", err)
 		os.Exit(1)
 	}
-	challs = append(challs, testchall)
+	challs = append(challs, &testchall)
 	os.Exit(m.Run())
 
 }
@@ -103,7 +103,7 @@ func TestUserSolvesChallenge(t *testing.T) {
 
 	solvetestuser := User{Name: "asdf"}
 	_ = ormNewUser(solvetestuser)
-	err := ormSolvedChallenge(solvetestuser, testchall)
+	err := ormSolvedChallenge(solvetestuser, &testchall)
 	if err != nil {
 		t.Errorf("Database Challenge Solve failed: %v", err)
 	}
