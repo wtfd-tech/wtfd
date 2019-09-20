@@ -272,16 +272,16 @@ func resolveChalls(challcat []ChallengeJSON) {
 }
 
 // Login checks if password is right for username and returns the User object of it
-func Login(username, passwd string) (User, error) {
+func Login(username, passwd string) error {
 	user, err := Get(username)
 	if err != nil {
-		return User{}, err
+		return err
 	}
 	if pwdRight := user.ComparePassword(passwd); !pwdRight {
-		return User{}, errWrongPassword
+		return errWrongPassword
 	}
 	fmt.Printf("User login: %s\n", username)
-	return user, nil
+	return nil
 
 }
 
@@ -335,20 +335,15 @@ func generateUserName() (string, error) {
 }
 
 func leaderboardpage(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "auth")
-	val := session.Values["User"]
-	user := &User{}
+	userobj, ok := getUser(r)
+	user := &userobj
 	genu := ""
 	var err error
-	newuser, ok := val.(*User)
-	if ok {
-		user = newuser
-	} else {
+	if !ok {
 		genu, err = generateUserName()
 		if err != nil {
 			fmt.Fprintf(w, "Error: %v", err)
 		}
-
 	}
 	allUsers, err := ormAllUsersSortedByPoints()
 	if err != nil {
@@ -372,16 +367,11 @@ func leaderboardpage(w http.ResponseWriter, r *http.Request) {
 func mainpage(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	hasChall := vars["chall"] != ""
-	session, _ := store.Get(r, "auth")
-	val := session.Values["User"]
-	fmt.Println(val)
-	user := &User{}
+	userobj, ok := getUser(r)
+	user := &userobj
 	genu := ""
 	var err error
-	newuser, ok := val.(*User)
-	if ok {
-		user = newuser
-	} else {
+	if !ok {
 		genu, err = generateUserName()
 		if err != nil {
 			fmt.Fprintf(w, "Error: %v", err)
@@ -415,20 +405,17 @@ func login(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "ParseForm() err: %v", err)
 			return
 		}
-		session, _ := store.Get(r, "auth")
-		if _, ok := session.Values["User"].(*User); ok {
+		if _, ok := getLoginEmail(r); ok {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, "Already logged in")
 		} else {
-			u, err := Login(r.Form.Get("username"), r.Form.Get("password"))
+			email := r.Form.Get("username")
+			err := Login(email, r.Form.Get("password"))
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				fmt.Fprintf(w, "Server Error: %v", err)
-			} else {
-				session.Values["User"] = u
-				session.Save(r, w)
+			} else if err := loginUser(r, w, email); err != nil {
 				fmt.Fprintf(w, "success")
-
 			}
 
 		}
@@ -447,9 +434,8 @@ func submitFlag(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "ParseForm() err: %v", err)
 			return
 		}
-		session, _ := store.Get(r, "auth")
 
-		user, ok := session.Values["User"].(*User)
+		user, ok := getUser(r)
 		if !ok {
 			w.WriteHeader(http.StatusInternalServerError)
 			fmt.Fprintf(w, "Server Error: %v", "Not logged in")
@@ -464,13 +450,13 @@ func submitFlag(w http.ResponseWriter, r *http.Request) {
 		if r.Form.Get("flag") == completedChallenge.Flag {
 			user.Completed = append(user.Completed, completedChallenge)
 
-			if err = ormSolvedChallenge(*user, completedChallenge); err != nil {
+			if err = ormSolvedChallenge(user, completedChallenge); err != nil {
 				fmt.Errorf("ORM Error: %s", err)
 			}
 
 			user.CalculatePoints()
 
-			if err = ormUpdateUser(*user); err != nil {
+			if err = ormUpdateUser(user); err != nil {
 				fmt.Errorf("ORM Error: %s", err)
 			}
 
@@ -479,13 +465,10 @@ func submitFlag(w http.ResponseWriter, r *http.Request) {
 		} else {
 			fmt.Fprintf(w, "not correct")
 		}
-		err = session.Save(r, w)
 		if err != nil {
 			log.Print(err)
 		}
-
 	}
-
 }
 
 func register(w http.ResponseWriter, r *http.Request) {
@@ -498,8 +481,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintf(w, "ParseForm() err: %v", err)
 			return
 		}
-		session, _ := store.Get(r, "auth")
-		if _, ok := session.Values["User"].(*User); ok {
+		if _, ok := getLoginEmail(r); ok {
 			w.WriteHeader(http.StatusBadRequest)
 			fmt.Fprintf(w, "Already logged in")
 		} else {
@@ -514,9 +496,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 					w.WriteHeader(http.StatusInternalServerError)
 					fmt.Fprintf(w, "Server Error: %v", err)
 				} else {
-					session.Values["User"] = u
 					ormNewUser(u)
-					session.Save(r, w)
 					http.Redirect(w, r, "/", http.StatusFound)
 
 				}
@@ -529,9 +509,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
-	session, _ := store.Get(r, "auth")
-	session.Values["User"] = nil
-	session.Save(r, w)
+	_ = logoutUser(r, w)
 	http.Redirect(w, r, "/", http.StatusFound)
 
 }
@@ -544,8 +522,7 @@ func solutionview(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	session, _ := store.Get(r, "auth")
-	u, ok := session.Values["User"].(*User)
+	u, ok := getUser(r)
 	if !ok {
 		fmt.Fprintf(w, "ServerError: not logged in")
 		w.WriteHeader(http.StatusBadRequest)
