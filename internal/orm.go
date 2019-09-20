@@ -189,8 +189,8 @@ func ormDisplayNameExists(name string) (bool, error) {
 }
 
 // get Challenges{} solved by user (db-state)
-func ormChallengesSolved(user User) ([]Challenge, error) {
-	var challenges []Challenge
+func ormChallengesSolved(user User) ([]*Challenge, error) {
+	var challenges []*Challenge
 
 	fmt.Printf("%s Solved following Challenges\n", user.Name)
 	engine.Where("UserName = ?", user.Name).Iterate(_ORMChallengesByUser{}, func(i int, bean interface{}) error {
@@ -212,7 +212,7 @@ func ormChallengesSolved(user User) ([]Challenge, error) {
 }
 
 // Write solved state (user solved chall) in db
-func ormSolvedChallenge(user User, chall Challenge) error {
+func ormSolvedChallenge(user User, chall *Challenge) error {
 	var exists bool
 	var err error
 	var relation _ORMChallengesByUser

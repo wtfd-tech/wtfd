@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	"os"
@@ -32,7 +33,6 @@ var (
 	errUserNotExisting  = errors.New("User with this name does not exist")
 	sshHost             = "localhost:2222"
 	challs              = Challenges{}
-	challcats           = ChallengeCategory{}
 	mainpagetemplate    = template.New("")
 	leaderboardtemplate = template.New("")
 	coolNames           = [...]string{
@@ -73,88 +73,6 @@ var (
 	}
 )
 
-// Challenges Array of challenges but in nice with funcitons
-type Challenges []Challenge
-
-// ChallengeCategories Array of challengeCategories
-type ChallengeCategories []ChallengeCategory
-
-// JSONFile Challenge JSON File
-type JSONFile struct {
-	Categories []ChallengeCategoryJSON `json:"categories"`
-	Challenges []ChallengeJSON         `json:"challenges"`
-}
-
-// ChallengeCategory as a go struct
-type ChallengeCategory struct {
-	Title      string `json:"title"`
-	Challenges Challenges
-}
-
-// ChallengeCategoryJSON ChallengeCategory as JSON
-type ChallengeCategoryJSON struct {
-	Title      string   `json:"title"`
-	Challenges []string `json:"challs"`
-}
-
-// Challenge is a challenge obv
-type Challenge struct {
-	Name        string `json:"name"`
-	Description string `json:"desc"`
-	Flag        string `json:"flag"`
-	Points      int    `json:"points"`
-	URI         string `json:"uri"`
-	DepCount    int
-	MinRow      int
-	Row         int
-	Solution    string `json:"solution"`
-	DepIDs      []string
-	Deps        []Challenge
-	HasURI      bool // This emerges from URI != ""
-}
-
-// ChallengeJSON is Challenge as JSON
-type ChallengeJSON struct {
-	Name        string   `json:"name"`
-	Description string   `json:"desc"`
-	Solution    string   `json:"solution"`
-	Flag        string   `json:"flag"`
-	Points      int      `json:"points"`
-	URI         string   `json:"uri"`
-	Deps        []string `json:"deps"`
-	HasURI      bool     // This emerges from URI != ""
-}
-
-// User was ist das wohl
-type User struct {
-	Name        string
-	Hash        []byte
-	DisplayName string
-	Completed   []Challenge
-	Points      int
-}
-
-type leaderboardPageData struct {
-	PageTitle     string
-	User          User
-	IsUser        bool
-	Points        int
-	Leaderboard   bool
-	AllUsers      []_ORMUser
-	GeneratedName string
-}
-type mainPageData struct {
-	PageTitle              string
-	Challenges             []Challenge
-	Leaderboard            bool
-	SelectedChallengeID    string
-	HasSelectedChallengeID bool
-	GeneratedName          string
-	User                   User
-	IsUser                 bool
-	Points                 int
-}
-
 // FillChallengeURI Fill host into each challenge's URI field and set HasURI
 func (c Challenges) FillChallengeURI(host string) {
 	for i := range c {
@@ -168,13 +86,13 @@ func (c Challenges) FillChallengeURI(host string) {
 }
 
 // Find finds a challenge from a string
-func (c Challenges) Find(id string) (Challenge, error) {
+func (c Challenges) Find(id string) (*Challenge, error) {
 	for _, v := range c {
 		if v.Name == id {
 			return v, nil
 		}
 	}
-	return Challenge{}, fmt.Errorf("No challenge with this id")
+	return &Challenge{}, fmt.Errorf("No challenge with this id")
 }
 
 // AllDepsCompleted checks if User u has completed all Dependent challenges of c
@@ -200,7 +118,7 @@ func Contains(username, displayname string) bool {
 }
 
 // HasSolvedChallenge returns true if u has solved chall
-func (u User) HasSolvedChallenge(chall Challenge) bool {
+func (u User) HasSolvedChallenge(chall *Challenge) bool {
 	for _, c := range u.Completed {
 		if c.Name == chall.Name {
 			return true
@@ -231,8 +149,8 @@ func Get(username string) (User, error) {
 
 }
 
-func resolveDeps(a []string) []Challenge {
-	toReturn := []Challenge{}
+func resolveDeps(a []string) []*Challenge {
+	var toReturn []*Challenge
 	for _, b := range a {
 		for _, c := range challs {
 			if c.Name == b {
@@ -244,7 +162,7 @@ func resolveDeps(a []string) []Challenge {
 
 }
 
-func countDeps(chall Challenge) int {
+func countDeps(chall *Challenge) int {
 	max := 1
 	if len(chall.Deps) == 0 {
 		return 0
@@ -291,7 +209,7 @@ func calculateMinRowNum(chall *Challenge) int {
           chall.MinRow = 0
         }
 	for _, d := range chall.Deps {
-		val := calculateMinRowNum(&d)
+		val := calculateMinRowNum(d)
 		if val > chall.MinRow {
 			chall.MinRow = val + 1
 		}
@@ -305,7 +223,7 @@ func calculateRowNums() {
 		if challs[i].DepCount > maxcol {
 			maxcol = challs[i].DepCount
 		}
-		calculateMinRowNum(&challs[i])
+		calculateMinRowNum(challs[i])
 	}
 
 	challmatrix := make([][]*Challenge, maxcol+1)
@@ -314,7 +232,7 @@ func calculateRowNums() {
 	}
 
 	for i := range challs {
-		challmatrix[challs[i].DepCount] = append(challmatrix[challs[i].DepCount], &challs[i])
+		challmatrix[challs[i].DepCount] = append(challmatrix[challs[i].DepCount], challs[i])
 	}
 	for col := range challmatrix {
 		sort.Slice(challmatrix[col], func(i, j int) bool {
@@ -339,7 +257,7 @@ func resolveChalls(challcat []ChallengeJSON) {
 		this := challcat[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
 			idsInChalls = append(idsInChalls, this.Name)
-			challs = append(challs, Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, MinRow: -1, Row: -1})
+			challs = append(challs, &Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, MinRow: -1, Row: -1})
 			challcat[i] = challcat[len(challcat)-1]
 			challcat = challcat[:len(challcat)-1]
 			i = 0
@@ -441,7 +359,7 @@ func leaderboardpage(w http.ResponseWriter, r *http.Request) {
 		GeneratedName: genu,
 		Leaderboard:   true,
 		AllUsers:      allUsers,
-		User:          *user,
+		User:          user,
 		IsUser:        ok,
 	}
 	err = leaderboardtemplate.Execute(w, data)
@@ -456,6 +374,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	hasChall := vars["chall"] != ""
 	session, _ := store.Get(r, "auth")
 	val := session.Values["User"]
+	fmt.Println(val)
 	user := &User{}
 	genu := ""
 	var err error
@@ -475,7 +394,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		GeneratedName:          genu,
 		HasSelectedChallengeID: hasChall,
 		SelectedChallengeID:    vars["chall"],
-		User:                   *user,
+		User:                   user,
 		IsUser:                 ok,
 	}
 	err = mainpagetemplate.Execute(w, data)
@@ -560,7 +479,10 @@ func submitFlag(w http.ResponseWriter, r *http.Request) {
 		} else {
 			fmt.Fprintf(w, "not correct")
 		}
-		session.Save(r, w)
+		err = session.Save(r, w)
+		if err != nil {
+			log.Print(err)
+		}
 
 	}
 
