@@ -42,8 +42,8 @@ func (c _ORMChallengesByUser) TableName() string {
 }
 
 func ormSync() {
-	engine.Sync(_ORMUser{})
-	engine.Sync(_ORMChallengesByUser{})
+	_ = engine.Sync(_ORMUser{})
+	_ = engine.Sync(_ORMChallengesByUser{})
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -70,6 +70,7 @@ func ormStart(logFile string) error {
 	return nil
 }
 
+//noinspection GoUnusedFunction
 func _ORMGenericError(desc string) error {
 	return fmt.Errorf("ORM Error %s", desc)
 }
@@ -193,7 +194,7 @@ func ormChallengesSolved(user User) ([]*Challenge, error) {
 	var challenges []*Challenge
 
 	fmt.Printf("%s Solved following Challenges\n", user.Name)
-	engine.Where("UserName = ?", user.Name).Iterate(_ORMChallengesByUser{}, func(i int, bean interface{}) error {
+	_ = engine.Where("UserName = ?", user.Name).Iterate(_ORMChallengesByUser{}, func(i int, bean interface{}) error {
 		relation := bean.(*_ORMChallengesByUser)
 
 		for _, c := range challs {
@@ -232,7 +233,7 @@ func ormSolvedChallenge(user User, chall *Challenge) error {
 	}
 
 	if count == 1 {
-		return errors.New("User already solved this challenge")
+		return errors.New("user already solved this challenge")
 	} else if count > 1 {
 		return errors.New("DB-State Error: User solved this challenge multiple times")
 	}

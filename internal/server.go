@@ -28,9 +28,9 @@ var (
 	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
 	key                 = []byte("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 	store               = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
-	errUserExisting     = errors.New("User with this name exists")
-	errWrongPassword    = errors.New("Wrong Password")
-	errUserNotExisting  = errors.New("User with this name does not exist")
+	errUserExisting     = errors.New("user with this name exists")
+	errWrongPassword    = errors.New("wrong Password")
+	errUserNotExisting  = errors.New("user with this name does not exist")
 	sshHost             = "localhost:2222"
 	challs              = Challenges{}
 	mainpagetemplate    = template.New("")
@@ -92,7 +92,7 @@ func (c Challenges) Find(id string) (*Challenge, error) {
 			return v, nil
 		}
 	}
-	return &Challenge{}, fmt.Errorf("No challenge with this id")
+	return &Challenge{}, fmt.Errorf("no challenge with this id")
 }
 
 // AllDepsCompleted checks if User u has completed all Dependent challenges of c
@@ -251,7 +251,7 @@ func calculateRowNums() {
 
 func resolveChalls(challcat []ChallengeJSON) {
 	i := 0
-	idsInChalls := []string{}
+	var idsInChalls []string
 	for len(challcat) != 0 {
 		//          fmt.Printf("challs: %v, challcat: %v\n",challs,challcat)
 		this := challcat[i]
@@ -342,12 +342,12 @@ func leaderboardpage(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		genu, err = generateUserName()
 		if err != nil {
-			fmt.Fprintf(w, "Error: %v", err)
+			_, _ = fmt.Fprintf(w, "Error: %v", err)
 		}
 	}
 	allUsers, err := ormAllUsersSortedByPoints()
 	if err != nil {
-		fmt.Fprintf(w, "Error: %v", err)
+		_, _ = fmt.Fprintf(w, "Error: %v", err)
 	}
 	data := leaderboardPageData{
 		PageTitle:     "foss-ag O-Phasen CTF",
@@ -374,7 +374,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		genu, err = generateUserName()
 		if err != nil {
-			fmt.Fprintf(w, "Error: %v", err)
+			_, _ = fmt.Fprintf(w, "Error: %v", err)
 		}
 
 	}
@@ -398,24 +398,24 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 func login(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "Invalid Request")
+		_, _ = fmt.Fprintf(w, "Invalid Request")
 
 	} else {
 		if err := r.ParseForm(); err != nil {
-			fmt.Fprintf(w, "ParseForm() err: %v", err)
+			_, _ = fmt.Fprintf(w, "ParseForm() err: %v", err)
 			return
 		}
 		if _, ok := getLoginEmail(r); ok {
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprintf(w, "Already logged in")
+			_, _ = fmt.Fprintf(w, "Already logged in")
 		} else {
 			email := r.Form.Get("username")
 			err := Login(email, r.Form.Get("password"))
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
-				fmt.Fprintf(w, "Server Error: %v", err)
+				_, _ = fmt.Fprintf(w, "Server Error: %v", err)
 			} else if err := loginUser(r, w, email); err != nil {
-				fmt.Fprintf(w, "success")
+				_, _ = fmt.Fprintf(w, "success")
 			}
 
 		}
@@ -427,43 +427,43 @@ func login(w http.ResponseWriter, r *http.Request) {
 func submitFlag(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "Invalid Request")
+		_, _ = fmt.Fprintf(w, "Invalid Request")
 
 	} else {
 		if err := r.ParseForm(); err != nil {
-			fmt.Fprintf(w, "ParseForm() err: %v", err)
+			_, _ = fmt.Fprintf(w, "ParseForm() err: %v", err)
 			return
 		}
 
 		user, ok := getUser(r)
 		if !ok {
 			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(w, "Server Error: %v", "Not logged in")
+			_, _ = fmt.Fprintf(w, "Server Error: %v", "Not logged in")
 			return
 		}
 		completedChallenge, err := challs.Find(r.Form.Get("challenge"))
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
-			fmt.Fprintf(w, "Server Error: %v", err)
+			_, _ = fmt.Fprintf(w, "Server Error: %v", err)
 			return
 		}
 		if r.Form.Get("flag") == completedChallenge.Flag {
 			user.Completed = append(user.Completed, completedChallenge)
 
 			if err = ormSolvedChallenge(user, completedChallenge); err != nil {
-				fmt.Errorf("ORM Error: %s", err)
+				_ = fmt.Errorf("ORM Error: %s", err)
 			}
 
 			user.CalculatePoints()
 
 			if err = ormUpdateUser(user); err != nil {
-				fmt.Errorf("ORM Error: %s", err)
+				_ = fmt.Errorf("ORM Error: %s", err)
 			}
 
-			fmt.Fprintf(w, "correct")
+			_, _ = fmt.Fprintf(w, "correct")
 
 		} else {
-			fmt.Fprintf(w, "not correct")
+			_, _ = fmt.Fprintf(w, "not correct")
 		}
 		if err != nil {
 			log.Print(err)
@@ -474,29 +474,29 @@ func submitFlag(w http.ResponseWriter, r *http.Request) {
 func register(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusBadRequest)
-		fmt.Fprintf(w, "Invalid Request")
+		_, _ = fmt.Fprintf(w, "Invalid Request")
 
 	} else {
 		if err := r.ParseForm(); err != nil {
-			fmt.Fprintf(w, "ParseForm() err: %v", err)
+			_, _ = fmt.Fprintf(w, "ParseForm() err: %v", err)
 			return
 		}
 		if _, ok := getLoginEmail(r); ok {
 			w.WriteHeader(http.StatusBadRequest)
-			fmt.Fprintf(w, "Already logged in")
+			_, _ = fmt.Fprintf(w, "Already logged in")
 		} else {
 
 			if len(r.Form.Get("username")) < 5 {
 				w.WriteHeader(http.StatusBadRequest)
-				fmt.Fprintf(w, "Username must be at least 5 characters")
+				_, _ = fmt.Fprintf(w, "Username must be at least 5 characters")
 
 			} else {
 				u, err := NewUser(r.Form.Get("username"), r.Form.Get("password"), r.Form.Get("displayname"))
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
-					fmt.Fprintf(w, "Server Error: %v", err)
+					_, _ = fmt.Fprintf(w, "Server Error: %v", err)
 				} else {
-					ormNewUser(u)
+					_ = ormNewUser(u)
 					http.Redirect(w, r, "/", http.StatusFound)
 
 				}
@@ -518,24 +518,24 @@ func solutionview(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	chall, err := challs.Find(vars["chall"])
 	if err != nil {
-		fmt.Fprintf(w, "ServerError: Challenge with is %s not found", vars["chall"])
+		_, _ = fmt.Fprintf(w, "ServerError: Challenge with is %s not found", vars["chall"])
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	u, ok := getUser(r)
 	if !ok {
-		fmt.Fprintf(w, "ServerError: not logged in")
+		_, _ = fmt.Fprintf(w, "ServerError: not logged in")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	if !u.HasSolvedChallenge(chall) {
-		fmt.Fprintf(w, "did you just try to pull a sneaky on me?")
+		_, _ = fmt.Fprintf(w, "did you just try to pull a sneaky on me?")
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
 	md := markdown.ToHTML([]byte(chall.Solution), nil, nil)
-	fmt.Fprintf(w, "%s", md)
+	_, _ = fmt.Fprintf(w, "%s", md)
 
 }
 
@@ -543,12 +543,12 @@ func detailview(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	chall, err := challs.Find(vars["chall"])
 	if err != nil {
-		fmt.Fprintf(w, "ServerError: Challenge with is %s not found", vars["chall"])
+		_, _ = fmt.Fprintf(w, "ServerError: Challenge with is %s not found", vars["chall"])
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	md := markdown.ToHTML([]byte(chall.Description), nil, nil)
-	fmt.Fprintf(w, "%s", md)
+	_, _ = fmt.Fprintf(w, "%s", md)
 
 }
 
@@ -556,11 +556,11 @@ func uriview(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	chall, err := challs.Find(vars["chall"])
 	if err != nil {
-		fmt.Fprintf(w, "ServerError: Challenge with is %s not found", vars["chall"])
+		_, _ = fmt.Fprintf(w, "ServerError: Challenge with is %s not found", vars["chall"])
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	fmt.Fprint(w, chall.URI)
+	_, _ = fmt.Fprint(w, chall.URI)
 }
 
 func favicon(w http.ResponseWriter, r *http.Request) {

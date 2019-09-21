@@ -7,14 +7,14 @@ import (
 )
 
 var (
-	u         User      = User{DisplayName: "asdf", Name: "testuser", Hash: []byte("a")}
-	fakeu     User      = User{DisplayName: "aasdf", Name: "faketestuser", Hash: []byte("a")} // No Challenges because new users dont have any
-	testchall Challenge = Challenge{Name: "testchall", Flag: "testflag"}
+	u         = User{DisplayName: "asdf", Name: "testuser", Hash: []byte("a")}
+	fakeu     = User{DisplayName: "aasdf", Name: "faketestuser", Hash: []byte("a")} // No Challenges because new users dont have any
+	testchall = Challenge{Name: "testchall", Flag: "testflag"}
 )
 
 // TestMain tests all the good ol orm stuff
 func TestMain(m *testing.M) {
-	os.Remove("./state.db")
+	_ = os.Remove("./state.db")
 	err := ormStart("./testdblog")
 	if err != nil {
 		fmt.Printf("Database Creation failed: %v", err)

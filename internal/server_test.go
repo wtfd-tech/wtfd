@@ -97,8 +97,8 @@ func TestChallenges(t *testing.T) {
 	}
 	t.Run("TestAllDepsCompleted", func(t *testing.T) {
 
-		un := User{Name: "a", Completed: []*Challenge{&Challenge{Name: "chall-b"}}}
-		uy := User{Name: "a", Completed: []*Challenge{&Challenge{Name: "chall-a"}}}
+		un := User{Name: "a", Completed: []*Challenge{{Name: "chall-b"}}}
+		uy := User{Name: "a", Completed: []*Challenge{{Name: "chall-a"}}}
 		if challn.AllDepsCompleted(un) {
 			t.Errorf("AllDepsCompleted is wrong: %v", fmt.Errorf("user hasn't completed dependent but AllDepsCompleted thinks it has"))
 		}

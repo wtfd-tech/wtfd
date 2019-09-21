@@ -11,6 +11,6 @@
 }
 
 .clearsans {
-    font-family: "Clear Sans";
+    font-family: "Clear Sans", sans-serif;
     -webkit-font-smoothing: antialiased;
 }

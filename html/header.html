@@ -1,6 +1,7 @@
 {{ define "header" }}
 <!DOCTYPE html>
-<html>
+<!--suppress HtmlUnknownTarget -->
+<html lang="en">
   <head>
     <title>FOSS-AG CTF</title>
     <link rel="stylesheet" type="text/css" href="static/clearsans/clearsans.css" />
@@ -12,7 +13,7 @@
   <body class="clearsans">
     <header>
       <div class="flexcell" id="logo">
-        <img id="logo-img" src="static/logo_red.svg" />
+        <img alt="Logo" id="logo-img" src="static/logo_red.svg" />
         <div>
           // FOSS-AG<br />
           // <span class="red">CTF</span>
@@ -42,10 +43,10 @@
       <form id="loginform">
         <div class="red" id="loginerror"></div>
         <p class="formgrid">
-          <label for="username">E-Mail:</label>
+          <label for="loginuserbox">E-Mail:</label>
           <input id="loginuserbox" type="email" name="username" placeholder="john.doe@tu-dortmund.de"/>
 
-          <label for="password">Password:</label>
+          <label for="loginpassbox">Password:</label>
           <input id="loginpassbox" type="password" name="password"/>
         </p>
         <span id="loginloading" class="loadingbar" style="display: none;"></span>
@@ -64,12 +65,12 @@
       <form id="registerform" method="POST" action="/register">
         <div class="red" id="registererror"></div>
         <p class="formgrid">
-          <label for="username">E-Mail:</label>
+          <label for="registeruserbox">E-Mail:</label>
           <input id="registeruserbox" type="email" name="username" placeholder="john.doe@tu-dortmund.de"/>
-          <label for="displayname">DisplayName:</label>
+          <label for="displaynamebox">DisplayName:</label>
           <input id="displaynamebox" type="text" name="displayname" value="{{.GeneratedName}}"/>
 
-          <label for="password">Password:</label>
+          <label for="registerpassbox">Password:</label>
           <input id="registerpassbox" type="password" name="password"/>
         </p>
         <span id="registerloading" class="loadingbar" style="display: none;"></span>
