@@ -21,7 +21,7 @@ import (
 )
 
 const (
-	defaultPort = int64(80)
+	defaultPort = int64(8080)
 )
 
 var (
