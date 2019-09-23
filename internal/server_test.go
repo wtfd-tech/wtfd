@@ -7,8 +7,7 @@ import (
 )
 
 func TestChallenges(t *testing.T) {
-	jsonstring := `{
-  "challenges": [
+	jsonstring := `[
     {
       "name": "chall-a",
       "desc": "aioöhsogöaerghaeörkglkfjgaöoerilgeoörgijk",
@@ -69,14 +68,12 @@ func TestChallenges(t *testing.T) {
       "flag": "FOSS{a}",
       "points": 1
     }
-  ],
-  "categories": [{ "title": "asdf", "challs": ["c", "e"] }]
-}`
-	var challsStructure JSONFile
+  ]`
+	var challsStructure []ChallengeJSON
 	if err := json.Unmarshal([]byte(jsonstring), &challsStructure); err != nil {
 		t.Errorf("JSON Unmarshal Error: %v", err)
 	}
-	resolveChalls(challsStructure.Challenges)
+	resolveChalls(challsStructure)
 	challs.FillChallengeURI(sshHost)
 	challn, err := challs.Find("chall-n")
 	if err != nil {
