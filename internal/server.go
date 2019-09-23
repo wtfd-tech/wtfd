@@ -575,12 +575,12 @@ func Server() error {
 		return err
 	}
 	defer challsFile.Close()
-	var challsStructure JSONFile
+	var challsStructure []ChallengeJSON
 	challsFileBytes, _ := ioutil.ReadAll(challsFile)
 	if err := json.Unmarshal(challsFileBytes, &challsStructure); err != nil {
 		return err
 	}
-	resolveChalls(challsStructure.Challenges)
+	resolveChalls(challsStructure)
 
 	// Load database
 	err = ormStart("./dblog")

@@ -3,11 +3,6 @@ package wtfd
 // Challenges Array of challenges but in nice with funcitons
 type Challenges []*Challenge
 
-// JSONFile Challenge JSON File
-type JSONFile struct {
-	Challenges []ChallengeJSON         `json:"challenges"`
-}
-
 // Challenge is a challenge obv
 type Challenge struct {
 	Name        string `json:"name"`
