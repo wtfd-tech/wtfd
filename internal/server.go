@@ -238,7 +238,11 @@ func calculateRowNums() {
 			if challmatrix[col][i].MinRow != challmatrix[col][j].MinRow {
 				return challmatrix[col][i].MinRow < challmatrix[col][j].MinRow
 			}
-			return len(challmatrix[col][i].DepIDs) > len(challmatrix[col][j].DepIDs)
+			if len(challmatrix[col][i].DepIDs) == len(challmatrix[col][j].DepIDs) {
+                          return challmatrix[col][i].DepCount < challmatrix[col][j].DepCount
+
+			}
+			return len(challmatrix[col][i].DepIDs) >= len(challmatrix[col][j].DepIDs)
 
 		})
 		row := 0
