@@ -210,7 +210,7 @@ func calculateMinRowNum(chall *Challenge) int {
 	for _, d := range chall.Deps {
 		val := calculateMinRowNum(d)
 		if val > chall.MinRow {
-			chall.MinRow = val + 1
+			chall.MinRow = val //+ 1
 		}
 	}
 	return chall.MinRow
@@ -239,7 +239,7 @@ func calculateRowNums() {
 				return challmatrix[col][i].MinRow < challmatrix[col][j].MinRow
 			}
 			if len(challmatrix[col][i].DepIDs) == len(challmatrix[col][j].DepIDs) {
-                          return challmatrix[col][i].DepCount < challmatrix[col][j].DepCount
+				return challmatrix[col][i].DepCount < challmatrix[col][j].DepCount
 
 			}
 			return len(challmatrix[col][i].DepIDs) >= len(challmatrix[col][j].DepIDs)
