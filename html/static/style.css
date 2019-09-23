@@ -136,17 +136,16 @@ footer {
     animation-timing-function: linear;
 }
 
+#siteselectcol {
+    width: 0;
+}
 #siteselect {
     text-align: center;
     display: flex;
+    width: 0;
     flex-direction: column;
     height: 100%;
     align-items: center;
-}
-#siteselectcol {
-    text-align: right;
-    flex-direction: row;
-    display: flex;
 }
 
 #accountinfo {
