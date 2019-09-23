@@ -216,6 +216,18 @@ img {
 
 table {
   height: 1px;
+  width: max-content;
+/*  border: 1px solid lightgrey;*/
+  border-collapse: collapse;
+  margin-top: 10px;
+  margin-left: 10px;
+
+}
+table tr:nth-child(odd){
+  background: lightgrey;
+}
+td, th {
+  border: 0px;
 
 }
 .gridcontainer {
