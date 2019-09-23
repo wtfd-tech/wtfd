@@ -235,7 +235,11 @@ func calculateRowNums() {
 	}
 	for col := range challmatrix {
 		sort.Slice(challmatrix[col], func(i, j int) bool {
-			return challmatrix[col][i].MinRow < challmatrix[col][j].MinRow
+			if challmatrix[col][i].MinRow != challmatrix[col][j].MinRow {
+				return challmatrix[col][i].MinRow < challmatrix[col][j].MinRow
+			}
+			return len(challmatrix[col][i].DepIDs) > len(challmatrix[col][j].DepIDs)
+
 		})
 		row := 0
 		for e := range challmatrix[col] {

@@ -259,6 +259,41 @@ table {
     grid-row-end: 5;
     display: grid;
 }
+.row-5 {
+    grid-row-start: 6;
+    grid-row-end: 6;
+    display: grid;
+}
+.row-6 {
+    grid-row-start: 7;
+    grid-row-end: 7;
+    display: grid;
+}
+.row-7 {
+    grid-row-start: 8;
+    grid-row-end: 8;
+    display: grid;
+}
+.row-8 {
+    grid-row-start: 9;
+    grid-row-end: 9;
+    display: grid;
+}
+.row-9 {
+    grid-row-start: 10;
+    grid-row-end: 10;
+    display: grid;
+}
+.row-10 {
+    grid-row-start: 11;
+    grid-row-end: 11;
+    display: grid;
+}
+.row-11 {
+    grid-row-start: 12;
+    grid-row-end: 12;
+    display: grid;
+}
 .col-0 {
     grid-column-start: 1;
     grid-column-end: 1;
