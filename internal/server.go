@@ -14,7 +14,6 @@ import (
 	"sort"
 	"strconv"
 
-	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
@@ -204,10 +203,10 @@ func calculateMinRowNum(chall *Challenge) int {
 	if chall.MinRow != -1 {
 		return chall.MinRow
 	}
-	chall.MinRow = len(chall.Deps)-1
-        if chall.MinRow < 0 {
-          chall.MinRow = 0
-        }
+	chall.MinRow = len(chall.Deps) - 1
+	if chall.MinRow < 0 {
+		chall.MinRow = 0
+	}
 	for _, d := range chall.Deps {
 		val := calculateMinRowNum(d)
 		if val > chall.MinRow {
@@ -534,8 +533,7 @@ func solutionview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	md := markdown.ToHTML([]byte(chall.Solution), nil, nil)
-	_, _ = fmt.Fprintf(w, "%s", md)
+	_, _ = fmt.Fprintf(w, "%s", chall.Solution)
 
 }
 
@@ -547,8 +545,7 @@ func detailview(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	md := markdown.ToHTML([]byte(chall.Description), nil, nil)
-	_, _ = fmt.Fprintf(w, "%s", md)
+	_, _ = fmt.Fprintf(w, "%s", chall.Description)
 
 }
 
