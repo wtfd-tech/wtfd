@@ -14,6 +14,7 @@ import (
 	"sort"
 	"strconv"
 
+	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
@@ -24,6 +25,8 @@ const (
 )
 
 var (
+	config Config
+
 	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
 	key                 = []byte("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
 	store               = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
@@ -256,17 +259,17 @@ func calculateRowNums() {
 	}
 }
 
-func resolveChalls(challcat []ChallengeJSON) {
+func resolveChalls(jsons []*ChallengeJSON) {
 	i := 0
 	var idsInChalls []string
-	for len(challcat) != 0 {
-		//          fmt.Printf("challs: %v, challcat: %v\n",challs,challcat)
-		this := challcat[i]
+	for len(jsons) != 0 {
+		//          fmt.Printf("challs: %v, jsons: %v\n",challs,jsons)
+		this := jsons[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
 			idsInChalls = append(idsInChalls, this.Name)
 			challs = append(challs, &Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, MinRow: -1, Row: -1})
-			challcat[i] = challcat[len(challcat)-1]
-			challcat = challcat[:len(challcat)-1]
+			jsons[i] = jsons[len(jsons)-1]
+			jsons = jsons[:len(jsons)-1]
 			i = 0
 		} else {
 			i++
@@ -577,17 +580,82 @@ func favicon(w http.ResponseWriter, r *http.Request) {
 func Server() error {
 	gob.Register(&User{})
 
-	// Loading challs file
-	challsFile, err := os.Open("challs.json")
-	if err != nil {
-		return err
+	//Test if config file exists
+	if _, err := os.Stat("config.json"); os.IsNotExist(err) {
+		//Write default config to disk
+		config = Config{
+			ChallengeInfoDir: "../challenges/info/",
+		}
+		configBytes, _ := json.MarshalIndent(config, "", "\t")
+		_ = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
+	} else {
+		//Load config file
+		var (
+			configBytes []byte
+			err			error
+		)
+
+		if configBytes, err = ioutil.ReadFile("config.json"); err != nil {
+			log.Fatal(err)
+		}
+		if err := json.Unmarshal(configBytes, &config); err != nil {
+			return err
+		}
 	}
-	defer challsFile.Close()
-	var challsStructure []ChallengeJSON
-	challsFileBytes, _ := ioutil.ReadAll(challsFile)
-	if err := json.Unmarshal(challsFileBytes, &challsStructure); err != nil {
-		return err
+
+	//Load challs from dirs
+	var challsStructure []*ChallengeJSON
+
+	files, err := ioutil.ReadDir(config.ChallengeInfoDir)
+	if err != nil { return err }
+
+	for _, current := range files {
+		var (
+			challDir		= config.ChallengeInfoDir + "/" + current.Name()
+			jsonName		= challDir + "/meta.json"
+			readmeName		= challDir + "/README.md"
+			solutionName	= challDir + "/SOLUTION.md"
+
+			jsonBytes		[]byte
+			readmeBytes		[]byte
+			solutionBytes	[]byte
+
+			jsonStruct		ChallengeJSON
+
+			err				error
+		)
+
+		// Check if meta.json exists and load it into a ChallengeJSON struct
+		if ! current.IsDir() { continue }
+		if jsonBytes, err = ioutil.ReadFile(jsonName); err != nil {
+			log.Println(err)
+			continue
+		}
+		if json.Unmarshal(jsonBytes, &jsonStruct) != nil {
+			log.Println(err)
+			continue
+		}
+
+		// Set name from folder name
+		jsonStruct.Name = current.Name()
+
+		// Load and compile markdown files
+		if readmeBytes, err = ioutil.ReadFile(readmeName); err == nil {
+			jsonStruct.Description = string(markdown.ToHTML(readmeBytes, nil, nil))
+		} else {
+			jsonStruct.Description = "<i>Description unavailable</i>"
+		}
+
+		if solutionBytes, err = ioutil.ReadFile(solutionName); err == nil {
+			jsonStruct.Solution = string(markdown.ToHTML(solutionBytes, nil, nil))
+		} else {
+			jsonStruct.Description = "<i>Solution unavailable</i>"
+		}
+
+		challsStructure = append(challsStructure, &jsonStruct)
 	}
+
+	fixDeps(challsStructure)
 	resolveChalls(challsStructure)
 
 	// Load database
@@ -631,6 +699,43 @@ func Server() error {
 	}
 	fmt.Printf("WTFD Server Starting at port %d\n", Port)
 	return http.ListenAndServe(fmt.Sprintf(":%d", Port), r)
+}
+
+func fixDeps(jsons []*ChallengeJSON) {
+	challsByName := make(map[string]*ChallengeJSON)
+	for _, chall := range jsons {
+		challsByName[chall.Name] = chall
+	}
+	for _, chall := range jsons {
+		keepDep := make(map[string]bool)
+
+		//Inititalize maps
+		for _, dep := range chall.Deps {
+			keepDep[dep] = true
+		}
+
+		//Kick out redundant challenges
+		for _, dep := range chall.Deps {
+			for _, depdep := range challsByName[dep].Deps {
+				if _, ok := keepDep[depdep]; ok {
+					keepDep[depdep] = false
+				}
+			}
+		}
+
+		//Rebould dependency array
+		var newdeps []string
+		for name, keep := range keepDep {
+			if keep {
+				newdeps = append(newdeps, name)
+			}
+		}
+
+		fmt.Printf("[%s]\t%v\t->\t%v\n", chall.Name, chall.Deps, newdeps)
+
+		//Write to struct
+		chall.Deps = newdeps
+	}
 }
 
 func bContainsA(a string, b []string) bool {

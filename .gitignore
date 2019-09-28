@@ -34,3 +34,5 @@
 state.db
 dblog
 testdblog
+
+config.json

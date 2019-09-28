@@ -31,6 +31,11 @@ type ChallengeJSON struct {
 	HasURI      bool     // This emerges from URI != ""
 }
 
+// Config stores settings loaded from config.json
+type Config struct {
+	ChallengeInfoDir	string	`json:"challinfodir"`
+}
+
 // User, was ist das wohl
 type User struct {
 	Name        string
