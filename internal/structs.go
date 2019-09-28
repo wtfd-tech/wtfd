@@ -1,5 +1,9 @@
 package wtfd
 
+import (
+	"html/template"
+)
+
 // Challenges Array of challenges but in nice with funcitons
 type Challenges []*Challenge
 
@@ -48,6 +52,9 @@ type leaderboardPageData struct {
 	Leaderboard   bool
 	AllUsers      []_ORMUser
 	GeneratedName string
+	Style		  template.HTMLAttr
+	RowNums       []gridinfo
+	ColNums       []gridinfo
 }
 type mainPageData struct {
 	PageTitle              string
@@ -59,4 +66,11 @@ type mainPageData struct {
 	User                   *User
 	IsUser                 bool
 	Points                 int
+	RowNums				   []gridinfo
+	ColNums                []gridinfo
+}
+
+type gridinfo struct{
+	Index	int
+	Pos		int
 }

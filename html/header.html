@@ -9,6 +9,20 @@
     <link rel="stylesheet" type="text/css" href="static/materialdesignicons/css/materialdesignicons.min.css" />
     <link rel="stylesheet" type="text/css" href="static/dialog-polyfill.css" />
     <link rel="stylesheet" type="text/css" href="static/style.css" />
+    <style type="text/css">
+        {{range.RowNums}}
+        .row-{{.Index}} {
+            grid-row-start: {{.Pos}};
+            grid-row-end: {{.Pos}};
+        }
+        {{end}}
+        {{range.ColNums}}
+        .col-{{.Index}} {
+            grid-column-start: {{.Pos}};
+            grid-column-end: {{.Pos}};
+        }
+        {{end}}
+    </style>
   </head>
   <body class="clearsans dragscroll">
     <header>

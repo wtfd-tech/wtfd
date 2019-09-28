@@ -110,7 +110,7 @@ footer {
     width: 100%;
     background-color: white;
     float: left;
-    display: flex;
+    display: grid;
 
     /*noinspection CssFloatPxLength*/
     box-shadow: 2.5px 2.5px 5px -2.5px black;
@@ -240,100 +240,6 @@ td, th {
     grid-row-gap: 125px;
     margin-left: 25px;
     margin-top: 75px;
-}
-
-.row-0 {
-    grid-row-start: 1;
-    grid-row-end: 1;
-    display: grid;
-}
-
-.row-1 {
-    grid-row-start: 2;
-    grid-row-end: 2;
-    display: grid;
-}
-
-.row-2 {
-    grid-row-start: 3;
-    grid-row-end: 3;
-    display: grid;
-}
-
-.row-3 {
-    grid-row-start: 4;
-    grid-row-end: 4;
-    display: grid;
-}
-
-.row-4 {
-    grid-row-start: 5;
-    grid-row-end: 5;
-    display: grid;
-}
-.row-5 {
-    grid-row-start: 6;
-    grid-row-end: 6;
-    display: grid;
-}
-.row-6 {
-    grid-row-start: 7;
-    grid-row-end: 7;
-    display: grid;
-}
-.row-7 {
-    grid-row-start: 8;
-    grid-row-end: 8;
-    display: grid;
-}
-.row-8 {
-    grid-row-start: 9;
-    grid-row-end: 9;
-    display: grid;
-}
-.row-9 {
-    grid-row-start: 10;
-    grid-row-end: 10;
-    display: grid;
-}
-.row-10 {
-    grid-row-start: 11;
-    grid-row-end: 11;
-    display: grid;
-}
-.row-11 {
-    grid-row-start: 12;
-    grid-row-end: 12;
-    display: grid;
-}
-.col-0 {
-    grid-column-start: 1;
-    grid-column-end: 1;
-    display: grid;
-}
-
-.col-1 {
-    grid-column-start: 2;
-    grid-column-end: 2;
-    display: grid;
-}
-
-.col-2 {
-    grid-column-start: 3;
-    grid-column-end: 3;
-    display: grid;
-}
-
-.col-3 {
-    grid-column-start: 4;
-    grid-column-end: 4;
-    display: grid;
-}
-
-.col-4 {
-    grid-column-start: 5;
-    grid-column-end: 5;
-    display: grid;
 }
 
 dialog {
