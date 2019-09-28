@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
+	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -13,10 +16,6 @@ import (
 	"os"
 	"sort"
 	"strconv"
-
-	"github.com/gorilla/mux"
-	"github.com/gorilla/sessions"
-	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -217,41 +216,36 @@ func calculateMinRowNum(chall *Challenge) int {
 }
 
 func calculateRowNums() {
+	cols := make(map[int][]*Challenge)
 	maxcol := 0
-	for i := range challs {
-		if challs[i].DepCount > maxcol {
-			maxcol = challs[i].DepCount
+
+	for _, chall := range challs {
+		col := chall.DepCount
+		cols[col] = append(cols[col], chall)
+		if col > maxcol { maxcol = col }
+	}
+
+	fmt.Println("col\t[         <name>]\tmin\trow")
+	for i := 0; i <= maxcol; i++ {
+		if _, ok := cols[i]; !ok { continue } //Skip empty columns
+
+		for _, chall := range cols[i] {
+			chall.MinRow = 0
+			for _, dep := range chall.Deps {
+				if dep.Row > chall.MinRow {chall.MinRow = dep.Row}
+			}
 		}
-		calculateMinRowNum(challs[i])
-	}
 
-	challmatrix := make([][]*Challenge, maxcol+1)
-	for i := range challmatrix {
-		challmatrix[i] = []*Challenge{}
-	}
-
-	for i := range challs {
-		challmatrix[challs[i].DepCount] = append(challmatrix[challs[i].DepCount], challs[i])
-	}
-	for col := range challmatrix {
-		sort.Slice(challmatrix[col], func(i, j int) bool {
-			if challmatrix[col][i].MinRow != challmatrix[col][j].MinRow {
-				return challmatrix[col][i].MinRow < challmatrix[col][j].MinRow
-			}
-			if len(challmatrix[col][i].DepIDs) == len(challmatrix[col][j].DepIDs) {
-				return challmatrix[col][i].DepCount < challmatrix[col][j].DepCount
-
-			}
-			return len(challmatrix[col][i].DepIDs) >= len(challmatrix[col][j].DepIDs)
-
+		sort.SliceStable(cols[i], func(x, y int) bool {
+			return cols[i][x].MinRow < cols[i][y].MinRow
 		})
+
 		row := 0
-		for e := range challmatrix[col] {
-			if challmatrix[col][e].MinRow > row {
-				row = challmatrix[col][e].MinRow
-			}
-			challmatrix[col][e].Row = row
+		for j := 0; j < len(cols[i]); j++ {
+			if row < cols[i][j].MinRow { row = cols[i][j].MinRow}
+			cols[i][j].Row = row
 			row++
+			fmt.Printf("%1d\t[%15s]\t%3d %3d\n", i, cols[i][j].Name, cols[i][j].MinRow, cols[i][j].Row)
 		}
 	}
 }
