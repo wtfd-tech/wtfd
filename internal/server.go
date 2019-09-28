@@ -5,6 +5,9 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/sessions"
+	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -13,11 +16,11 @@ import (
 	"os"
 	"sort"
 	"strconv"
-
 	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
+	"strings"
 )
 
 const (
@@ -73,6 +76,8 @@ var (
 		"The Knife of Evil",
 		"Transmission",
 	}
+	maxcol				= 0
+	maxrow				= 0
 )
 
 // FillChallengeURI Fill host into each challenge's URI field and set HasURI
@@ -202,61 +207,53 @@ func reverseResolveAllDepIDs() {
 	}
 }
 
-func calculateMinRowNum(chall *Challenge) int {
-	if chall.MinRow != -1 {
-		return chall.MinRow
+func calculateRowNums() {
+	cols := make(map[int][]*Challenge)
+
+	for _, chall := range challs {
+		col := chall.DepCount
+		cols[col] = append(cols[col], chall)
+		if col > maxcol { maxcol = col }
 	}
-	chall.MinRow = len(chall.Deps) - 1
-	if chall.MinRow < 0 {
-		chall.MinRow = 0
-	}
-	for _, d := range chall.Deps {
-		val := calculateMinRowNum(d)
-		if val > chall.MinRow {
-			chall.MinRow = val //+ 1
+
+	fmt.Println("col\t[         <name>]\tmin\trow")
+	for i := 0; i <= maxcol; i++ {
+		if _, ok := cols[i]; !ok { continue } //Skip empty columns
+
+		for _, chall := range cols[i] {
+			chall.MinRow = 0
+			for _, dep := range chall.Deps {
+				if dep.Row > chall.MinRow {chall.MinRow = dep.Row}
+			}
+		}
+
+		sort.Slice(cols[i], func(x, y int) bool {
+			if cols[i][x].MinRow == cols[i][y].MinRow {
+				return stringCompareLess(cols[i][x].Name, cols[i][y].Name)
+			} else {
+				return cols[i][x].MinRow < cols[i][y].MinRow
+			}
+		})
+
+		row := 0
+		for j := 0; j < len(cols[i]); j++ {
+			if row < cols[i][j].MinRow { row = cols[i][j].MinRow}
+			cols[i][j].Row = row
+			if row > maxrow { maxrow = row }
+			row++
+			fmt.Printf("%1d\t[%15s]\t%3d %3d\n", i, cols[i][j].Name, cols[i][j].MinRow, cols[i][j].Row)
 		}
 	}
-	return chall.MinRow
 }
 
-func calculateRowNums() {
-	maxcol := 0
-	for i := range challs {
-		if challs[i].DepCount > maxcol {
-			maxcol = challs[i].DepCount
-		}
-		calculateMinRowNum(challs[i])
+// https://stackoverflow.com/a/35099450
+func stringCompareLess(si, sj string) bool {
+	var siLower = strings.ToLower(si)
+	var sjLower = strings.ToLower(sj)
+	if siLower == sjLower {
+		return si < sj
 	}
-
-	challmatrix := make([][]*Challenge, maxcol+1)
-	for i := range challmatrix {
-		challmatrix[i] = []*Challenge{}
-	}
-
-	for i := range challs {
-		challmatrix[challs[i].DepCount] = append(challmatrix[challs[i].DepCount], challs[i])
-	}
-	for col := range challmatrix {
-		sort.Slice(challmatrix[col], func(i, j int) bool {
-			if challmatrix[col][i].MinRow != challmatrix[col][j].MinRow {
-				return challmatrix[col][i].MinRow < challmatrix[col][j].MinRow
-			}
-			if len(challmatrix[col][i].DepIDs) == len(challmatrix[col][j].DepIDs) {
-				return challmatrix[col][i].DepCount < challmatrix[col][j].DepCount
-
-			}
-			return len(challmatrix[col][i].DepIDs) >= len(challmatrix[col][j].DepIDs)
-
-		})
-		row := 0
-		for e := range challmatrix[col] {
-			if challmatrix[col][e].MinRow > row {
-				row = challmatrix[col][e].MinRow
-			}
-			challmatrix[col][e].Row = row
-			row++
-		}
-	}
+	return siLower < sjLower
 }
 
 func resolveChalls(jsons []*ChallengeJSON) {
@@ -366,6 +363,8 @@ func leaderboardpage(w http.ResponseWriter, r *http.Request) {
 		AllUsers:      allUsers,
 		User:          user,
 		IsUser:        ok,
+		RowNums:       make([]gridinfo, 0),
+		ColNums:       make([]gridinfo, 0),
 	}
 	err = leaderboardtemplate.Execute(w, data)
 	if err != nil {
@@ -388,6 +387,20 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		}
 
 	}
+	rnums := make([]gridinfo, maxrow+1)
+	for i := 0; i <= maxrow; i++ {
+		rnums[i] = gridinfo{
+			Index: i,
+			Pos:   i+1,
+		}
+	}
+	cnums := make([]gridinfo, maxcol+1)
+	for i := 0; i <= maxcol; i++ {
+		cnums[i] = gridinfo{
+			Index: i,
+			Pos:   i+1,
+		}
+	}
 	data := mainPageData{
 		PageTitle:              "foss-ag O-Phasen CTF",
 		Challenges:             challs,
@@ -396,6 +409,8 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		SelectedChallengeID:    vars["chall"],
 		User:                   user,
 		IsUser:                 ok,
+		RowNums:				rnums,
+		ColNums:                cnums,
 	}
 	err = mainpagetemplate.Execute(w, data)
 	if err != nil {
@@ -666,7 +681,6 @@ func Server() error {
 
 	// Fill in sshHost
 	challs.FillChallengeURI(sshHost)
-
 	// Parse Templates
 	mainpagetemplate, err = template.ParseFiles("html/index.html", "html/footer.html", "html/header.html")
 	if err != nil {

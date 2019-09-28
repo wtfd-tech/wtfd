@@ -1,61 +1,236 @@
- [
-    {
-      "name": "chall-a",
-      "desc": "aioöhsogöaerghaeörkglkfjgaöoerilgeoörgijk",
-      "flag": "FOSS{b}",
-      "solution": "# You nice person, \nyou just gotta put the b to the a, obviously",
-      "points": 8,
-      "uri": "ssh://asdf@%s"
-    },
-    {
-      "name": "chall-b",
-      "deps": ["chall-a"],
-      "desc": "aassddfaassddf",
-      "flag": "FOSS{a}",
-      "points": 1
-    },
-    {
-      "name": "chall-c",
-      "desc": "aassddfaassddf",
-      "flag": "FOSS{a}",
-      "deps": ["chall-b"],
-      "points": 1,
-      "uri": "ssh://asdf@%s"
-    },
-    {
-      "name": "chall-d",
-      "desc": "aassddfaassddf",
-      "flag": "FOSS{a}",
-      "deps": ["chall-a"],
-      "points": 1,
-      "uri": "ssh://asdf@%s"
-    },
-    {
-      "name": "chall-f",
-      "deps": ["chall-c", "chall-d"],
-      "desc": "aassddfaassddf",
-      "flag": "FOSS{a}",
-      "points": 1
-    },
-    {
-      "name": "chall-h",
-      "deps": ["chall-n","chall-c"],
-      "desc": "aassddfaassddf",
-      "flag": "FOSS{a}",
-      "points": 1
-    },
-    {
-      "name": "chall-n",
-      "deps": ["chall-a"],
-      "desc": "aassddfaassddf",
-      "flag": "FOSS{a}",
-      "points": 1
-    },
-    {
-      "name": "chall-e",
-      "deps": ["chall-b"],
-      "desc": "aassddfaassddf",
-      "flag": "FOSS{a}",
-      "points": 1
-    }
+[
+  {
+    "points": 2,
+    "uri": "ssh://bash@%s",
+    "flag": "FOSS{sHeLLS_SIND_ToLl}",
+    "name": "bash",
+    "desc": "<p>In dieser Challenge geht es um die Grundlagen einer Shell.</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"fu\">cat</span> flag.txt</span></code></pre></div>\n"
+  },
+  {
+    "points": 2,
+    "uri": "ssh://git-clone@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{FoRK_mE_On_GitHUB}",
+    "name": "git-clone",
+    "desc": "<p>Die Einleitung f\u00fcr die git Challenges.</p>\n",
+    "solution": "<p><strong>1.</strong></p>\n<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"fu\">git</span> clone /srv/flag.git</span></code></pre></div>\n<p><strong>2.</strong></p>\n<div class=\"sourceCode\" id=\"cb2\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb2-1\"><a href=\"#cb2-1\"></a><span class=\"fu\">cat</span> flag/flag.txt</span></code></pre></div>\n"
+  },
+  {
+    "points": 4,
+    "uri": "ssh://find@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{H1dDEn}",
+    "name": "find",
+    "desc": "<p>Hier musst du das Dateisystem durchsuchen.</p>\n",
+    "solution": "<h1 id=\"l\u00f6sungsvorschlag\">L\u00f6sungsvorschlag</h1>\n<h2 id=\"datei-finden\">Datei finden</h2>\n<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode sh\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"fu\">find</span> / -xdev -uid 1000 <span class=\"op\">2&gt;</span> /dev/null</span></code></pre></div>\n<h2 id=\"datei-ausf\u00fchren\">Datei ausf\u00fchren</h2>\n<div class=\"sourceCode\" id=\"cb2\"><pre class=\"sourceCode sh\"><code class=\"sourceCode bash\"><span id=\"cb2-1\"><a href=\"#cb2-1\"></a><span class=\"fu\">chmod</span> +x /etc/a.out</span>\n<span id=\"cb2-2\"><a href=\"#cb2-2\"></a><span class=\"ex\">/etc/a.out</span></span></code></pre></div>\n"
+  },
+  {
+    "points": 2,
+    "uri": "ssh://python-intro@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{PYthOn_scRIPT}",
+    "name": "python-intro",
+    "desc": "<p>Hier geht es um das Benutzen von Python.</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"ex\">python</span> script.pyc</span></code></pre></div>\n"
+  },
+  {
+    "points": 3,
+    "flag": "FOSS{ProTOk0l}",
+    "name": "protocol",
+    "desc": "<p>Bei dieser Challenge geht es nicht um die Konsole.</p>\n<p>Die FOSS-AG hat bereits so einige Treffen hinter sich. Meistes wurden die Themen stichpunktartig festgehalten. Du hast einen Suchauftrag: finde die Flag in unserem Protokoll.</p>\n<p>Ausgangspunkt ist unser Wiki unter <a href=\"https://foss-ag.de\">FOSS-AG</a></p>\n",
+    "solution": "\n"
+  },
+  {
+    "points": 6,
+    "uri": "ssh://python-shell@%s",
+    "deps": [
+      "python-intro"
+    ],
+    "flag": "FOSS{Bash_IST_eINfAchER}",
+    "name": "python-shell",
+    "desc": "<p>Hier geht es um das benutzen der Pyhon-Shell.</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode python\"><code class=\"sourceCode python\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"im\">import</span> os</span>\n<span id=\"cb1-2\"><a href=\"#cb1-2\"></a>os.listdir(<span class=\"st\">&quot;.&quot;</span>)</span>\n<span id=\"cb1-3\"><a href=\"#cb1-3\"></a><span class=\"bu\">file</span> <span class=\"op\">=</span> <span class=\"bu\">open</span>(<span class=\"st\">&quot;flag.txt&quot;</span>)</span>\n<span id=\"cb1-4\"><a href=\"#cb1-4\"></a>lines <span class=\"op\">=</span> <span class=\"bu\">file</span>.readlines()</span>\n<span id=\"cb1-5\"><a href=\"#cb1-5\"></a><span class=\"bu\">print</span>(lines)</span></code></pre></div>\n"
+  },
+  {
+    "points": 2,
+    "uri": "ssh://ip@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{iPs-Are-eAsY}",
+    "name": "ip",
+    "desc": "<p>In dieser Challenge geht es um IP.</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"ex\">ip</span> addr</span></code></pre></div>\n"
+  },
+  {
+    "points": 4,
+    "uri": "ssh://environment@%s",
+    "deps": [
+      "base64"
+    ],
+    "flag": "FOSS{saVE_tHE_eNvironmEnt}",
+    "name": "environment",
+    "desc": "<p>In dieser Challenge geht es um Umgebungsvariabeln.</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"bu\">echo</span> <span class=\"va\">$FLAG</span> <span class=\"kw\">|</span> <span class=\"ex\">base64</span> -d</span></code></pre></div>\n"
+  },
+  {
+    "points": 4,
+    "uri": "ssh://strings@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{DaaN1ouc}",
+    "name": "strings",
+    "desc": "<p>Hier geht es um das Untersuchen von Anwendungen.</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"fu\">strings</span> program.exe</span></code></pre></div>\n"
+  },
+  {
+    "points": 2,
+    "uri": "ssh://sudo-chall@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{I_aM_RooT}",
+    "name": "sudo-chall",
+    "desc": "<p>ESKALIERE DEINE PRIVILEGIEN!</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"fu\">sudo</span> cat flag.txt</span></code></pre></div>\n"
+  },
+  {
+    "points": 4,
+    "uri": "ssh://base64@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{wHw_bAsE64_Is_CoOl}",
+    "name": "base64",
+    "desc": "<h1 id=\"todo\">TODO</h1>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"ex\">base64</span> -d flag-b64.txt</span></code></pre></div>\n"
+  },
+  {
+    "points": 4,
+    "uri": "ssh://git-checkout@%s",
+    "deps": [
+      "git-clone"
+    ],
+    "flag": "FOSS{ChECK_Me_oUT_On_GitHUB}",
+    "name": "git-checkout",
+    "desc": "<p>Hier geht es um die Benuztung von git-Zweigen.</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"bu\">cd</span> gitrepo</span>\n<span id=\"cb1-2\"><a href=\"#cb1-2\"></a><span class=\"fu\">git</span> checkout challenge</span>\n<span id=\"cb1-3\"><a href=\"#cb1-3\"></a><span class=\"fu\">cat</span> flag.txt</span></code></pre></div>\n"
+  },
+  {
+    "points": 4,
+    "uri": "ssh://python-library@%s",
+    "deps": [
+      "python-intro"
+    ],
+    "flag": "FOSS{dAS_IsT_jA_zENsUR!}",
+    "name": "python-library",
+    "desc": "<p>Hier geht es um das benutzen von Python-Bibliotheken.</p>\n",
+    "solution": "<p>F\u00fcge <code>print(message)</code> in Zeile 21 ein. Und f\u00fchre das Skript mit Pyhthon aus.</p>\n"
+  },
+  {
+    "points": 4,
+    "uri": "ssh://checksums@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{zU_vIeLe_DaTeIeN}",
+    "name": "checksums",
+    "desc": "<p>Hier muss mittels Pr\u00fcfsummen eine bestimme Datei gefunden werden.</p>\n",
+    "solution": "<p><strong>1.</strong></p>\n<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"ex\">sha1sum</span> daten/* <span class=\"kw\">|</span> <span class=\"fu\">grep</span> fb6f7686f342664616dd9da8b1573a5091c1f1b7</span></code></pre></div>\n<p><strong>2.</strong></p>\n<div class=\"sourceCode\" id=\"cb2\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb2-1\"><a href=\"#cb2-1\"></a><span class=\"fu\">cat</span> daten/flag-396</span></code></pre></div>\n"
+  },
+  {
+    "points": 2,
+    "uri": "ssh://vi@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{wAr_dOcH_EiNfAcH}",
+    "name": "vi",
+    "desc": "<p>Vi bitte?</p>\n",
+    "solution": "<p>:q!</p>\n"
+  },
+  {
+    "points": 4,
+    "uri": "ssh://nc@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{dAS_nEUlanD}",
+    "name": "nc",
+    "desc": "<p>In dieser Challenge geht es um das Aufbauen einer Netzwerkverbindung (TCP)</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"bu\">echo</span> <span class=\"st\">&quot;Flagge&quot;</span> <span class=\"kw\">|</span> <span class=\"ex\">nc</span> localhost 1234</span></code></pre></div>\n"
+  },
+  {
+    "points": 4,
+    "uri": "ssh://vi-swp@%s",
+    "deps": [
+      "vi"
+    ],
+    "flag": "FOSS{NoCh_NIChTs_VErlOren}",
+    "name": "vi-swp",
+    "desc": "<p>In dieser Challenge geht es um ein Feature von Vi.</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"ex\">vi</span> -r .teamer.md.swp</span></code></pre></div>\n"
+  },
+  {
+    "points": 2,
+    "uri": "ssh://kernel@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{kernEL_5.2.9-200}",
+    "name": "kernel",
+    "desc": "<p>Hier musst du Informationen \u00fcber den Kernel finden.</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"fu\">uname</span> -r</span></code></pre></div>\n"
+  },
+  {
+    "points": 4,
+    "uri": "ssh://pgp-decrypt@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{dONtSpYOnME}",
+    "name": "pgp-decrypt",
+    "desc": "<p>In dieser Challenge geht es um Kryptographie-tools.</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"ex\">gpg</span> --decrypt message.asc</span></code></pre></div>\n"
+  },
+  {
+    "points": 8,
+    "uri": "ssh://picture@%s",
+    "deps": [
+      "manual",
+      "bash"
+    ],
+    "flag": "FOSS{biTM\u00c4p}",
+    "name": "picture",
+    "desc": "<p>In dieser Challenge wird Kreativit\u00e4t gefordert!</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"fu\">unzip</span> .secret.zip</span></code></pre></div>\n<p>Ersetze alle Dateien. Die neue .secret.zip auch Entpacken, dabei wird ein Passwort ben\u00f6tigt. Wenn man Enter dr\u00fcckt, sieht man alle Dateinamen in der Zip. Aus den Dateinamen l\u00e4sst sich das Passwort \u201cophase2019\u201d zusammensetzen. Anschlie\u00dfend mit</p>\n<div class=\"sourceCode\" id=\"cb2\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb2-1\"><a href=\"#cb2-1\"></a><span class=\"ex\">catimg</span> se.png</span></code></pre></div>\n<p>Die Flagge erhalten.</p>\n"
+  },
+  {
+    "points": 1,
+    "uri": "ssh://manual@%s",
+    "flag": "FOSS{maNpAgeS_sInD_HILFREIch}",
+    "name": "manual",
+    "desc": "<p>Hier kannst du lernen, wie du Hilfe zu Kommandos erh\u00e4lst.</p>\n",
+    "solution": "<div class=\"sourceCode\" id=\"cb1\"><pre class=\"sourceCode bash\"><code class=\"sourceCode bash\"><span id=\"cb1-1\"><a href=\"#cb1-1\"></a><span class=\"fu\">man</span> foss-ag</span></code></pre></div>\n"
+  }
 ]
