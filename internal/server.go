@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
@@ -16,10 +17,6 @@ import (
 	"os"
 	"sort"
 	"strconv"
-	"github.com/gomarkdown/markdown"
-	"github.com/gorilla/mux"
-	"github.com/gorilla/sessions"
-	"golang.org/x/crypto/bcrypt"
 	"strings"
 )
 
@@ -76,8 +73,8 @@ var (
 		"The Knife of Evil",
 		"Transmission",
 	}
-	maxcol				= 0
-	maxrow				= 0
+	maxcol = 0
+	maxrow = 0
 )
 
 // FillChallengeURI Fill host into each challenge's URI field and set HasURI
@@ -213,17 +210,23 @@ func calculateRowNums() {
 	for _, chall := range challs {
 		col := chall.DepCount
 		cols[col] = append(cols[col], chall)
-		if col > maxcol { maxcol = col }
+		if col > maxcol {
+			maxcol = col
+		}
 	}
 
 	fmt.Println("col\t[         <name>]\tmin\trow")
 	for i := 0; i <= maxcol; i++ {
-		if _, ok := cols[i]; !ok { continue } //Skip empty columns
+		if _, ok := cols[i]; !ok {
+			continue
+		} //Skip empty columns
 
 		for _, chall := range cols[i] {
 			chall.MinRow = 0
 			for _, dep := range chall.Deps {
-				if dep.Row > chall.MinRow {chall.MinRow = dep.Row}
+				if dep.Row > chall.MinRow {
+					chall.MinRow = dep.Row
+				}
 			}
 		}
 
@@ -237,9 +240,13 @@ func calculateRowNums() {
 
 		row := 0
 		for j := 0; j < len(cols[i]); j++ {
-			if row < cols[i][j].MinRow { row = cols[i][j].MinRow}
+			if row < cols[i][j].MinRow {
+				row = cols[i][j].MinRow
+			}
 			cols[i][j].Row = row
-			if row > maxrow { maxrow = row }
+			if row > maxrow {
+				maxrow = row
+			}
 			row++
 			fmt.Printf("%1d\t[%15s]\t%3d %3d\n", i, cols[i][j].Name, cols[i][j].MinRow, cols[i][j].Row)
 		}
@@ -391,14 +398,14 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	for i := 0; i <= maxrow; i++ {
 		rnums[i] = gridinfo{
 			Index: i,
-			Pos:   i+1,
+			Pos:   i + 1,
 		}
 	}
 	cnums := make([]gridinfo, maxcol+1)
 	for i := 0; i <= maxcol; i++ {
 		cnums[i] = gridinfo{
 			Index: i,
-			Pos:   i+1,
+			Pos:   i + 1,
 		}
 	}
 	data := mainPageData{
@@ -409,7 +416,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		SelectedChallengeID:    vars["chall"],
 		User:                   user,
 		IsUser:                 ok,
-		RowNums:				rnums,
+		RowNums:                rnums,
 		ColNums:                cnums,
 	}
 	err = mainpagetemplate.Execute(w, data)
@@ -607,7 +614,7 @@ func Server() error {
 		//Load config file
 		var (
 			configBytes []byte
-			err			error
+			err         error
 		)
 
 		if configBytes, err = ioutil.ReadFile("config.json"); err != nil {
@@ -622,26 +629,30 @@ func Server() error {
 	var challsStructure []*ChallengeJSON
 
 	files, err := ioutil.ReadDir(config.ChallengeInfoDir)
-	if err != nil { return err }
+	if err != nil {
+		return err
+	}
 
 	for _, current := range files {
 		var (
-			challDir		= config.ChallengeInfoDir + "/" + current.Name()
-			jsonName		= challDir + "/meta.json"
-			readmeName		= challDir + "/README.md"
-			solutionName	= challDir + "/SOLUTION.md"
+			challDir     = config.ChallengeInfoDir + "/" + current.Name()
+			jsonName     = challDir + "/meta.json"
+			readmeName   = challDir + "/README.md"
+			solutionName = challDir + "/SOLUTION.md"
 
-			jsonBytes		[]byte
-			readmeBytes		[]byte
-			solutionBytes	[]byte
+			jsonBytes     []byte
+			readmeBytes   []byte
+			solutionBytes []byte
 
-			jsonStruct		ChallengeJSON
+			jsonStruct ChallengeJSON
 
-			err				error
+			err error
 		)
 
 		// Check if meta.json exists and load it into a ChallengeJSON struct
-		if ! current.IsDir() { continue }
+		if !current.IsDir() {
+			continue
+		}
 		if jsonBytes, err = ioutil.ReadFile(jsonName); err != nil {
 			log.Println(err)
 			continue
