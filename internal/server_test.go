@@ -69,11 +69,12 @@ func TestChallenges(t *testing.T) {
       "points": 1
     }
   ]`
-	var challsStructure []ChallengeJSON
+	var challsStructure []*ChallengeJSON
 	if err := json.Unmarshal([]byte(jsonstring), &challsStructure); err != nil {
 		t.Errorf("JSON Unmarshal Error: %v", err)
 	}
 	resolveChalls(challsStructure)
+	sshHost := "localhost:2222"
 	challs.FillChallengeURI(sshHost)
 	challn, err := challs.Find("chall-n")
 	if err != nil {

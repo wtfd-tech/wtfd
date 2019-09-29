@@ -35,6 +35,12 @@ type ChallengeJSON struct {
 	HasURI      bool     // This emerges from URI != ""
 }
 
+// Config stores settings loaded from config.json
+type Config struct {
+	ChallengeInfoDir string `json:"challinfodir"`
+	SSHHost          string `json:"sshhost"`
+}
+
 // User, was ist das wohl
 type User struct {
 	Name        string
@@ -52,7 +58,7 @@ type leaderboardPageData struct {
 	Leaderboard   bool
 	AllUsers      []_ORMUser
 	GeneratedName string
-	Style		  template.HTMLAttr
+	Style         template.HTMLAttr
 	RowNums       []gridinfo
 	ColNums       []gridinfo
 }
@@ -66,11 +72,11 @@ type mainPageData struct {
 	User                   *User
 	IsUser                 bool
 	Points                 int
-	RowNums				   []gridinfo
+	RowNums                []gridinfo
 	ColNums                []gridinfo
 }
 
-type gridinfo struct{
-	Index	int
-	Pos		int
+type gridinfo struct {
+	Index int
+	Pos   int
 }
