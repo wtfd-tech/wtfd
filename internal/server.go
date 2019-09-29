@@ -33,7 +33,6 @@ var (
 	errUserExisting     = errors.New("user with this name exists")
 	errWrongPassword    = errors.New("wrong Password")
 	errUserNotExisting  = errors.New("user with this name does not exist")
-	sshHost             = "localhost:2222"
 	challs              = Challenges{}
 	mainpagetemplate    = template.New("")
 	leaderboardtemplate = template.New("")
@@ -607,6 +606,7 @@ func Server() error {
 		//Write default config to disk
 		config = Config{
 			ChallengeInfoDir: "../challenges/info/",
+			SSHHost:          "ctf.foss-ag.de",
 		}
 		configBytes, _ := json.MarshalIndent(config, "", "\t")
 		_ = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
@@ -690,8 +690,8 @@ func Server() error {
 		return err
 	}
 
-	// Fill in sshHost
-	challs.FillChallengeURI(sshHost)
+	// Fill in SSHHost
+	challs.FillChallengeURI(config.SSHHost)
 	// Parse Templates
 	mainpagetemplate, err = template.ParseFiles("html/index.html", "html/footer.html", "html/header.html")
 	if err != nil {
@@ -755,8 +755,6 @@ func fixDeps(jsons []*ChallengeJSON) {
 				newdeps = append(newdeps, name)
 			}
 		}
-
-		fmt.Printf("[%s]\t%v\t->\t%v\n", chall.Name, chall.Deps, newdeps)
 
 		//Write to struct
 		chall.Deps = newdeps

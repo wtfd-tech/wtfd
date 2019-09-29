@@ -38,6 +38,7 @@ type ChallengeJSON struct {
 // Config stores settings loaded from config.json
 type Config struct {
 	ChallengeInfoDir string `json:"challinfodir"`
+	SSHHost          string `json:"sshhost"`
 }
 
 // User, was ist das wohl
