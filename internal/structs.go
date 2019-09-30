@@ -18,6 +18,7 @@ type Challenge struct {
 	MinRow      int
 	Row         int
 	Solution    string `json:"solution"`
+	Author      string `json:"author"`
 	DepIDs      []string
 	Deps        []*Challenge
 	HasURI      bool // This emerges from URI != ""
@@ -28,6 +29,7 @@ type ChallengeJSON struct {
 	Name        string   `json:"name"`
 	Description string   `json:"desc"`
 	Solution    string   `json:"solution"`
+	Author      string   `json:"author"`
 	Flag        string   `json:"flag"`
 	Points      int      `json:"points"`
 	URI         string   `json:"uri"`

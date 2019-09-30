@@ -270,7 +270,7 @@ func resolveChalls(jsons []*ChallengeJSON) {
 		this := jsons[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
 			idsInChalls = append(idsInChalls, this.Name)
-			challs = append(challs, &Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, MinRow: -1, Row: -1})
+			challs = append(challs, &Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, MinRow: -1, Row: -1, Author: this.Author})
 			jsons[i] = jsons[len(jsons)-1]
 			jsons = jsons[:len(jsons)-1]
 			i = 0
