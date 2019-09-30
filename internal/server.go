@@ -270,7 +270,7 @@ func resolveChalls(jsons []*ChallengeJSON) {
 		this := jsons[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
 			idsInChalls = append(idsInChalls, this.Name)
-			challs = append(challs, &Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, MinRow: -1, Row: -1})
+			challs = append(challs, &Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, MinRow: -1, Row: -1, Author: this.Author})
 			jsons[i] = jsons[len(jsons)-1]
 			jsons = jsons[:len(jsons)-1]
 			i = 0
@@ -592,6 +592,17 @@ func uriview(w http.ResponseWriter, r *http.Request) {
 	_, _ = fmt.Fprint(w, chall.URI)
 }
 
+func authorview(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	chall, err := challs.Find(vars["chall"])
+	if err != nil {
+		_, _ = fmt.Fprintf(w, "ServerError: Challenge with is %s not found", vars["chall"])
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	_, _ = fmt.Fprint(w, chall.Author)
+}
+
 func favicon(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "html/static/favicon.ico")
 }
@@ -729,6 +740,7 @@ func Server() error {
 	r.HandleFunc("/detailview/{chall}", detailview)
 	r.HandleFunc("/solutionview/{chall}", solutionview)
 	r.HandleFunc("/uriview/{chall}", uriview)
+	r.HandleFunc("/authorview/{chall}", authorview)
 	// static
 	r.PathPrefix("/static").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir("html/static"))))
