@@ -22,6 +22,7 @@ function addChallEventListener(title, points) {
         let msgBox = document.getElementById("flagsubmitmsg");
         let checkLoading = document.getElementById("checkloading");
         let challUri = document.getElementById("challuri");
+        let challAuthor = document.getElementById("challauthor");
         history.pushState(stateObj, "challenge " + title, title);
         flagsubmitbutton.removeEventListener("click", flagsubmiteventlistenerfunc);
         flagInput.removeEventListener("keypress", flaginputeventlistenerfunc);
@@ -100,6 +101,14 @@ function addChallEventListener(title, points) {
             if(response != "") {
                 challUri.style.display = "";
                 challUri.href = response;
+            }
+        });
+
+        challAuthor.style.display = "none";
+        fetch("/authorview/" + title).then(resp => resp.text()).then(function (response) {
+            if(response != "") {
+                challAuthor.style.display = "";
+                challAuthor.innerHTML = response;
             }
         });
 
