@@ -3,11 +3,13 @@ package wtfd
 import (
 	"encoding/gob"
 	"encoding/json"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
+	"github.com/gorilla/securecookie"
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"io/ioutil"
@@ -26,10 +28,8 @@ const (
 
 var (
 	config Config
+	store  sessions.Store
 
-	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
-	key                 = []byte("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-	store               = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
 	errUserExisting     = errors.New("user with this name exists")
 	errWrongPassword    = errors.New("wrong Password")
 	errUserNotExisting  = errors.New("user with this name does not exist")
@@ -601,10 +601,17 @@ func favicon(w http.ResponseWriter, r *http.Request) {
 func Server() error {
 	gob.Register(&User{})
 
+	var key []byte
+
 	//Test if config file exists
 	if _, err := os.Stat("config.json"); os.IsNotExist(err) {
+		// Generate a new key
+		key = securecookie.GenerateRandomKey(32)
+
 		//Write default config to disk
 		config = Config{
+			Key:              base64.StdEncoding.EncodeToString(key),
+			Port:             defaultPort,
 			ChallengeInfoDir: "../challenges/info/",
 			SSHHost:          "ctf.foss-ag.de",
 		}
@@ -623,7 +630,15 @@ func Server() error {
 		if err := json.Unmarshal(configBytes, &config); err != nil {
 			return err
 		}
+
+		// Decode key
+		key, err = base64.StdEncoding.DecodeString(config.Key)
+		if err != nil {
+			log.Fatal("Could not decode config.json:Key")
+		}
 	}
+
+	store = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
 
 	//Load challs from dirs
 	var challsStructure []*ChallengeJSON
@@ -718,7 +733,7 @@ func Server() error {
 	r.PathPrefix("/static").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir("html/static"))))
 
-	Port := defaultPort
+	Port := config.Port
 	if portenv := os.Getenv("WTFD_PORT"); portenv != "" {
 		Port, _ = strconv.ParseInt(portenv, 10, 64)
 	}

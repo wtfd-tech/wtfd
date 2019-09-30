@@ -37,6 +37,8 @@ type ChallengeJSON struct {
 
 // Config stores settings loaded from config.json
 type Config struct {
+	Port             int64  `json:port`
+	Key              string `json:key`
 	ChallengeInfoDir string `json:"challinfodir"`
 	SSHHost          string `json:"sshhost"`
 }
