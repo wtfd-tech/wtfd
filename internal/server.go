@@ -528,7 +528,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 					_, _ = fmt.Fprintf(w, "Server Error: %v", err)
 				} else {
 					_ = ormNewUser(u)
-					http.Redirect(w, r, "/", http.StatusFound)
+                                        login(w,r)
 
 				}
 
