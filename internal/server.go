@@ -231,7 +231,12 @@ func calculateRowNums() {
 
 		sort.Slice(cols[i], func(x, y int) bool {
 			if cols[i][x].MinRow == cols[i][y].MinRow {
-				return stringCompareLess(cols[i][x].Name, cols[i][y].Name)
+				if len(cols[i][x].DepIDs) == len(cols[i][y].DepIDs) {
+					return stringCompareLess(cols[i][x].Name, cols[i][y].Name)
+				} else {
+					// Sort as less (higher) if it has more dependecies
+					return len(cols[i][x].DepIDs) > len(cols[i][y].DepIDs)
+				}
 			} else {
 				return cols[i][x].MinRow < cols[i][y].MinRow
 			}
