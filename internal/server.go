@@ -3,11 +3,13 @@ package wtfd
 import (
 	"encoding/gob"
 	"encoding/json"
+	"encoding/base64"
 	"errors"
 	"fmt"
 	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
+	"github.com/gorilla/securecookie"
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"io/ioutil"
@@ -26,10 +28,8 @@ const (
 
 var (
 	config Config
+	store  sessions.Store
 
-	// key must be 16, 24 or 32 bytes long (AES-128, AES-192 or AES-256)
-	key                 = []byte("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
-	store               = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
 	errUserExisting     = errors.New("user with this name exists")
 	errWrongPassword    = errors.New("wrong Password")
 	errUserNotExisting  = errors.New("user with this name does not exist")
@@ -275,7 +275,7 @@ func resolveChalls(jsons []*ChallengeJSON) {
 		this := jsons[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
 			idsInChalls = append(idsInChalls, this.Name)
-			challs = append(challs, &Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, MinRow: -1, Row: -1})
+			challs = append(challs, &Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, MinRow: -1, Row: -1, Author: this.Author})
 			jsons[i] = jsons[len(jsons)-1]
 			jsons = jsons[:len(jsons)-1]
 			i = 0
@@ -533,7 +533,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 					_, _ = fmt.Fprintf(w, "Server Error: %v", err)
 				} else {
 					_ = ormNewUser(u)
-					http.Redirect(w, r, "/", http.StatusFound)
+                                        login(w,r)
 
 				}
 
@@ -597,6 +597,17 @@ func uriview(w http.ResponseWriter, r *http.Request) {
 	_, _ = fmt.Fprint(w, chall.URI)
 }
 
+func authorview(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	chall, err := challs.Find(vars["chall"])
+	if err != nil {
+		_, _ = fmt.Fprintf(w, "ServerError: Challenge with is %s not found", vars["chall"])
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	_, _ = fmt.Fprint(w, chall.Author)
+}
+
 func favicon(w http.ResponseWriter, r *http.Request) {
 	http.ServeFile(w, r, "html/static/favicon.ico")
 }
@@ -606,10 +617,17 @@ func favicon(w http.ResponseWriter, r *http.Request) {
 func Server() error {
 	gob.Register(&User{})
 
+	var key []byte
+
 	//Test if config file exists
 	if _, err := os.Stat("config.json"); os.IsNotExist(err) {
+		// Generate a new key
+		key = securecookie.GenerateRandomKey(32)
+
 		//Write default config to disk
 		config = Config{
+			Key:              base64.StdEncoding.EncodeToString(key),
+			Port:             defaultPort,
 			ChallengeInfoDir: "../challenges/info/",
 			SSHHost:          "ctf.foss-ag.de",
 		}
@@ -628,7 +646,15 @@ func Server() error {
 		if err := json.Unmarshal(configBytes, &config); err != nil {
 			return err
 		}
+
+		// Decode key
+		key, err = base64.StdEncoding.DecodeString(config.Key)
+		if err != nil {
+			log.Fatal("Could not decode config.json:Key")
+		}
 	}
+
+	store = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
 
 	//Load challs from dirs
 	var challsStructure []*ChallengeJSON
@@ -719,11 +745,12 @@ func Server() error {
 	r.HandleFunc("/detailview/{chall}", detailview)
 	r.HandleFunc("/solutionview/{chall}", solutionview)
 	r.HandleFunc("/uriview/{chall}", uriview)
+	r.HandleFunc("/authorview/{chall}", authorview)
 	// static
 	r.PathPrefix("/static").Handler(
 		http.StripPrefix("/static/", http.FileServer(http.Dir("html/static"))))
 
-	Port := defaultPort
+	Port := config.Port
 	if portenv := os.Getenv("WTFD_PORT"); portenv != "" {
 		Port, _ = strconv.ParseInt(portenv, 10, 64)
 	}
