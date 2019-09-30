@@ -1,0 +1,10 @@
+[Unit]
+Description=WTFd Server
+After=network-online.target
+
+[Service]
+WorkingDirectory=/usr/lib/wtfd
+ExecStart=/usr/local/bin/wtfd
+
+[Install]
+WantedBy=multi-user.target
