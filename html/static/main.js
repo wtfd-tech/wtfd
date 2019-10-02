@@ -79,6 +79,7 @@ function addChallEventListener(title, points) {
         detDescription.innerHTML = "<i>Loading, please wait...</i>";
         detTitle.innerHTML = "LOADING";
         detPoints.innerHTML = "-";
+        challAuthor.innerHTML = "LOADING..."
         fetch("/detailview/" + title).then(resp => resp.text()).then(function (response) {
             detDescription.innerHTML = response;
             detTitle.innerHTML = title;
@@ -104,11 +105,11 @@ function addChallEventListener(title, points) {
             }
         });
 
-        challAuthor.style.display = "none";
         fetch("/authorview/" + title).then(resp => resp.text()).then(function (response) {
             if(response != "") {
-                challAuthor.style.display = "";
                 challAuthor.innerHTML = response;
+            } else {
+                challAuthor.innerHTML = "&lt;Unknown&gt;"
             }
         });
 

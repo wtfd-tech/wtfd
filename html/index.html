@@ -55,7 +55,7 @@ colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
             {{end}}
             {{end}}
         }
-      
+
       </script>
     </main>
     <div id="svgContainer"><svg id="svg1" width="0" height="0">
@@ -63,10 +63,19 @@ colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
     <dialog id="detailview">
       <span class="mdi mdi-close closebtn" id="detailclosebutton"></span>
       <h1 id="detailtitle"></h1>
-      <h3><span class="pointicon"></span><span id="detailpoints" class="firamono"></span></h3>
-      <a id="challuri" class="challengelink" style="display: none;">Zur Challenge!</a>
+      <h3 class="detailmeta">
+        <div class="flexcell flex-left">
+          <a id="challuri" class="challengelink" style="display: none;">Zur Challenge!</a>
+        </div>
+        <div class="flexcell flex-center">
+          <span class="pointicon"></span><span id="detailpoints" class="firamono"></span>
+        </div>
+        <div class="flexcell flex-right">
+          <a id="challauthor"></a>
+          <span class="mdi mdi-account"></span>
+        </div>
+      </h3>
       </br>
-      <a id="challauthor" style="display: none;"></a>
       <div id="detaildescription"></div>
       <div id="flagsubmitmsg"></div>
       <div id="detailform">
