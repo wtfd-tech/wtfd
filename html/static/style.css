@@ -92,15 +92,15 @@ footer {
     z-index: 6;
 }
 
-#footer-left {
+.flex-left {
     padding-left: 16px;
 }
 
-#footer-center {
+.flex-center {
     text-align: center;
 }
 
-#footer-right {
+.flex-right {
     text-align: right;
     padding-right: 16px;
 }
@@ -297,9 +297,6 @@ h2 {
 
 h3 {
     margin: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     font-weight: normal;
 }
 
@@ -318,6 +315,12 @@ h3 {
 
 #detailform {
     display: flex;
+}
+
+.detailmeta {
+    display: flex;
+    align-items: center;
+    justify-items: center;
 }
 
 .selected-big-link.big-link {
@@ -449,7 +452,6 @@ menu {
 }
 
 .challengelink {
-    margin-left: 5%;
     color: #14b967;
 }
 
