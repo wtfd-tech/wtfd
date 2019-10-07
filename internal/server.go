@@ -1,15 +1,15 @@
 package wtfd
 
 import (
+	"encoding/base64"
 	"encoding/gob"
 	"encoding/json"
-	"encoding/base64"
 	"errors"
 	"fmt"
 	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/sessions"
 	"github.com/gorilla/securecookie"
+	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"io/ioutil"
@@ -497,6 +497,7 @@ func submitFlag(w http.ResponseWriter, r *http.Request) {
 			}
 
 			_, _ = fmt.Fprintf(w, "correct")
+			_ = updateScoreboard()
 
 		} else {
 			_, _ = fmt.Fprintf(w, "not correct")
@@ -533,7 +534,8 @@ func register(w http.ResponseWriter, r *http.Request) {
 					_, _ = fmt.Fprintf(w, "Server Error: %v", err)
 				} else {
 					_ = ormNewUser(u)
-                                        login(w,r)
+					login(w, r)
+					_ = updateScoreboard()
 
 				}
 
@@ -732,6 +734,7 @@ func Server() error {
 	if err != nil {
 		return err
 	}
+	go leaderboardMessageServer(serverChan)
 	// Http sturf
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainpage)
@@ -741,6 +744,7 @@ func Server() error {
 	r.HandleFunc("/logout", logout)
 	r.HandleFunc("/register", register)
 	r.HandleFunc("/submitflag", submitFlag)
+	r.HandleFunc("/ws", leaderboardWS)
 	r.HandleFunc("/{chall}", mainpage)
 	r.HandleFunc("/detailview/{chall}", detailview)
 	r.HandleFunc("/solutionview/{chall}", solutionview)
