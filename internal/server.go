@@ -332,7 +332,7 @@ func detailview(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	_, _ = fmt.Fprintf(w, "%s", chall.Description)
+        _, _ = fmt.Fprintf(w, "%s<br><p>Solves: %d</p>", chall.Description, ormGetSolveCount(*chall))
 
 }
 
