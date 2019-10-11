@@ -4,6 +4,7 @@
 
 ### Go ###
 # Binaries for programs and plugins
+wtfd
 *.exe
 *.exe~
 *.dll

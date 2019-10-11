@@ -3,6 +3,7 @@ package wtfd
 import (
 	"errors"
 	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"github.com/go-xorm/xorm"
 	_ "github.com/mattn/go-sqlite3" // needed for xorm
 	"os"
@@ -47,6 +48,53 @@ func ormSync() {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+
+// Login checks if password is right for username and returns the User object of it
+func Login(username, passwd string) error {
+	user, err := Get(username)
+	if err != nil {
+		return err
+	}
+	if pwdRight := user.ComparePassword(passwd); !pwdRight {
+		return errWrongPassword
+	}
+	fmt.Printf("User login: %s\n", username)
+	return nil
+
+}
+
+
+// NewUser creates a new user object
+func NewUser(name, password, displayname string) (User, error) {
+	if Contains(name, displayname) {
+		return User{}, errUserExisting
+	}
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), 14)
+	if err != nil {
+		return User{}, err
+	}
+
+	fmt.Printf("New User added: %s\n", name)
+	return User{Name: name, Hash: hash, DisplayName: displayname}, nil
+
+}
+// Contains looks if a username is in the datenbank
+func Contains(username, displayname string) bool {
+	count, _ := ormUserExists(User{Name: username, DisplayName: displayname})
+	return count
+}
+
+
+// Get gets username based on username
+func Get(username string) (User, error) {
+	user, err := ormLoadUser(username)
+	if err != nil {
+		fmt.Printf("Get Error: username: %v, user: %v, err: %v\n", username, user, err)
+		return User{}, err
+	}
+	return user, err
+
+}
 
 func ormStart(logFile string) error {
 	var err error
