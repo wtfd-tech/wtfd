@@ -210,7 +210,7 @@ img {
 
 .gridcontainer-leader {
     display: grid;
-    width: auto;
+    width: 100%;
     height: 100%;
 }
 

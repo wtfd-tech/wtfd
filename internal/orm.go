@@ -3,10 +3,11 @@ package wtfd
 import (
 	"errors"
 	"fmt"
-	"golang.org/x/crypto/bcrypt"
 	"github.com/go-xorm/xorm"
 	_ "github.com/mattn/go-sqlite3" // needed for xorm
+	"golang.org/x/crypto/bcrypt"
 	"os"
+	"time"
 	"xorm.io/core"
 )
 
@@ -25,13 +26,15 @@ var (
 type _ORMUser struct {
 	Name        string `xorm:"unique"`
 	DisplayName string `xorm:"unique"`
+	Created       time.Time `xorm:"created" json:"time"`
 	Hash        []byte
 	Points      int
 }
 
 type _ORMChallengesByUser struct {
-	UserName      string // Foregin keys don't exist
-	ChallengeName string
+	UserName      string    `json:"username"` // Foregin keys don't exist
+	Created       time.Time `xorm:"created" json:"time"`
+	ChallengeName string    `json:"name"`
 }
 
 func (u _ORMUser) TableName() string {
@@ -77,6 +80,7 @@ func NewUser(name, password, displayname string) (User, error) {
 	return User{Name: name, Hash: hash, DisplayName: displayname}, nil
 
 }
+
 // Contains looks if a username is in the datenbank
 func Contains(username, displayname string) bool {
 	count, _ := ormUserExists(User{Name: username, DisplayName: displayname})
@@ -144,6 +148,18 @@ func ormNewUser(user User) error {
 	})
 
 	return err
+}
+
+// ormGetSolveCount returns the number of solves for the Challenge chall
+func ormGetSolvesWithTime(u string) []_ORMChallengesByUser {
+
+	var a []_ORMChallengesByUser
+	if err := engine.Where("UserName = ?", u).Find(&a); err != nil {
+          fmt.Printf("ORM Error: %v\n", err)
+		return []_ORMChallengesByUser{}
+	}
+	return a
+
 }
 
 // ormGetSolveCount returns the number of solves for the Challenge chall
