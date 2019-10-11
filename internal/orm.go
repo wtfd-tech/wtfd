@@ -3,9 +3,9 @@ package wtfd
 import (
 	"errors"
 	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"github.com/go-xorm/xorm"
 	_ "github.com/mattn/go-sqlite3" // needed for xorm
-	"golang.org/x/crypto/bcrypt"
 	"os"
 	"xorm.io/core"
 )
@@ -77,7 +77,6 @@ func NewUser(name, password, displayname string) (User, error) {
 	return User{Name: name, Hash: hash, DisplayName: displayname}, nil
 
 }
-
 // Contains looks if a username is in the datenbank
 func Contains(username, displayname string) bool {
 	count, _ := ormUserExists(User{Name: username, DisplayName: displayname})

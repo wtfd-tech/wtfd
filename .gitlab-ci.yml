@@ -21,9 +21,8 @@ lint_code:
 build:
   stage: build
   script:
-    - go build -x cmd/wtfd.go
+    - go get -u github.com/gobuffalo/packr/v2/packr2
+    - $(go env GOPATH)/bin/packr2 build -ldflags="-s -w" cmd/wtfd.go
   artifacts:
     paths:
-      - wtfd
-      - html/*
-      - challs.json
+      - cmd/wtfd
