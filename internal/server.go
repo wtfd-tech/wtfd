@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"github.com/gobuffalo/packr/v2"
 	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
@@ -97,8 +98,6 @@ type mainPageData struct {
 	RowNums                []gridinfo
 	ColNums                []gridinfo
 }
-
-
 
 func leaderboardpage(w http.ResponseWriter, r *http.Request) {
 	userobj, ok := getUser(r)
@@ -473,12 +472,36 @@ func Server() error {
 
 	// Fill in SSHHost
 	challs.FillChallengeURI(config.SSHHost)
-	// Parse Templates
-	mainpagetemplate, err = template.ParseFiles("html/index.html", "html/footer.html", "html/header.html")
+	// Packr
+
+	box := packr.New("Box", "./html")
+        maintemplatetext , err := box.FindString("html/index.html")
 	if err != nil {
 		return err
 	}
-	leaderboardtemplate, err = template.ParseFiles("html/leaderboard.html", "html/footer.html", "html/header.html")
+        headertemplatetext , err := box.FindString("html/header.html")
+	if err != nil {
+		return err
+	}
+        footertemplatetext , err := box.FindString("html/footer.html")
+	if err != nil {
+		return err
+	}
+        leaderboardtemplatetext , err := box.FindString("html/leaderboard.html")
+	if err != nil {
+		return err
+	}
+
+	// Parse Templates
+	mainpagetemplate, err = template.New("main").Parse(maintemplatetext)
+        mainpagetemplate.Parse(headertemplatetext)
+        mainpagetemplate.Parse(footertemplatetext)
+	if err != nil {
+		return err
+	}
+	leaderboardtemplate, err = template.New("leader").Parse(leaderboardtemplatetext)
+        leaderboardtemplate.Parse(headertemplatetext)
+        leaderboardtemplate.Parse(footertemplatetext)
 	if err != nil {
 		return err
 	}
@@ -500,7 +523,7 @@ func Server() error {
 	r.HandleFunc("/authorview/{chall}", authorview)
 	// static
 	r.PathPrefix("/static").Handler(
-		http.StripPrefix("/static/", http.FileServer(http.Dir("html/static"))))
+		http.FileServer(box))
 
 	Port := config.Port
 	if portenv := os.Getenv("WTFD_PORT"); portenv != "" {
