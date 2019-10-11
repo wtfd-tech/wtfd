@@ -4,6 +4,20 @@
     border-style: solid;
 }*/
 
+.leaderboard-table {
+    flex-grow: 1;
+    flex-shrink: 1;
+    flex-basis: 20%;
+    margin-right: 24px;
+}
+
+.leaderboard-main {
+    margin-top: 96px;
+    justify-content: space-between;
+    align-items: strech;
+    display: flex;
+}
+
 .button {
     border: none;
     color: white;
