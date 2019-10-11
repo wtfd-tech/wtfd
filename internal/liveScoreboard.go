@@ -85,14 +85,14 @@ func generateTableData() (tableData, error) {
 		name = append(name, u.DisplayName)
 		points = append(points, u.Points)
 	}
-        return tableData{Names: name, Points: points}, nil
+	return tableData{Names: name, Points: points}, nil
 }
 
 func updateScoreboard() error {
 	type chartDataPoint struct {
-		T string `json:"t"`
-		//	Label string    `json:"label"`
-		Y int `json:"y"`
+		T     string `json:"t"`
+		Label string `json:"tooltipLabel"`
+		Y     int    `json:"y"`
 	}
 	type chartData struct {
 		Label  string           `json:"label"`
@@ -101,7 +101,7 @@ func updateScoreboard() error {
 		Pcolor string           `json:"borderColor"`
 	}
 	type leaderboardData struct {
-		TableData tableData `json:"table"`
+		TableData tableData   `json:"table"`
 		ChartData []chartData `json:"chart"`
 	}
 
@@ -120,19 +120,19 @@ func updateScoreboard() error {
 				return err
 			}
 			sum += chall.Points
-			data[i+1] = chartDataPoint{T: s.Created.Format(time.RFC3339), Y: sum} //, Label: s.ChallengeName}
+			data[i+1] = chartDataPoint{T: s.Created.Format(time.RFC3339), Y: sum, Label: s.ChallengeName}
 		}
 		a := fmt.Sprintf("#%X", crc32.ChecksumIEEE([]byte(u.DisplayName)))[0:7]
 		datas = append(datas, chartData{Pcolor: a, Color: a, Label: u.DisplayName, Data: data})
 
 	}
 
-        td, err := generateTableData()
+	td, err := generateTableData()
 	if err != nil {
 		log.Printf("Scoreboard Update Error: %v\n", err)
 		return err
 	}
-        ld := leaderboardData{TableData: td, ChartData: datas}
+	ld := leaderboardData{TableData: td, ChartData: datas}
 	jsona, err := json.Marshal(&ld)
 	if err != nil {
 		log.Printf("Scoreboard Update Error: %v\n", err)
