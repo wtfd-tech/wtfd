@@ -6,6 +6,7 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"github.com/go-xorm/xorm"
 	_ "github.com/mattn/go-sqlite3" // needed for xorm
+	"golang.org/x/crypto/bcrypt"
 	"os"
 	"xorm.io/core"
 )
@@ -63,7 +64,6 @@ func Login(username, passwd string) error {
 
 }
 
-
 // NewUser creates a new user object
 func NewUser(name, password, displayname string) (User, error) {
 	if Contains(name, displayname) {
@@ -83,7 +83,6 @@ func Contains(username, displayname string) bool {
 	count, _ := ormUserExists(User{Name: username, DisplayName: displayname})
 	return count
 }
-
 
 // Get gets username based on username
 func Get(username string) (User, error) {
@@ -146,6 +145,17 @@ func ormNewUser(user User) error {
 	})
 
 	return err
+}
+
+// ormGetSolveCount returns the number of solves for the Challenge chall
+func ormGetSolveCount(chall Challenge) int64 {
+
+	count, err := engine.Where("ChallengeName = ?", chall.Name).Count(_ORMChallengesByUser{})
+	if err != nil {
+		return 0
+	}
+	return count
+
 }
 
 // Update existing user record (user.Name) with other values from user
