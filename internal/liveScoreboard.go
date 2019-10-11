@@ -2,10 +2,18 @@ package wtfd
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/websocket"
+	"hash/crc32"
 	"log"
 	"net/http"
+	"time"
 )
+
+type tableData struct {
+	Names  []string `json:"name"`
+	Points []int    `json:"points"`
+}
 
 var (
 	serverChan  = make(chan chan string, 4)
@@ -52,6 +60,7 @@ func leaderboardWS(w http.ResponseWriter, r *http.Request) {
 	}
 	client := make(chan string, 1)
 	serverChan <- client // i have no idea what this go magic is
+	updateScoreboard()
 
 	for {
 		select {
@@ -64,31 +73,72 @@ func leaderboardWS(w http.ResponseWriter, r *http.Request) {
 
 }
 
-func updateScoreboard() error {
-	log.Printf("Scoreboard Update\n")
-	type userNamePoints struct {
-		Name   []string `json:"name"`
-		Points []int    `json:"points"`
+func generateTableData() (tableData, error) {
+	allu, err := ormAllUsersSortedByPoints()
+	if err != nil {
+		return tableData{}, err
 	}
 	var name []string
 	var points []int
-	allu, err := ormAllUsersSortedByPoints()
-	if err != nil {
-		log.Printf("Scoreboard Update Error: %v\n", err)
-		return err
-	}
+
 	for _, u := range allu {
 		name = append(name, u.DisplayName)
 		points = append(points, u.Points)
 	}
+        return tableData{Names: name, Points: points}, nil
+}
 
-	json, err := json.Marshal(&userNamePoints{Name: name, Points: points})
+func updateScoreboard() error {
+	type chartDataPoint struct {
+		T string `json:"t"`
+		//	Label string    `json:"label"`
+		Y int `json:"y"`
+	}
+	type chartData struct {
+		Label  string           `json:"label"`
+		Data   []chartDataPoint `json:"data"`
+		Color  string           `json:"backgroundColor"`
+		Pcolor string           `json:"borderColor"`
+	}
+	type leaderboardData struct {
+		TableData tableData `json:"table"`
+		ChartData []chartData `json:"chart"`
+	}
+
+	log.Printf("Scoreboard Update\n")
+	users, err := ormAllUsersSortedByPoints()
+	datas := make([]chartData, len(users))
+	for _, u := range users {
+		solves := ormGetSolvesWithTime(u.Name)
+		data := make([]chartDataPoint, len(solves)+1)
+		sum := 0
+		data[0] = chartDataPoint{T: u.Created.Format(time.RFC3339), Y: sum} //, Label: s.ChallengeName}
+		for i, s := range solves {
+			chall, err := challs.Find(s.ChallengeName)
+			if err != nil {
+				log.Printf("Scoreboard Update Error: %v, %v\n", err, s.ChallengeName)
+				return err
+			}
+			sum += chall.Points
+			data[i+1] = chartDataPoint{T: s.Created.Format(time.RFC3339), Y: sum} //, Label: s.ChallengeName}
+		}
+		a := fmt.Sprintf("#%X", crc32.ChecksumIEEE([]byte(u.DisplayName)))[0:7]
+		datas = append(datas, chartData{Pcolor: a, Color: a, Label: u.DisplayName, Data: data})
+
+	}
+
+        td, err := generateTableData()
 	if err != nil {
 		log.Printf("Scoreboard Update Error: %v\n", err)
 		return err
 	}
-	messageChan <- string(json)
-        log.Printf("Scoreboard Update String: %s\n", string(json))
+        ld := leaderboardData{TableData: td, ChartData: datas}
+	jsona, err := json.Marshal(&ld)
+	if err != nil {
+		log.Printf("Scoreboard Update Error: %v\n", err)
+		return err
+	}
+	messageChan <- string(jsona)
 
 	return nil
 }

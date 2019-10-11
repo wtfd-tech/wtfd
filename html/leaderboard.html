@@ -1,89 +1,15 @@
 {{ template "header" . }}
-<main class="flexcell gridcontainer-leader">
-  <div id="table" class="col-0 row-0" style="width: 20%;">
+<main class="leaderboard-main">
+  <div id="table" class="flexcell">
     <table>
       <tbody>
-      <tr>
-        <th>Name</th>
-        <th>Points</th>
-      </tr>
-      {{ range .AllUsers }}
-      <tr>
-      <td>{{ .DisplayName }}</td>
-      <td>{{ .Points }}</td>
-      </tr>
-      {{ end }}
       </tbody>
     </table>
   </div>
-  <div class="col-1 row-0">
+  <div style="min-width: 0; flex-basis: 80%; margin-right: 24px;" class="flexcell">
   <canvas id="graph"></canvas>
   </div>
     <script src="static/Chart.bundle.min.js" type="text/javascript"></script>
-  <script>
-      var score = {name: [{{ range .AllUsers }}{{ .DisplayName }},{{end}}], points: [ { label: "Points", data: [{{ range .AllUsers }}{{ .Points }},{{end}}]}] };
-      var chart;
-
-    (function(){
-      var c = document.getElementById("graph").getContext('2d');
-      c.height = 800;
-
-
-      chart = new Chart(c, {
-        type: 'horizontalBar',
-        data: {
-          labels: score.name,
-          datasets: score.points
-        },
-        options: {
-          scales: {
-            xAxes: [{
-              ticks: {
-                min: 0,
-                stepSize: 1
-              }
-            }]
-          },
-          legend: {
-              display: false,
-          },
-          mantainAspectRatio: false,
-          responsive: true,
-        },
-    });
-
-      ws = new WebSocket("ws://"+window.location.host+"/ws");
-ws.onopen = function() {
-
-   // Web Socket is connected, send data uting send()
-  console.log("ws connected");
-};
-ws.onclose = function() {
-   alert("WS Disconnected, reload the page")
-};
-
-ws.onmessage = (evt)=>{
-  var rec = evt.data;
-  console.log(evt.data);
-  score = JSON.parse(rec);
-  chart.data = {
-    labels: score.name,
-    datasets: [{data: score.points, label: "Solved Challenges" }]
-  };
-  chart.update();
-  table = document.getElementsByTagName("tbody")[0];
-  table.innerHTML = "<tr><th>Name</th><th>Points</th></tr>";
-  for(i=0; i < score.name.length; i++){
-          row = table.insertRow();
-          namecell = row.insertCell();
-          namecell.innerHTML = score.name[i];
-          pointcell = row.insertCell();
-          pointcell.innerHTML = score.points[i];
-
-  }
-
-};
-    })();
-  </script>
+    <script src="static/leaderboard.js" type="text/javascript"></script>
 </main>
 {{ template "footer" . }}
