@@ -11,7 +11,8 @@ var chart;
             type: "time",
             time: {
               unit: "minute",
-              max: Date.now()
+              max: Date.now(),
+              tooltipFormat: "dd HH:mm:ss"
             }
           }
         ],
@@ -31,6 +32,19 @@ var chart;
       },
       legend: {
         display: false
+      },
+      tooltips: {
+         callbacks: {
+            label: function(tooltipItem, data) {
+              console.log(tooltipItem.datasetIndex);
+              dataset = data.datasets[tooltipItem.datasetIndex];
+              datapoint = dataset.data[tooltipItem.index];
+              challName = datapoint.tooltipLabel;
+              userName = dataset.label;
+              points = datapoint.y;
+              return userName + ': ' + challName + ' ('+points+')';
+            }
+         }
       },
       mantainAspectRatio: false,
       responsive: true,
