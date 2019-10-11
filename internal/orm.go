@@ -6,7 +6,6 @@ import (
 	"golang.org/x/crypto/bcrypt"
 	"github.com/go-xorm/xorm"
 	_ "github.com/mattn/go-sqlite3" // needed for xorm
-	"golang.org/x/crypto/bcrypt"
 	"os"
 	"xorm.io/core"
 )
