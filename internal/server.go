@@ -326,7 +326,7 @@ func reportBug(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* Read and Check form */
-	if err = r.ParseForm() ; err != nil {
+	if err = r.ParseForm(); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = fmt.Fprintf(w, "Server Error: %v", "Not logged in")
 		return
@@ -340,7 +340,7 @@ func reportBug(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* Try to dispatch bugreport */
-	if err = BRDispatchBugreport(&user, subject , content); err != nil {
+	if err = BRDispatchBugreport(&user, subject, content); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = fmt.Fprintf(w, "Server Error: %v", err)
 	}
@@ -378,7 +378,7 @@ func detailview(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-        _, _ = fmt.Fprintf(w, "%s<br><p>Solves: %d</p>", chall.Description, ormGetSolveCount(*chall))
+	_, _ = fmt.Fprintf(w, "%s<br><p>Solves: %d</p>", chall.Description, ormGetSolveCount(*chall))
 
 }
 
@@ -422,11 +422,13 @@ func Server() error {
 
 		//Write default config to disk
 		config = Config{
-			Key:              base64.StdEncoding.EncodeToString(key),
-			Port:             defaultPort,
-			ChallengeInfoDir: "../challenges/info/",
-			SSHHost:          "ctf.foss-ag.de",
-			ServiceDeskMail:  "-", // service desk disabled
+			Key:               base64.StdEncoding.EncodeToString(key),
+			Port:              defaultPort,
+			ChallengeInfoDir:  "../challenges/info/",
+			SSHHost:           "ctf.foss-ag.de",
+			ServiceDeskMail: "-", // service desk disabled
+			ServiceDeskRateLimitReports: BRRateLimitReports,
+			ServiceDeskRateLimitInterval: BRRateLimitInterval,
 		}
 		configBytes, _ := json.MarshalIndent(config, "", "\t")
 		_ = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
@@ -452,32 +454,35 @@ func Server() error {
 
 		// setup servicedesk vars
 		if config.ServiceDeskMail == "-" {
-			ServiceDeskEnabled = false
+			BRServiceDeskEnabled = false
 		} else {
-			ServiceDeskEnabled = true
+			BRServiceDeskEnabled = true
 			split := strings.Split(config.ServiceDeskMail, ":")
 			if len(split) > 1 {
 				port, err := strconv.Atoi(split[1])
 				if err != nil {
 					log.Printf("Config: ServiceDeskMail bad format: %s", err)
-					ServiceDeskEnabled = false
+					BRServiceDeskEnabled = false
 				} else {
-					ServiceDeskPort = port
+					BRServiceDeskPort = port
 				}
 
 			}
 			split = strings.Split(split[0], "@")
 			if len(split) < 2 {
-				log.Printf("Config: ServiceDeskMail bad format: %s", "bad address")
-				ServiceDeskEnabled = false
+				log.Printf("Config: BRServiceDeskMail bad format: %s", "bad address")
+				BRServiceDeskEnabled = false
 			} else {
-				ServiceDeskDomain = split[1]
-				ServiceDeskUser   = split[0]
+				BRServiceDeskDomain = split[1]
+				BRServiceDeskUser = split[0]
 			}
 		}
-		if ServiceDeskEnabled {
-			fmt.Printf("ServiceDesk running at %s@%s:%d\n",
-				ServiceDeskUser, ServiceDeskDomain, ServiceDeskPort)
+		BRRateLimitReports = config.ServiceDeskRateLimitReports
+		BRRateLimitInterval = config.ServiceDeskRateLimitInterval
+		if BRServiceDeskEnabled {
+			fmt.Printf("ServiceDesk running at %s@%s:%d  (Max %dR/%.02fs)\n",
+				BRServiceDeskUser, BRServiceDeskDomain, BRServiceDeskPort,
+			    BRRateLimitReports, BRRateLimitInterval)
 		} else {
 			fmt.Println("ServiceDesk disabled")
 		}

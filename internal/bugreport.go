@@ -8,13 +8,15 @@ import (
 	"net/smtp"
 )
 
+
 var (
-	ServiceDeskDomain          = "example.com"
-	ServiceDeskUser            = "noreply"
-	ServiceDeskPort            = 25 // server to server smtp port
-	ServiceDeskEnabled         = false
-	RateLimitInterval  float64 = 180 // 3 Minutes
-	RateLimitReports           = 2   // 2 Reports during interval before beeing rate limited
+	/* Defaults */
+	BRServiceDeskDomain          = "example.com"
+	BRServiceDeskUser            = "noreply"
+	BRServiceDeskPort            = 25 // server to server smtp port
+	BRServiceDeskEnabled         = false
+	BRRateLimitInterval  float64 = 180 // 3 Minutes
+	BRRateLimitReports           = 2   // 2 Reports during interval before beeing rate limited
 
 	userAccess map[string]access = make(map[string]access)
 )
@@ -35,12 +37,12 @@ func BRIsUserRateLimited(u *User) bool {
 	}
 
 	/* Ok if no critical ammount of records */
-	if len(record.lastAccess) < RateLimitReports {
+	if len(record.lastAccess) < BRRateLimitReports {
 		return false
 	}
 
 	/* Check if earliest record is in interval, then block */
-	if time.Since(record.lastAccess[0]).Seconds() < RateLimitInterval {
+	if time.Since(record.lastAccess[0]).Seconds() < BRRateLimitInterval {
 		return true
 	}
 
@@ -59,7 +61,7 @@ func registerUserAccess(u *User) {
 			lastBlock:  time.Time{},
 			lastAccess: []time.Time{time.Now()},
 		}
-	} else if len(record.lastAccess) < RateLimitReports {
+	} else if len(record.lastAccess) < BRRateLimitReports {
 		/* No critical ammount of records */
 		record.lastAccess = append(record.lastAccess, time.Now())
 	} else if !BRIsUserRateLimited(u) {
@@ -74,16 +76,16 @@ func registerUserAccess(u *User) {
  * Send bugreport
  */
 func BRDispatchBugreport(u *User, subject string, content string) error {
-	if !ServiceDeskEnabled {
+	if !BRServiceDeskEnabled {
 		return errors.New("Service Desk is disabled")
 	}
 
-	recipient := ServiceDeskUser + "@" + ServiceDeskDomain
+	recipient := BRServiceDeskUser + "@" + BRServiceDeskDomain
 	recipients := []string{recipient}
 	formatContent := fmt.Sprintf("From: %s\nSubject: %s\n\n%s", u.Name, subject, content)
 
 
-	err := smtp.SendMail(ServiceDeskDomain+":"+strconv.Itoa(ServiceDeskPort),
+	err := smtp.SendMail(BRServiceDeskDomain+":"+strconv.Itoa(BRServiceDeskPort),
 		nil, u.Name, recipients, []byte(formatContent))
 	if err == nil {
 		registerUserAccess(u)

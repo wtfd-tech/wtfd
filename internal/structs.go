@@ -46,6 +46,8 @@ type Config struct {
 	ChallengeInfoDir string `json:"challinfodir"`
 	SSHHost          string `json:"sshhost"`
 	ServiceDeskMail  string `json:"servicedeskmailwithport"`
+	ServiceDeskRateLimitInterval float64 `servicedeskratelimitinterval` // See bugreport.go
+	ServiceDeskRateLimitReports  int `servicedeskratelimitreports`  // See bugreport.go
 }
 
 // User, was ist das wohl
