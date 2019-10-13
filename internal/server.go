@@ -300,6 +300,51 @@ func logout(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func reportBug(w http.ResponseWriter, r *http.Request) {
+	var err error
+
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = fmt.Fprintf(w, "Invalid Request")
+		return
+	}
+
+	/* Check user login */
+	user, ok := getUser(r)
+	if !ok {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "Server Error: %v", "Not logged in")
+		return
+	}
+
+	/* Check if user is rate limited */
+	if BRIsUserRateLimited(&user) {
+		w.WriteHeader(http.StatusTooManyRequests)
+		_, _ = fmt.Fprint(w, "Too many requsets")
+		return
+	}
+
+	/* Read and Check form */
+	if err = r.ParseForm() ; err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "Server Error: %v", "Not logged in")
+		return
+	}
+	subject := r.FormValue("subject")
+	content := r.FormValue("content")
+	if subject == "" || content == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "Invaild Request")
+		return
+	}
+
+	/* Try to dispatch bugreport */
+	if err = BRDispatchBugreport(&user, subject , content); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "Server Error: %v", err)
+	}
+}
+
 func solutionview(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	chall, err := challs.Find(vars["chall"])
@@ -493,6 +538,7 @@ func Server() error {
 	r.HandleFunc("/register", register)
 	r.HandleFunc("/submitflag", submitFlag)
 	r.HandleFunc("/ws", leaderboardWS)
+	r.HandleFunc("/reportbug", reportBug)
 	r.HandleFunc("/{chall}", mainpage)
 	r.HandleFunc("/detailview/{chall}", detailview)
 	r.HandleFunc("/solutionview/{chall}", solutionview)
