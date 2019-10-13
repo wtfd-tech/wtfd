@@ -338,6 +338,11 @@ func reportBug(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprint(w, "Invaild Request")
 		return
 	}
+	/* Prevent field injection (assuming no injection in user.Name is possible) */
+	if strings.ContainsRune(subject, '\n') {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "Invaild Request")
+	}
 
 	/* Try to dispatch bugreport */
 	if err = BRDispatchBugreport(&user, subject, content); err != nil {
