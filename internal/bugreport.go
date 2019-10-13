@@ -11,12 +11,12 @@ import (
 
 var (
 	/* Defaults */
-	BRServiceDeskDomain          = "example.com"
-	BRServiceDeskUser            = "noreply"
-	BRServiceDeskPort            = 25 // server to server smtp port
-	BRServiceDeskEnabled         = false
-	BRRateLimitInterval  float64 = 180 // 3 Minutes
-	BRRateLimitReports           = 2   // 2 Reports during interval before beeing rate limited
+	BRServiceDeskDomain          = "example.com" // Server recieving service desk mails
+	BRServiceDeskUser            = "noreply"     // The user recieving the mails
+	BRServiceDeskPort            = 25            // server to server smtp port
+	BRServiceDeskEnabled         = false         // Is service desk support enabled
+	BRRateLimitInterval  float64 = 180           // 3 Minutes
+	BRRateLimitReports           = 2             // 2 Reports during interval before beeing rate limited
 
 	userAccess map[string]access = make(map[string]access)
 )
