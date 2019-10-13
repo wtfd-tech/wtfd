@@ -16,6 +16,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -425,6 +426,7 @@ func Server() error {
 			Port:             defaultPort,
 			ChallengeInfoDir: "../challenges/info/",
 			SSHHost:          "ctf.foss-ag.de",
+			ServiceDeskMail:  "-", // service desk disabled
 		}
 		configBytes, _ := json.MarshalIndent(config, "", "\t")
 		_ = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
@@ -446,6 +448,38 @@ func Server() error {
 		key, err = base64.StdEncoding.DecodeString(config.Key)
 		if err != nil {
 			log.Fatal("Could not decode config.json:Key")
+		}
+
+		// setup servicedesk vars
+		if config.ServiceDeskMail == "-" {
+			ServiceDeskEnabled = false
+		} else {
+			ServiceDeskEnabled = true
+			split := strings.Split(config.ServiceDeskMail, ":")
+			if len(split) > 1 {
+				port, err := strconv.Atoi(split[1])
+				if err != nil {
+					log.Printf("Config: ServiceDeskMail bad format: %s", err)
+					ServiceDeskEnabled = false
+				} else {
+					ServiceDeskPort = port
+				}
+
+			}
+			split = strings.Split(split[0], "@")
+			if len(split) < 2 {
+				log.Printf("Config: ServiceDeskMail bad format: %s", "bad address")
+				ServiceDeskEnabled = false
+			} else {
+				ServiceDeskDomain = split[1]
+				ServiceDeskUser   = split[0]
+			}
+		}
+		if ServiceDeskEnabled {
+			fmt.Printf("ServiceDesk running at %s@%s:%d\n",
+				ServiceDeskUser, ServiceDeskDomain, ServiceDeskPort)
+		} else {
+			fmt.Println("ServiceDesk disabled")
 		}
 	}
 

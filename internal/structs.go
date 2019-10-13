@@ -45,6 +45,7 @@ type Config struct {
 	Key              string `json:key`
 	ChallengeInfoDir string `json:"challinfodir"`
 	SSHHost          string `json:"sshhost"`
+	ServiceDeskMail  string `json:"servicedeskmailwithport"`
 }
 
 // User, was ist das wohl
