@@ -10,7 +10,7 @@ import (
 
 
 var (
-	/* Defaults */
+	/* Runtime Parameter */        /* Defaults */
 	BRServiceDeskDomain          = "example.com" // Server recieving service desk mails
 	BRServiceDeskUser            = "noreply"     // The user recieving the mails
 	BRServiceDeskPort            = 25            // server to server smtp port
