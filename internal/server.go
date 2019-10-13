@@ -325,7 +325,7 @@ func reportBug(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	/* Read and Check form */
+	/* Read and check form */
 	if err = r.ParseForm(); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = fmt.Fprintf(w, "Server Error: %v", "Not logged in")
