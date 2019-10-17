@@ -24,9 +24,10 @@ var (
 // ORM definitions /////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 type _ORMUser struct {
-	Name        string `xorm:"unique"`
-	DisplayName string `xorm:"unique"`
-	Created       time.Time `xorm:"created" json:"time"`
+	Name        string    `xorm:"unique"`
+	DisplayName string    `xorm:"unique"`
+	Created     time.Time `xorm:"created" json:"time"`
+	Admin       bool
 	Hash        []byte
 	Points      int
 }
@@ -77,7 +78,12 @@ func NewUser(name, password, displayname string) (User, error) {
 	}
 
 	fmt.Printf("New User added: %s\n", name)
-	return User{Name: name, Hash: hash, DisplayName: displayname}, nil
+	isAdmin := ormGetUserCount() == 0
+	if isAdmin {
+		fmt.Printf("New User %s is an Admin\n", name)
+
+	}
+	return User{Name: name, Hash: hash, DisplayName: displayname, Admin: isAdmin}, nil
 
 }
 
@@ -143,6 +149,7 @@ func ormNewUser(user User) error {
 	_, err = engine.Insert(_ORMUser{
 		Name:        user.Name,
 		Hash:        user.Hash,
+		Admin:       user.Admin,
 		DisplayName: user.DisplayName,
 		Points:      0,
 	})
@@ -155,10 +162,21 @@ func ormGetSolvesWithTime(u string) []_ORMChallengesByUser {
 
 	var a []_ORMChallengesByUser
 	if err := engine.Where("UserName = ?", u).Find(&a); err != nil {
-          fmt.Printf("ORM Error: %v\n", err)
+		fmt.Printf("ORM Error: %v\n", err)
 		return []_ORMChallengesByUser{}
 	}
 	return a
+
+}
+
+// ormGetSolveCount returns the number of solves for the Challenge chall
+func ormGetUserCount() int64 {
+
+	count, err := engine.Count(_ORMUser{})
+	if err != nil {
+		return 0
+	}
+	return count
 
 }
 
@@ -353,6 +371,7 @@ func ormLoadUser(name string) (User, error) {
 		Name:        user.Name,
 		Hash:        user.Hash,
 		DisplayName: user.DisplayName,
+		Admin:       user.Admin,
 		Points:      user.Points,
 	}
 

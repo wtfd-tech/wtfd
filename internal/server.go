@@ -33,6 +33,7 @@ var (
 	challs              = Challenges{}
 	mainpagetemplate    = template.New("")
 	leaderboardtemplate = template.New("")
+	admintemplate       = template.New("")
 	coolNames           = [...]string{
 		"Anstruther's Dark Prophecy",
 		"The Unicorn Invasion of Dundee",
@@ -73,6 +74,18 @@ var (
 	maxrow = 0
 )
 
+type adminPageData struct {
+	PageTitle     string
+	User          *User
+	IsUser        bool
+	Points        int
+	Leaderboard   bool
+	AllUsers      []_ORMUser
+	GeneratedName string
+	Style         template.HTMLAttr
+	RowNums       []gridinfo
+	ColNums       []gridinfo
+}
 type leaderboardPageData struct {
 	PageTitle     string
 	User          *User
@@ -99,6 +112,64 @@ type mainPageData struct {
 	ColNums                []gridinfo
 }
 
+func getUserData(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	userobj, _ := getUser(r)
+	user := &userobj
+	if user.Admin == false {
+		fmt.Fprintf(w, "Nice Try, %s", user.DisplayName)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	u, err := ormLoadUser(vars["user"])
+	if err != nil {
+		_, _ = fmt.Fprintf(w, "Error: %v", err)
+	}
+        userToReturn := User{Name: u.Name, DisplayName: u.DisplayName, Points: u.Points, Admin: u.Admin}
+        jsonToReturn, err := json.Marshal(&userToReturn)
+	if err != nil {
+		_, _ = fmt.Fprintf(w, "Error: %v", err)
+                return
+	}
+        w.Write(jsonToReturn)
+}
+func adminpage(w http.ResponseWriter, r *http.Request) {
+	userobj, ok := getUser(r)
+	user := &userobj
+	if user.Admin == false {
+		fmt.Fprintf(w, "Nice Try, %s", user.DisplayName)
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	genu := ""
+	var err error
+	if !ok {
+		genu, err = generateUserName()
+		if err != nil {
+			_, _ = fmt.Fprintf(w, "Error: %v", err)
+		}
+	}
+	allUsers, err := ormAllUsersSortedByPoints()
+	if err != nil {
+		_, _ = fmt.Fprintf(w, "Error: %v", err)
+	}
+	data := adminPageData{
+		PageTitle:     "foss-ag O-Phasen CTF",
+		GeneratedName: genu,
+		Leaderboard:   false,
+		AllUsers:      allUsers,
+		User:          user,
+		IsUser:        ok,
+		RowNums:       make([]gridinfo, 0),
+		ColNums:       make([]gridinfo, 0),
+	}
+	err = admintemplate.Execute(w, data)
+	if err != nil {
+		fmt.Printf("Template error: %v\n", err)
+
+	}
+
+}
 func leaderboardpage(w http.ResponseWriter, r *http.Request) {
 	userobj, ok := getUser(r)
 	user := &userobj
@@ -331,7 +402,7 @@ func detailview(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-        _, _ = fmt.Fprintf(w, "%s<br><p>Solves: %d</p>", chall.Description, ormGetSolveCount(*chall))
+	_, _ = fmt.Fprintf(w, "%s<br><p>Solves: %d</p>", chall.Description, ormGetSolveCount(*chall))
 
 }
 
@@ -475,33 +546,58 @@ func Server() error {
 	// Packr
 
 	box := packr.New("Box", "./html")
-        maintemplatetext , err := box.FindString("html/index.html")
+	maintemplatetext, err := box.FindString("html/index.html")
 	if err != nil {
 		return err
 	}
-        headertemplatetext , err := box.FindString("html/header.html")
+	headertemplatetext, err := box.FindString("html/header.html")
 	if err != nil {
 		return err
 	}
-        footertemplatetext , err := box.FindString("html/footer.html")
+	footertemplatetext, err := box.FindString("html/footer.html")
 	if err != nil {
 		return err
 	}
-        leaderboardtemplatetext , err := box.FindString("html/leaderboard.html")
+	admintemplatetext, err := box.FindString("html/admin.html")
+	if err != nil {
+		return err
+	}
+	leaderboardtemplatetext, err := box.FindString("html/leaderboard.html")
 	if err != nil {
 		return err
 	}
 
 	// Parse Templates
+	admintemplate, err = template.New("admin").Parse(admintemplatetext)
+	if err != nil {
+		return err
+	}
+	_, err = admintemplate.Parse(headertemplatetext)
+	if err != nil {
+		return err
+	}
+	_, err = admintemplate.Parse(footertemplatetext)
+	if err != nil {
+		return err
+	}
 	mainpagetemplate, err = template.New("main").Parse(maintemplatetext)
-        mainpagetemplate.Parse(headertemplatetext)
-        mainpagetemplate.Parse(footertemplatetext)
+	if err != nil {
+		return err
+	}
+	_, err = mainpagetemplate.Parse(headertemplatetext)
+	if err != nil {
+		return err
+	}
+	_, err = mainpagetemplate.Parse(footertemplatetext)
 	if err != nil {
 		return err
 	}
 	leaderboardtemplate, err = template.New("leader").Parse(leaderboardtemplatetext)
-        leaderboardtemplate.Parse(headertemplatetext)
-        leaderboardtemplate.Parse(footertemplatetext)
+	_, err = leaderboardtemplate.Parse(headertemplatetext)
+	if err != nil {
+		return err
+	}
+	_, err = leaderboardtemplate.Parse(footertemplatetext)
 	if err != nil {
 		return err
 	}
@@ -510,6 +606,7 @@ func Server() error {
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainpage)
 	r.HandleFunc("/leaderboard", leaderboardpage)
+	r.HandleFunc("/admin", adminpage)
 	r.HandleFunc("/favicon.ico", favicon)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)
@@ -519,6 +616,7 @@ func Server() error {
 	r.HandleFunc("/{chall}", mainpage)
 	r.HandleFunc("/detailview/{chall}", detailview)
 	r.HandleFunc("/solutionview/{chall}", solutionview)
+	r.HandleFunc("/getUserData/{user}", getUserData)
 	r.HandleFunc("/uriview/{chall}", uriview)
 	r.HandleFunc("/authorview/{chall}", authorview)
 	// static

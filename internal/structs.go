@@ -1,8 +1,8 @@
 package wtfd
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"sort"
 )
 
@@ -53,9 +53,9 @@ type User struct {
 	Hash        []byte
 	DisplayName string
 	Completed   []*Challenge
+	Admin       bool
 	Points      int
 }
-
 
 type gridinfo struct {
 	Index int
@@ -99,6 +99,7 @@ func (c Challenge) AllDepsCompleted(u User) bool {
 	}
 	return true
 }
+
 // ComparePassword checks if the password is valid
 func (u *User) ComparePassword(password string) bool {
 	return bcrypt.CompareHashAndPassword(u.Hash, []byte(password)) == nil
