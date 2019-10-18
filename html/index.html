@@ -14,6 +14,7 @@
         {{ range.Challenges}}
 colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
         {{end}}
+        var bugreportCategories = ["Main Page" {{ range.Challenges }},"{{.Name}}"{{end}}];
         function start(){
           {{if .IsUser}}{{else}}document.getElementById("loginbutton").click();{{end}}
           {{ if .IsUser }}
@@ -63,6 +64,7 @@ colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
     <dialog id="detailview">
       <span class="mdi mdi-close closebtn" id="detailclosebutton"></span>
       <h1 id="detailtitle"></h1>
+      <input type="button" id="bugreport"></input>
       <h3 class="detailmeta">
         <div class="flexcell flex-left">
           <a id="challuri" class="challengelink" style="display: none;">Zur Challenge!</a>
@@ -87,6 +89,20 @@ colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
         <div id="solutioninnerdiv"></div>
       </div>
       <span id="checkloading" class="loadingbar" style="display: none;"></span>
+    </dialog>
+
+    <dialog id="bugreportview">
+      <span class="mdi mdi-close closebtn" id="bugreportclosebutton"></span>
+      <h1>Report Bug</h1>
+      <div id="bugreportform">
+        <select id="bugreportcategory" ></select>
+        <input type="text" placeholder="Das soll so ja nicht" id="subjectinput" class="firamono flexcell" style="width: 30vw;"/>
+        </br>
+        <textarea placeholder="Alles kaputt..." id="contentinput" class="firamono flexcell" style="height: 30vh; width: 30vw; resize: none;"></textarea>
+        </br>
+        <input class="button" type="submit" id="bugreportbutton" value="Send report" style="float: right"/>
+      </div>
+      <span id="bugloading" class="loadingbar" style="display: none;"></span>
     </dialog>
 
 {{ template "footer" . }}

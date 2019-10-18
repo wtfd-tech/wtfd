@@ -7,6 +7,9 @@ let solutioneventlistenerfunc = function () {
 let flaginputeventlistenerfunc = function () {
 };
 
+// Used for selection dialog in bugreport
+let selCategory = document.getElementById("bugreportcategory");
+
 function addChallEventListener(title, points) {
     let elem = document.getElementById(title);
     elem.addEventListener("click", function () {
@@ -113,6 +116,7 @@ function addChallEventListener(title, points) {
             }
         });
 
+        selCategory.value = title;
         showDialog(detView);
     });
 
@@ -312,5 +316,25 @@ function connectElements(svg, startElem, endElem, color) {
     svg1.innerHTML = "";
     // noinspection JSUnresolvedVariable
     flagsubmitbutton.addEventListener("click", flagsubmiteventlistenerfunc);
+    let btnBugreport = document.getElementById("bugreport");
+    let dlgBugreport = document.getElementById("bugreportview");
+    let btnBugreportClose = document.getElementById("bugreportclosebutton");
+    btnBugreportClose.addEventListener("click", function () {
+        dlgBugreport.close();
+    });
+    dialogPolyfill.registerDialog(dlgBugreport);
+    btnBugreport.addEventListener("click", function() {
+        showDialog(dlgBugreport);
+        loadBugReportView();
+    });
+
+    // Add categories to bugreport selection
+    bugreportCategories.forEach(function(elem) {
+        var opt = document.createElement("option");
+        opt.value= elem;
+        opt.innerHTML = elem;
+        selCategory.appendChild(opt);
+    });
+
     start();
 })();
