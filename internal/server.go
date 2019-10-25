@@ -303,8 +303,22 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 		}
 		// Check if user is logged in and get it
 		if u, ok := getUser(r); ok {
+			// Check if old password matches the entered one
+			oldhash, err := bcrypt.GenerateFromPassword([]byte(r.Form.Get("oldpassword")), 14)
+
+			if u.Hash != oldhash {
+				w.WriteHeader(http.StatusBadRequest)
+				_, _ = fmt.Fprintf(w, "The old password entered is incorrect")
+			}
+
+			// Check if both new passwords are the same
+			if r.Form.Get("newpassword") != r.Form.Get("repeatnewpassword") {
+				w.WriteHeader(http.StatusBadRequest)
+				_, _ = fmt.Fprintf(w, "The entered new password are not the same")
+			}
+
 			// Hash the entered password...
-			hash, err := bcrypt.GenerateFromPassword([]byte(r.Form.Get("password")), 14)
+			hash, err := bcrypt.GenerateFromPassword([]byte(r.Form.Get("newpassword")), 14)
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				_, _ = fmt.Fprintf(w, "Server Error: %v", err)
