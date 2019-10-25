@@ -66,6 +66,7 @@ body {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
+    overflow: hidden;
 }
 
 header {
@@ -349,13 +350,13 @@ h3 {
 .loadingbar {
     margin-top: 1px;
     margin-bottom: 1px;
-    height: 1px;
+    height: 2px;
     width: 100%;
     background-color: #14b967;
 
     animation-name: left-right;
     animation-duration: 1s;
-    animation-direction: alternate;
+    animation-direction: normal;
     animation-iteration-count: infinite;
     animation-timing-function: ease-in-out;
 }
@@ -471,6 +472,23 @@ menu {
 
 .challengelink {
     color: #14b967;
+}
+
+/* Bugreport classes */
+.bugreportcategory {
+    width: 10vw;
+}
+.bugreportsubject {
+    width: 20vw;
+}
+.bugreportcontent {
+    width: 30vw;
+    height: 30vw;
+    resize: none;
+}
+.bugreportsubmit {
+    align-self: flex-end;
+    float: right;
 }
 
 /* Code stuff */
