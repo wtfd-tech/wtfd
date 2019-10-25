@@ -18,7 +18,8 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        apt-get update && apt-get -y install musl-tool
+        set -e
+        sudo apt-get update && sudo apt-get -y install musl-tools
         go get -u github.com/gobuffalo/packr/v2/packr2
 
     - name: Build
@@ -31,6 +32,7 @@ jobs:
       env:
         CC: musl-gcc
       run: | 
+        set -e
         sh -c "cd internal; $(go env GOPATH)/bin/packr2"
         go build -o wtfd-static -ldflags '-linkmode external -extldflags "-static"' -v cmd/wtfd.go
 
@@ -41,6 +43,7 @@ jobs:
 
     - name: Prepare artifact upload
       run: |
+        set -e
         mkdir static dynamic
         cp wtfd-static static/wtfd
         cp icon.svg static/
