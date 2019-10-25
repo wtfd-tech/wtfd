@@ -1,7 +1,7 @@
 name: Push
 on: [push]
-jobs:
 
+jobs:
   build:
     name: Build
     runs-on: ubuntu-latest
@@ -16,14 +16,44 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
+    - name: Install Dependencies
+      run: |
+        apt-get update && apt-get -y install musl
+        go get -u github.com/gobuffalo/packr/v2/packr2
+
     - name: Build
-      run: go build -v cmd/wtfd.go
+      run: go build -o wtfd cmd/wtfd.go
 
     - name: Test
       run: go test -race -coverprofile=coverage.txt -covermode=atomic ./...
+
+    - name: Build (with packr2 and musl)
+      env:
+        CC: musl-gcc
+      run: | 
+        sh -c "cd internal; (go env GOPATH)/bin/packr2"
+        go build -o wtfd-static -ldflags '-linkmode external -extldflags "-static"' -v cmd/wtfd.go
 
     - name: Uploade Coverage to codecov.io
       uses: codecov/codecov-action@v1.0.3
       with:
         token: ${{secrets.CODECOV_TOKEN}}
 
+    - name: Prepare artifact upload
+      run: |
+        mkdir static dynamic
+        cp wtfd-static static/wtfd
+        cp icon.svg static/
+        cp -r icon.svg html/ wtfd dynamic/
+
+    - name: Upload artifacts (dynamic)
+      uses: actions/upload-artifact@master
+      with:
+        name: wtfd-dynamic
+        path: dynamic
+
+    - name: Upload artifacts (static)
+      uses: actions/upload-artifact@master
+      with:
+        name: wtfd-static
+        path: static
