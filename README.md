@@ -58,3 +58,5 @@ The `SOLUTION.md` contents can only be seen by users who already solved the chal
 ## Running WTFd
 
 Now you can finally start wtfd by downloading it from the [releases](https://github.com/wtfd-tech/wtfd/releases), giving it permissions `chmod +x wtfd` and running it `./wtfd`
+
+WTFd is HTTP only, if you need HTTPS use a reverse proxy like [Traefik](https://traefik.io/) or [nginx](https://nginx.com/)
