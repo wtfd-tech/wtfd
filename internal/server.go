@@ -293,6 +293,8 @@ func register(w http.ResponseWriter, r *http.Request) {
 }
 
 func changePassword(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("HERE HERE HERE")
+
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = fmt.Fprintf(w, "Invalid Request")
@@ -304,17 +306,19 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 		// Check if user is logged in and get it
 		if u, ok := getUser(r); ok {
 			// Check if old password matches the entered one
-			oldhash, err := bcrypt.GenerateFromPassword([]byte(r.Form.Get("oldpassword")), 14)
-
-			if u.Hash != oldhash {
+			if bcrypt.CompareHashAndPassword(u.Hash, []byte(r.Form.Get("oldpassword"))) != nil {
 				w.WriteHeader(http.StatusBadRequest)
 				_, _ = fmt.Fprintf(w, "The old password entered is incorrect")
+				fmt.Println("Old password wrong")
+				return
 			}
 
 			// Check if both new passwords are the same
 			if r.Form.Get("newpassword") != r.Form.Get("repeatnewpassword") {
 				w.WriteHeader(http.StatusBadRequest)
 				_, _ = fmt.Fprintf(w, "The entered new password are not the same")
+				fmt.Println("New passwords wrong")
+				return
 			}
 
 			// Hash the entered password...
@@ -333,6 +337,8 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 				_, _ = fmt.Fprintf(w, "Server Error: %v", err)
 				return
 			}
+
+			fmt.Println("Done changing")
 		} else {
 			w.WriteHeader(http.StatusBadRequest)
 			_, _ = fmt.Fprintf(w, "You have to be logged in to change your password")
