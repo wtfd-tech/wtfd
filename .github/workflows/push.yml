@@ -18,7 +18,7 @@ jobs:
 
     - name: Install Dependencies
       run: |
-        apt-get update && apt-get -y install musl
+        apt-get update && apt-get -y install musl-tool
         go get -u github.com/gobuffalo/packr/v2/packr2
 
     - name: Build
