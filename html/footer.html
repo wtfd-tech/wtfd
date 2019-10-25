@@ -1,16 +1,10 @@
 {{ define "footer" }}
     <footer>
       <div class="flexcell flex-left">
-        <a class="link sociallink" href="https://foss-ag.de"><span class="mdi mdi-web"></span> Web</a>
-        <a class="link sociallink" href="https://riot.im/app/#/room/#foss_ag:matrix.org"><span class="mdi mdi-forum"></span> Matrix</a>
-        <a class="link sociallink" href="https://postamt.cs.uni-dortmund.de/mailman/listinfo/foss-ag"><span class="mdi mdi-email-multiple"></span> Mailingliste</a>
-        <a class="link sociallink" href="https://github.com/foss-ag"><span class="mdi mdi-github-circle"></span> GitHub</a>
-        <a class="link sociallink" href="https://twitter.com/fossagtudo"><span class="mdi mdi-twitter"></span> Twitter</a>
-        <a class="link sociallink" href="https://social.tchncs.de/@fossag"><span class="mdi mdi-mastodon"></span> Mastodon</a>
-        <a class="link sociallink" href="https://telegram.me/FOSSAG"><span class="mdi mdi-telegram"></span> Telegram</a>
+        {{.Config.SocialMedia}}
       </div>
       <div class="flexcell flex-center">
-        <a class="link" href="https://gitlab.fachschaften.org/foss-ag/wtfd">Powered by WTFd</a>
+        <a class="link" href="https://github.com/wtfd-tech/wtfd">Powered by WTFd</a>
       </div>
       <div class="flexcell flex-right">
         Proudly made without PHP, Java, Perl, MySQL and MongoDB

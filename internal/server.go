@@ -78,6 +78,7 @@ var (
 type adminPageData struct {
 	PageTitle     string
 	User          *User
+	Config        Config
 	IsUser        bool
 	Points        int
 	Leaderboard   bool
@@ -90,6 +91,7 @@ type adminPageData struct {
 type leaderboardPageData struct {
 	PageTitle     string
 	User          *User
+	Config        Config
 	IsUser        bool
 	Points        int
 	Leaderboard   bool
@@ -106,6 +108,7 @@ type mainPageData struct {
 	SelectedChallengeID    string
 	HasSelectedChallengeID bool
 	GeneratedName          string
+	Config                 Config
 	User                   *User
 	IsUser                 bool
 	Points                 int
@@ -138,8 +141,8 @@ func adminpage(w http.ResponseWriter, r *http.Request) {
 	userobj, ok := getUser(r)
 	user := &userobj
 	if user.Admin == false {
-		fmt.Fprintf(w, "Nice Try, %s", user.DisplayName)
 		w.WriteHeader(http.StatusUnauthorized)
+		fmt.Fprintf(w, "Nice Try, %s", user.DisplayName)
 		return
 	}
 	if r.Method == "POST" {
@@ -187,6 +190,7 @@ func adminpage(w http.ResponseWriter, r *http.Request) {
 		AllUsers:      allUsers,
 		User:          user,
 		IsUser:        ok,
+		Config:        config,
 		RowNums:       make([]gridinfo, 0),
 		ColNums:       make([]gridinfo, 0),
 	}
@@ -214,6 +218,7 @@ func leaderboardpage(w http.ResponseWriter, r *http.Request) {
 	}
 	data := leaderboardPageData{
 		PageTitle:     "foss-ag O-Phasen CTF",
+		Config:        config,
 		GeneratedName: genu,
 		Leaderboard:   true,
 		AllUsers:      allUsers,
@@ -259,6 +264,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 	}
 	data := mainPageData{
 		PageTitle:              "foss-ag O-Phasen CTF",
+		Config:                 config,
 		Challenges:             challs,
 		GeneratedName:          genu,
 		HasSelectedChallengeID: hasChall,
@@ -530,10 +536,14 @@ func Server() error {
 			Key:               base64.StdEncoding.EncodeToString(key),
 			Port:              defaultPort,
 			ChallengeInfoDir:  "../challenges/info/",
-			SSHHost:           "ctf.foss-ag.de",
 			ServiceDeskMail: "-", // service desk disabled
 			ServiceDeskRateLimitReports: BRRateLimitReports,
 			ServiceDeskRateLimitInterval: BRRateLimitInterval,
+			SSHHost:          "ctf.wtfd.tech",
+			SocialMedia:      `<a class="link sociallink" href="https://github.com/wtfd-tech/wtfd"><span class="mdi mdi-github-circle"></span> GitHub</a>`,
+			Icon:             "icon.svg",
+			FirstLine:        "WTFd",
+			SecondLine:       `CTF`,
 		}
 		configBytes, _ := json.MarshalIndent(config, "", "\t")
 		_ = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
@@ -742,6 +752,9 @@ func Server() error {
 	// static
 	r.PathPrefix("/static").Handler(
 		http.FileServer(box))
+	r.HandleFunc("/dist/"+config.Icon, func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, config.Icon)
+	})
 
 	Port := config.Port
 	if portenv := os.Getenv("WTFD_PORT"); portenv != "" {

@@ -2,6 +2,7 @@
 
 ![Codecov](https://img.shields.io/codecov/c/github/wtfd-tech/wtfd?style=for-the-badge)
 
+![icon](https://raw.githubusercontent.com/wtfd-tech/wtfd/master/icon.svg)
 a [CTFd](https://ctfd.io/)-like Server in go
 
 ![demo](https://raw.githubusercontent.com/wtfd-tech/wtfd/master/demo.png)
@@ -16,6 +17,10 @@ It shall look like that:
 {
         "Port": <The Port WTFd should run (ports <1024 need root (don't run WTFd as root))>,
         "challinfodir": "<The (relative or absolute) directory with your challenge infos>",
+        "social": "<Html for the down left corner (e.g. \u003ca class=\"link sociallink\" href=\"https://github.com/wtfd-tech/wtfd\"\u003e\u003cspan class=\"mdi mdi-github-circle\"\u003e\u003c/span\u003e GitHub\u003c/a\u003e)>",
+        "icon": "<top left icon (e.g. icon.svg)>",
+        "firstline": "<first line in the top left>",
+	"secondline": "<second line in the top left>",
        	"sshhost": "<The domain of your ssh challenges>"
 }
 ```
