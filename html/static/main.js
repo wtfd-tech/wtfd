@@ -338,6 +338,7 @@ function connectElements(svg, startElem, endElem, color) {
     // BUGREPORT STUFF
     flagsubmitbutton.addEventListener("click", flagsubmiteventlistenerfunc);
     let btnBugreport = document.getElementById("bugreport");
+    let btnBugreportMain = document.getElementById("mainbugreport");
     let dlgBugreport = document.getElementById("bugreportview");
     let btnBugreportClose = document.getElementById("bugreportclosebutton");
     let btnBugreportSubmit = document.getElementById("bugreportbutton");
@@ -349,6 +350,10 @@ function connectElements(svg, startElem, endElem, color) {
     });
     dialogPolyfill.registerDialog(dlgBugreport);
     btnBugreport.addEventListener("click", function() {
+        showDialog(dlgBugreport);
+    });
+    btnBugreportMain.addEventListener("click", function() {
+        selCategory.value = "Main Page";
         showDialog(dlgBugreport);
     });
     btnBugreportSubmit.addEventListener("click", function () {

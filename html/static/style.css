@@ -313,6 +313,10 @@ h3 {
     color: #B82814;
 }
 
+.bugbtn:hover {
+    color: #14b967;
+}
+
 #detailform {
     display: flex;
 }
