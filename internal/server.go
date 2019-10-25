@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
+	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -259,7 +260,6 @@ func register(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = fmt.Fprintf(w, "Invalid Request")
-
 	} else {
 		if err := r.ParseForm(); err != nil {
 			_, _ = fmt.Fprintf(w, "ParseForm() err: %v", err)
@@ -269,7 +269,6 @@ func register(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			_, _ = fmt.Fprintf(w, "Already logged in")
 		} else {
-
 			if len(r.Form.Get("username")) < 5 {
 				w.WriteHeader(http.StatusBadRequest)
 				_, _ = fmt.Fprintf(w, "Username must be at least 5 characters")
@@ -291,6 +290,40 @@ func register(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+}
+
+func changePassword(w http.ResponseWriter, r *http.Request) {
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = fmt.Fprintf(w, "Invalid Request")
+	} else {
+		if err := r.ParseForm(); err != nil {
+			_, _ = fmt.Fprintf(w, "ParseForm() err: %v", err)
+			return
+		}
+		// Check if user is logged in and get it
+		if u, ok := getUser(r); ok {
+			// Hash the entered password...
+			hash, err := bcrypt.GenerateFromPassword([]byte(r.Form.Get("password")), 14)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				_, _ = fmt.Fprintf(w, "Server Error: %v", err)
+				return
+			}
+
+			// ...and update it for the current user
+			u.Hash = hash;
+			
+			if ormUpdateUser(u) != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				_, _ = fmt.Fprintf(w, "Server Error: %v", err)
+				return
+			}
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = fmt.Fprintf(w, "You have to be logged in to change your password")
+		}
+	}
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
@@ -514,6 +547,7 @@ func Server() error {
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)
 	r.HandleFunc("/register", register)
+	r.HandleFunc("/changepassword", changePassword)
 	r.HandleFunc("/submitflag", submitFlag)
 	r.HandleFunc("/ws", leaderboardWS)
 	r.HandleFunc("/{chall}", mainpage)
