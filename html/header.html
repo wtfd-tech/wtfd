@@ -40,7 +40,7 @@
       </div>
       <div class="flexcell" id="accountinfo">
         {{if .IsUser}}
-          <div class="flexcell">{{.User.DisplayName}}</div>
+          <div class="flexcell"><span class="link flexcell" id="userdialogbutton">{{.User.DisplayName}}</span></div>
           <div class="score-right flexcell firamono"><span class="pointicon"></span> {{.User.Points}}</div>
           <span class="link flexcell" id="logoutbutton">Logout</span>
         {{else}}
@@ -90,6 +90,26 @@
         <br/>
         <menu>
           <button class="button" type="submit" id="registersubmit"><span class="mdi mdi-account-plus"></span> Register</button>
+        </menu>
+      </form>
+    </dialog>
+    <dialog id="userdialog">
+      <h2>Edit User</h2>
+
+      <form id="edituserform" method="POST" action="/changepassword">
+        <div class="red" id="editusererror"></div>
+        <p class="formgrid">
+          <label for="edituseroldpassbox">Old Password:</label>
+          <input id="edituseroldpassbox" type="password" name="oldpassword"/>
+          <label for="edituseroldpassbox">New Password:</label>
+          <input id="editusernewpassbox" type="password" name="newpassword"/>
+          <label for="edituseroldpassbox">Repeat New Password:</label>
+          <input id="edituserrepeatnewpassbox" type="password" name="repeatnewpassword"/>
+        </p>
+        <span id="edituserloading" class="loadingbar" style="display: none;"></span>
+        <br/>
+        <menu>
+          <button class="button" type="submit" id="editusersubmit"><span class="mdi mdi-account-plus"></span> Edit</button>
         </menu>
       </form>
     </dialog>

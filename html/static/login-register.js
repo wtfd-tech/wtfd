@@ -54,6 +54,15 @@ function showDialog(dlg) {
         logoutButton.addEventListener("click", function () {
             location.href = "/logout";
         });
+        
+        const userDialogButton = document.getElementById("userdialogbutton");
+        const userDialog = document.getElementById("userdialog");
+        // noinspection JSUnresolvedVariable
+        dialogPolyfill.registerDialog(userDialog);
+
+        userDialogButton.addEventListener("click", function () {
+            showDialog(userDialog);
+        });
     }
 
 
@@ -84,6 +93,7 @@ function showDialog(dlg) {
     return false;
 
   });
+  
   const registerForm = document.getElementById("registerform");
   const registerError = document.getElementById("registererror");
   const registerSubmit = document.getElementById("registersubmit");
@@ -103,6 +113,35 @@ function showDialog(dlg) {
         setTimeout(()=>{
             registerError.innerHTML = "";
             registerSubmit.setAttribute("class", "button");
+        },"2000")
+      } else {
+        location.href = "/";
+      }
+
+    });
+    return false;
+
+  });
+
+  const edituserForm = document.getElementById("edituserform");
+  const edituserError = document.getElementById("editusererror");
+  const edituserSubmit = document.getElementById("editusersubmit");
+  const edituserLoading = document.getElementById("edituserloading");
+
+  edituserForm.addEventListener("submit", function(e){
+    edituserLoading.style.display = "block";
+    e.preventDefault();
+    console.log(new URLSearchParams(new FormData(edituserForm)));
+    fetch("/changepassword", {body: new URLSearchParams(new FormData(edituserForm)), method: 'post'})
+    .then((resp)=> resp.text())
+    .then((resp) => {
+      edituserLoading.style.display = "none";
+      if (resp.includes("Server Error")) {
+        edituserError.innerHTML = resp;
+        edituserSubmit.setAttribute("class", "button fail");
+        setTimeout(()=>{
+            edituserError.innerHTML = "";
+            edituserSubmit.setAttribute("class", "button");
         },"2000")
       } else {
         location.href = "/";
