@@ -17,6 +17,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 )
 
 const (
@@ -396,6 +397,60 @@ func logout(w http.ResponseWriter, r *http.Request) {
 
 }
 
+func reportBug(w http.ResponseWriter, r *http.Request) {
+	var err error
+
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = fmt.Fprintf(w, "Invalid Request")
+		return
+	}
+
+	/* Check user login */
+	user, ok := getUser(r)
+	if !ok {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "Server Error: %v", "Not logged in")
+		return
+	}
+
+	/* Check if user is rate limited */
+	if BRIsUserRateLimited(&user) {
+		w.WriteHeader(http.StatusTooManyRequests)
+		_, _ = fmt.Fprint(w, "Too many requsets")
+		return
+	}
+
+	/* Read and check form */
+	if err = r.ParseForm(); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "Server Error: %v", "Not logged in")
+		return
+	}
+	subject := r.FormValue("subject")
+	content := r.FormValue("content")
+	if subject == "" || content == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "Invaild Request")
+		return
+	}
+	/* Prevent field injection (assuming no injection in user.Name is possible) */
+	if strings.ContainsRune(subject, '\n') {
+		w.WriteHeader(http.StatusBadRequest)
+		fmt.Fprint(w, "Invaild Request")
+		return
+	}
+
+	/* Try to dispatch bugreport */
+	if err = BRDispatchBugreport(&user, subject, content); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		_, _ = fmt.Fprintf(w, "Server Error: %v", err)
+		return
+	}
+
+	fmt.Fprint(w, "OK")
+}
+
 func solutionview(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	chall, err := challs.Find(vars["chall"])
@@ -472,10 +527,13 @@ func Server() error {
 
 		//Write default config to disk
 		config = Config{
-			Key:              base64.StdEncoding.EncodeToString(key),
-			Port:             defaultPort,
-			ChallengeInfoDir: "../challenges/info/",
-			SSHHost:          "ctf.foss-ag.de",
+			Key:               base64.StdEncoding.EncodeToString(key),
+			Port:              defaultPort,
+			ChallengeInfoDir:  "../challenges/info/",
+			SSHHost:           "ctf.foss-ag.de",
+			ServiceDeskMail: "-", // service desk disabled
+			ServiceDeskRateLimitReports: BRRateLimitReports,
+			ServiceDeskRateLimitInterval: BRRateLimitInterval,
 		}
 		configBytes, _ := json.MarshalIndent(config, "", "\t")
 		_ = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
@@ -497,6 +555,41 @@ func Server() error {
 		key, err = base64.StdEncoding.DecodeString(config.Key)
 		if err != nil {
 			log.Fatal("Could not decode config.json:Key")
+		}
+
+		// setup servicedesk vars
+		if config.ServiceDeskMail == "-" {
+			BRServiceDeskEnabled = false
+		} else {
+			BRServiceDeskEnabled = true
+			split := strings.Split(config.ServiceDeskMail, ":")
+			if len(split) > 1 {
+				port, err := strconv.Atoi(split[1])
+				if err != nil {
+					log.Printf("Config: ServiceDeskMail bad format: %s", err)
+					BRServiceDeskEnabled = false
+				} else {
+					BRServiceDeskPort = port
+				}
+
+			}
+			split = strings.Split(split[0], "@")
+			if len(split) < 2 {
+				log.Printf("Config: BRServiceDeskMail bad format: %s", "bad address")
+				BRServiceDeskEnabled = false
+			} else {
+				BRServiceDeskDomain = split[1]
+				BRServiceDeskUser = split[0]
+			}
+		}
+		BRRateLimitReports = config.ServiceDeskRateLimitReports
+		BRRateLimitInterval = config.ServiceDeskRateLimitInterval
+		if BRServiceDeskEnabled {
+			fmt.Printf("ServiceDesk running at %s@%s:%d  (Max %dR/%.02fs)\n",
+				BRServiceDeskUser, BRServiceDeskDomain, BRServiceDeskPort,
+			    BRRateLimitReports, BRRateLimitInterval)
+		} else {
+			fmt.Println("ServiceDesk disabled")
 		}
 	}
 
@@ -639,6 +732,7 @@ func Server() error {
 	r.HandleFunc("/register", register)
 	r.HandleFunc("/submitflag", submitFlag)
 	r.HandleFunc("/ws", leaderboardWS)
+	r.HandleFunc("/reportbug", reportBug)
 	r.HandleFunc("/{chall}", mainpage)
 	r.HandleFunc("/detailview/{chall}", detailview)
 	r.HandleFunc("/solutionview/{chall}", solutionview)
