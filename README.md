@@ -55,4 +55,6 @@ The `meta.json` shall look like that:
 The `README.md` and `SOLUTION.md` are markdown files ([syntax](https://github.com/gomarkdown/markdown#extensions)).
 The `SOLUTION.md` contents can only be seen by users who already solved the challenge
 
+## Running WTFd
+
 Now you can finally start wtfd by downloading it from the [releases](https://github.com/wtfd-tech/wtfd/releases), giving it permissions `chmod +x wtfd` and running it `./wtfd`
