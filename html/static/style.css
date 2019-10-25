@@ -4,6 +4,10 @@
     border-style: solid;
 }*/
 
+body {
+    overflow: hidden;
+}
+
 .leaderboard-table {
     flex-grow: 1;
     flex-shrink: 1;
