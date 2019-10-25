@@ -27,10 +27,10 @@
   <body class="clearsans dragscroll">
     <header>
       <div class="flexcell" id="logo">
-        <img alt="Logo" id="logo-img" src="static/logo_red.svg" />
+        <img alt="Logo" id="logo-img" src="dist/{{.Config.Icon}}" />
         <div>
-          // FOSS-AG<br />
-          // <span class="red">CTF</span>
+          // {{.Config.FirstLine}}<br />
+          // <span class="red">{{.Config.SecondLine}}</span>
         </div>
       <div class="flexcell" id="siteselectcol">
         <span class="big-link"></span>
@@ -60,7 +60,7 @@
         <div class="red" id="loginerror"></div>
         <p class="formgrid">
           <label for="loginuserbox">E-Mail:</label>
-          <input id="loginuserbox" type="email" name="username" placeholder="john.doe@tu-dortmund.de"/>
+          <input id="loginuserbox" type="email" name="username" placeholder="john.doe@example.com"/>
 
           <label for="loginpassbox">Password:</label>
           <input id="loginpassbox" type="password" name="password"/>
