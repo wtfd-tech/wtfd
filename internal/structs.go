@@ -49,12 +49,12 @@ type Config struct {
 
 // User, was ist das wohl
 type User struct {
-  Name        string `json:"name"`
+	Name        string `json:"name"`
 	Hash        []byte
-	DisplayName string`json:"displayname"`
+	DisplayName string `json:"displayname"`
 	Completed   []*Challenge
 	Admin       bool `json:"admin"`
-	Points      int `json:"points"`
+	Points      int  `json:"points"`
 }
 
 type gridinfo struct {

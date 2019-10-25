@@ -213,7 +213,7 @@ func ormUpdateUser(user User) error {
 		Points:      user.Points,
 		Admin:       user.Admin,
 	}
-	fmt.Printf("a: %#v", u)
+	// fmt.Printf("a: %#v", u)
 
 	if _, err = engine.Where("Name = ?", user.Name).Update(&u); err != nil {
 		return err

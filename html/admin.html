@@ -38,12 +38,12 @@
     <dialog id="ud">
       <form style="display: grid; grid-template-columns: auto auto; justify-content: space-between; grid-row-gap: 0.5em;" method="POST">
         <label class="row-0 col-0" for="namechange">E-Mail: </label>
-        <input class="row-0 col-1" id="namechange" type="text" name="name"></input>
+        <input class="row-0 col-1" id="namechange" readonly style="background-color: grey;" type="text" name="name"></input>
         <label class="row-1 col-0" for="displaynamechange">DisplayName: </label>
         <input class="row-1 col-1" id="displaynamechange" type="text" name="displayname"></input>
         <label class="row-2 col-0" for="pointschange">Points: </label>
-        <input class="row-2 col-1" id="pointschange" type="number" name="points"></input>
-        <label class="row-3 col-0" for="adminchange">Admin: </label>
+        <input class="row-2 col-1" id="pointschange"  type="number" name="points"></input>
+        <label class="row-3 col-0" for="adminchange">(does not work) Admin: </label>
         <input class="row-3 col-1" id="adminchange" type="checkbox" name="admin"></input>
         <span class="row-4 col-0"></span>
         <input class="row-4 col-1" type="submit"></input>
