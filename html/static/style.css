@@ -4,10 +4,6 @@
     border-style: solid;
 }*/
 
-body {
-    overflow: hidden;
-}
-
 .leaderboard-table {
     flex-grow: 1;
     flex-shrink: 1;
@@ -70,6 +66,7 @@ body {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
+    overflow: hidden;
 }
 
 header {
