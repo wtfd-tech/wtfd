@@ -232,7 +232,7 @@ function isInbetween(startElem){
 vals = colnum.values();
     a = vals.next();
   while(!a.done){
-    console.log(a.value, startElem, a.value.col, parseInt(startElem.col)+1, a.value.row === startElem.row && parseInt(a.value.col)-1 === parseInt(startElem.col));
+    //console.log(a.value, startElem, a.value.col, parseInt(startElem.col)+1, a.value.row === startElem.row && parseInt(a.value.col)-1 === parseInt(startElem.col));
     if(a.value.row === startElem.row && parseInt(a.value.col)-1 === parseInt(startElem.col)) resolve(true);
     a = vals.next();
     if(a.done){

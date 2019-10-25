@@ -1,8 +1,8 @@
 package wtfd
 
 import (
-	"golang.org/x/crypto/bcrypt"
 	"fmt"
+	"golang.org/x/crypto/bcrypt"
 	"sort"
 )
 
@@ -49,13 +49,13 @@ type Config struct {
 
 // User, was ist das wohl
 type User struct {
-	Name        string
+	Name        string `json:"name"`
 	Hash        []byte
-	DisplayName string
+	DisplayName string `json:"displayname"`
 	Completed   []*Challenge
-	Points      int
+	Admin       bool `json:"admin"`
+	Points      int  `json:"points"`
 }
-
 
 type gridinfo struct {
 	Index int
@@ -99,6 +99,7 @@ func (c Challenge) AllDepsCompleted(u User) bool {
 	}
 	return true
 }
+
 // ComparePassword checks if the password is valid
 func (u *User) ComparePassword(password string) bool {
 	return bcrypt.CompareHashAndPassword(u.Hash, []byte(password)) == nil

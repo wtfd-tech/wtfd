@@ -42,7 +42,10 @@
         {{if .IsUser}}
           <div class="flexcell">{{.User.DisplayName}}</div>
           <div class="score-right flexcell firamono"><span class="pointicon"></span> {{.User.Points}}</div>
-          <span class="link flexcell" id="logoutbutton">Logout</span>
+          <div class="flexcell">
+          <span class="link" id="logoutbutton">Logout</span>
+          {{if .User.Admin}} <a class="link" href="/admin">Admin</a>{{end}}
+          </div>
         {{else}}
         <span class="link" id="loginbutton"><span class="mdi mdi-login-variant"></span> Login</span>
         {{end}}
@@ -94,4 +97,5 @@
       </form>
     </dialog>
     </header>
+    <script src="static/dialog-polyfill.js"></script>
     {{end}}
