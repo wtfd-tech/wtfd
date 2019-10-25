@@ -31,7 +31,7 @@ jobs:
       env:
         CC: musl-gcc
       run: | 
-        sh -c "cd internal; (go env GOPATH)/bin/packr2"
+        sh -c "cd internal; $(go env GOPATH)/bin/packr2"
         go build -o wtfd-static -ldflags '-linkmode external -extldflags "-static"' -v cmd/wtfd.go
 
     - name: Uploade Coverage to codecov.io
