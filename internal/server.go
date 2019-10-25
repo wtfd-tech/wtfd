@@ -342,13 +342,17 @@ func reportBug(w http.ResponseWriter, r *http.Request) {
 	if strings.ContainsRune(subject, '\n') {
 		w.WriteHeader(http.StatusBadRequest)
 		fmt.Fprint(w, "Invaild Request")
+		return
 	}
 
 	/* Try to dispatch bugreport */
 	if err = BRDispatchBugreport(&user, subject, content); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		_, _ = fmt.Fprintf(w, "Server Error: %v", err)
+		return
 	}
+
+	fmt.Fprint(w, "OK")
 }
 
 func solutionview(w http.ResponseWriter, r *http.Request) {

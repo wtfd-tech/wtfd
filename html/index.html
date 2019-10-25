@@ -95,14 +95,15 @@ colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
       <span class="mdi mdi-close closebtn" id="bugreportclosebutton"></span>
       <h1>Report Bug</h1>
       <div id="bugreportform">
-        <select id="bugreportcategory" ></select>
-        <input type="text" placeholder="Das soll so ja nicht" id="subjectinput" class="firamono flexcell" style="width: 30vw;"/>
+        <select id="bugreportcategory" style="width: 10vw;"></select>
+        <input type="text" placeholder="Das soll so ja nicht" id="subjectinput" class="firamono flexcell" style="width: 20vw;"/>
         </br>
         <textarea placeholder="Alles kaputt..." id="contentinput" class="firamono flexcell" style="height: 30vh; width: 30vw; resize: none;"></textarea>
         </br>
+        <span id="bugloading" class="loadingbar" style="display: none;"></span>
+        </br>
         <input class="button" type="submit" id="bugreportbutton" value="Send report" style="float: right"/>
       </div>
-      <span id="bugloading" class="loadingbar" style="display: none;"></span>
     </dialog>
 
 {{ template "footer" . }}
