@@ -11,6 +11,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
+	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -363,7 +364,6 @@ func register(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = fmt.Fprintf(w, "Invalid Request")
-
 	} else {
 		if err := r.ParseForm(); err != nil {
 			_, _ = fmt.Fprintf(w, "ParseForm() err: %v", err)
@@ -373,7 +373,6 @@ func register(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			_, _ = fmt.Fprintf(w, "Already logged in")
 		} else {
-
 			if len(r.Form.Get("username")) < 5 {
 				w.WriteHeader(http.StatusBadRequest)
 				_, _ = fmt.Fprintf(w, "Username must be at least 5 characters")
@@ -395,6 +394,60 @@ func register(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+}
+
+func changePassword(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("HERE HERE HERE")
+
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = fmt.Fprintf(w, "Invalid Request")
+	} else {
+		if err := r.ParseForm(); err != nil {
+			_, _ = fmt.Fprintf(w, "ParseForm() err: %v", err)
+			return
+		}
+		// Check if user is logged in and get it
+		if u, ok := getUser(r); ok {
+			// Check if old password matches the entered one
+			if bcrypt.CompareHashAndPassword(u.Hash, []byte(r.Form.Get("oldpassword"))) != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				_, _ = fmt.Fprintf(w, "The old password entered is incorrect")
+				fmt.Println("Old password wrong")
+				return
+			}
+
+			// Check if both new passwords are the same
+			if r.Form.Get("newpassword") != r.Form.Get("repeatnewpassword") {
+				w.WriteHeader(http.StatusBadRequest)
+				_, _ = fmt.Fprintf(w, "The entered new password are not the same")
+				fmt.Println("New passwords wrong")
+				return
+			}
+
+			// Hash the entered password...
+			hash, err := bcrypt.GenerateFromPassword([]byte(r.Form.Get("newpassword")), 14)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				_, _ = fmt.Fprintf(w, "Server Error: %v", err)
+				return
+			}
+
+			// ...and update it for the current user
+			u.Hash = hash;
+			
+			if ormUpdateUser(u) != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				_, _ = fmt.Fprintf(w, "Server Error: %v", err)
+				return
+			}
+
+			fmt.Println("Done changing")
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = fmt.Fprintf(w, "You have to be logged in to change your password")
+		}
+	}
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
@@ -740,6 +793,7 @@ func Server() error {
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)
 	r.HandleFunc("/register", register)
+	r.HandleFunc("/changepassword", changePassword)
 	r.HandleFunc("/submitflag", submitFlag)
 	r.HandleFunc("/ws", leaderboardWS)
 	r.HandleFunc("/reportbug", reportBug)
