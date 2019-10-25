@@ -12,10 +12,10 @@ if(location.href.match("admin").length === 1){
 function update(email){
   fetch('/getUserData/'+email).then( (res) => res.json()).then((res) => {
     console.log(res);
-    uve.value = res.Name;
-    uvd.value = res.DisplayName;
-    uvp.value = res.Points;
-    uva.checked = res.Admin;
+    uve.value = res.name;
+    uvd.value = res.displayname;
+    uvp.value = res.points;
+    uva.checked = res.admin;
     showDialog(uv);
 
   });

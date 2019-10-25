@@ -125,13 +125,13 @@ func getUserData(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		_, _ = fmt.Fprintf(w, "Error: %v", err)
 	}
-        userToReturn := User{Name: u.Name, DisplayName: u.DisplayName, Points: u.Points, Admin: u.Admin}
-        jsonToReturn, err := json.Marshal(&userToReturn)
+	userToReturn := User{Name: u.Name, DisplayName: u.DisplayName, Points: u.Points, Admin: u.Admin}
+	jsonToReturn, err := json.Marshal(&userToReturn)
 	if err != nil {
 		_, _ = fmt.Fprintf(w, "Error: %v", err)
-                return
+		return
 	}
-        w.Write(jsonToReturn)
+	w.Write(jsonToReturn)
 }
 func adminpage(w http.ResponseWriter, r *http.Request) {
 	userobj, ok := getUser(r)
@@ -140,6 +140,32 @@ func adminpage(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Nice Try, %s", user.DisplayName)
 		w.WriteHeader(http.StatusUnauthorized)
 		return
+	}
+	if r.Method == "POST" {
+		err := r.ParseForm()
+                fmt.Printf("a: %#v",r.FormValue("admin"))
+		if err != nil {
+			_, _ = fmt.Fprintf(w, "Error: %v", err)
+                        return
+		}
+                dumb, err := strconv.Atoi(r.FormValue("points"))
+		if err != nil {
+			_, _ = fmt.Fprintf(w, "Error: %v", err)
+                        return
+		}
+                isAdmin := r.FormValue("admin") == "on"
+                u := User{ Name: r.FormValue("name"), DisplayName: r.FormValue("displayname"), Points: dumb, Admin: isAdmin }
+                fmt.Printf("a: %#v",u)
+
+                err = ormUpdateUser(u)
+		if err != nil {
+			_, _ = fmt.Fprintf(w, "Error: %v", err)
+                        return
+		}
+
+                r.Method = "GET"
+                adminpage(w,r)
+                return
 	}
 	genu := ""
 	var err error
