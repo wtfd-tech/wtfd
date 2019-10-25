@@ -2,8 +2,6 @@
 
 ![Codecov](https://img.shields.io/codecov/c/github/wtfd-tech/wtfd?style=for-the-badge)
 
-![icon]()
-
 a [CTFd](https://ctfd.io/)-like Server in go
 
 ![demo](https://raw.githubusercontent.com/wtfd-tech/wtfd/master/demo.png)
