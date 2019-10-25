@@ -371,9 +371,9 @@ function connectElements(svg, startElem, endElem, color) {
                     txtBugreportContent.value = "";
                     txtBugreportSubject.value = "";
                 } else {
-                    btnBugreportSubmit.setAttribute("class", "button fail");
+                    btnBugreportSubmit.setAttribute("class", "button fail bugreportsubmit");
                     setTimeout(() => {
-                        btnBugreportSubmit.setAttribute("class", "button");
+                        btnBugreportSubmit.setAttribute("class", "button bug bugreportsubmit");
                     }, 1000);
                 }
                 bugreportCheckLoading.style.display = "none";
