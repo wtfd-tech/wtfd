@@ -474,6 +474,22 @@ menu {
     color: #14b967;
 }
 
+/* Bugreport classes */
+.bugreportcategory {
+    width: 10vw;
+}
+.bugreportsubject {
+    width: 20vw;
+}
+.bugreportcontent {
+    width: 30vw;
+    height: 30vw;
+    resize: none;
+}
+.bugreportsubmit {
+    float: right;
+}
+
 /* Code stuff */
 pre > code.sourceCode { white-space: pre; position: relative; }
 pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
