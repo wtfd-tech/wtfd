@@ -18,3 +18,12 @@ jobs:
 
     - name: Build
       run: go build -v cmd/wtfd.go
+
+    - name: Test
+      run: go test -race -coverprofile=coverage.txt -covermode=atomic
+
+    - name: Uploade Coverage to codecov.io
+      uses: codecov/codecov-action@v1.0.3
+      with:
+        token: ${{secrets.CODECOV_TOKEN}}
+
