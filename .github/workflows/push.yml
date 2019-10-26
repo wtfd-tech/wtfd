@@ -52,14 +52,12 @@ jobs:
       run: |
         set -e
         sudo apt-get update && sudo apt-get -y install musl-tools
-        go get -u github.com/gobuffalo/packr/v2/packr2
 
     - name: Build (with packr2 and musl)
       env:
         CC: musl-gcc
       run: | 
         set -e
-        sh -c "cd internal; $(go env GOPATH)/bin/packr2"
         go build -ldflags '-linkmode external -extldflags "-static"' -v cmd/wtfd.go
         strip wtfd
 
@@ -67,7 +65,7 @@ jobs:
       run: |
         set -e
         mkdir build
-        cp wtfd icon.svg build/
+        cp -r wtfd icon.svg html build/
 
     - name: Upload artifacts
       uses: actions/upload-artifact@master
