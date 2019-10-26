@@ -1,5 +1,9 @@
 name: Push
-on: [push, pull_request]
+on: 
+  push:
+    branch:
+      - '*'
+  pull_request:
 
 jobs:
   dynamic:
