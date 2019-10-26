@@ -1,8 +1,8 @@
 name: Push
 on: 
   push:
-    branch:
-      - '*'
+    branches:
+      - '**'
   pull_request:
 
 jobs:
