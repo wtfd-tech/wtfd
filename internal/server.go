@@ -6,12 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/gobuffalo/packr/v2"
-	"github.com/gomarkdown/markdown"
-	"github.com/gorilla/mux"
-	"github.com/gorilla/securecookie"
-	"github.com/gorilla/sessions"
-	"golang.org/x/crypto/bcrypt"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -19,6 +13,13 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/gobuffalo/packr/v2"
+	"github.com/gomarkdown/markdown"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/securecookie"
+	"github.com/gorilla/sessions"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -373,11 +374,27 @@ func register(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			_, _ = fmt.Fprintf(w, "Already logged in")
 		} else {
-			if len(r.Form.Get("username")) < 5 {
+			// username here means e-mail address
+			if !validateEmailAddress(r.Form.Get("username")) {
 				w.WriteHeader(http.StatusBadRequest)
-				_, _ = fmt.Fprintf(w, "Username must be at least 5 characters")
-
+				_, _ = fmt.Fprintf(w, "The entered e-mail address is invalid")
 			} else {
+				// Check if registration is restricted to certain email domains
+				if config.RestrictEmailDomains != nil {
+					valid := false
+					for _, domain := range config.RestrictEmailDomains {
+						if strings.Split(Form.Get("username"), "@")[1] == domain {
+							valid = true
+						}
+					}
+
+					if !valid {
+						w.WriteHeader(http.StatusBadRequest)
+						_, _ = fmt.Fprintf(w, "The entered e-mail address is not allowed")
+						return
+					}
+				}
+
 				u, err := NewUser(r.Form.Get("username"), r.Form.Get("password"), r.Form.Get("displayname"))
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
@@ -434,8 +451,8 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 			}
 
 			// ...and update it for the current user
-			u.Hash = hash;
-			
+			u.Hash = hash
+
 			if ormUpdateUser(u) != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				_, _ = fmt.Fprintf(w, "Server Error: %v", err)
@@ -586,17 +603,19 @@ func Server() error {
 
 		//Write default config to disk
 		config = Config{
-			Key:               base64.StdEncoding.EncodeToString(key),
-			Port:              defaultPort,
-			ChallengeInfoDir:  "../challenges/info/",
-			ServiceDeskMail: "-", // service desk disabled
-			ServiceDeskRateLimitReports: BRRateLimitReports,
+			Key:                          base64.StdEncoding.EncodeToString(key),
+			Port:                         defaultPort,
+			ChallengeInfoDir:             "../challenges/info/",
+			ServiceDeskMail:              "-", // service desk disabled
+			ServiceDeskRateLimitReports:  BRRateLimitReports,
 			ServiceDeskRateLimitInterval: BRRateLimitInterval,
-			SSHHost:          "ctf.wtfd.tech",
-			SocialMedia:      `<a class="link sociallink" href="https://github.com/wtfd-tech/wtfd"><span class="mdi mdi-github-circle"></span> GitHub</a>`,
-			Icon:             "icon.svg",
-			FirstLine:        "WTFd",
-			SecondLine:       `CTF`,
+			SSHHost:                      "ctf.wtfd.tech",
+			RestrictEmailDomains:         nil,
+			RequireEmailVerification:     false,
+			SocialMedia:                  `<a class="link sociallink" href="https://github.com/wtfd-tech/wtfd"><span class="mdi mdi-github-circle"></span> GitHub</a>`,
+			Icon:                         "icon.svg",
+			FirstLine:                    "WTFd",
+			SecondLine:                   `CTF`,
 		}
 		configBytes, _ := json.MarshalIndent(config, "", "\t")
 		_ = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
@@ -650,7 +669,7 @@ func Server() error {
 		if BRServiceDeskEnabled {
 			fmt.Printf("ServiceDesk running at %s@%s:%d  (Max %dR/%.02fs)\n",
 				BRServiceDeskUser, BRServiceDeskDomain, BRServiceDeskPort,
-			    BRRateLimitReports, BRRateLimitInterval)
+				BRRateLimitReports, BRRateLimitInterval)
 		} else {
 			fmt.Println("ServiceDesk disabled")
 		}
