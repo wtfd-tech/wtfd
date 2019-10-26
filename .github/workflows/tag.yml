@@ -1,6 +1,8 @@
 name: Push
 on:
-  push: tags
+  push:
+    tags:
+      - *
 
 jobs:
   dynamic:
