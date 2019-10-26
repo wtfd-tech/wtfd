@@ -1,0 +1,110 @@
+name: Push
+on:
+  push: tags
+
+jobs:
+   dynamic:
+    name: Build Dynamic
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+
+    - name: Build
+      run: |
+        set -e
+        go build cmd/wtfd.go
+        strip wtfd
+
+    - name: Prepare artifact upload
+      run: |
+        set -e
+        mkdir build
+        cp -r icon.svg html/ wtfd build/
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@master
+      with:
+        name: wtfd-dynamic
+        path: build
+
+  static:
+    name: Build Static
+    runs-on: ubuntu-latest
+    steps:
+
+    - name: Set up Go 1.13
+      uses: actions/setup-go@v1
+      with:
+        go-version: 1.13
+      id: go
+
+    - name: Check out code into the Go module directory
+      uses: actions/checkout@v1
+
+    - name: Install Dependencies
+      run: |
+        set -e
+        sudo apt-get update && sudo apt-get -y install musl-tools
+        go get -u github.com/gobuffalo/packr/v2/packr2
+
+    - name: Build (with packr2 and musl)
+      env:
+        CC: musl-gcc
+      run: | 
+        set -e
+        sh -c "cd internal; $(go env GOPATH)/bin/packr2"
+        go build -ldflags '-linkmode external -extldflags "-static"' -v cmd/wtfd.go
+        strip wtfd
+
+    - name: Prepare artifact upload
+      run: |
+        set -e
+        mkdir build
+        cp wtfd icon.svg build/
+
+    - name: Upload artifacts
+      uses: actions/upload-artifact@master
+      with:
+        name: wtfd-static
+        path: build
+
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+    needs: [dynamic, static]
+    steps:
+    - name: Install Dependencies
+      run: |
+        set -e
+        sudo apt-get update && sudo apt-get install -y zip
+    - name: Download Dynamic
+      uses: actions/download-artifact@master
+      with:
+        name: wtfd-dynamic
+        path: dynamic
+    - name: Download Static
+      uses: actions/download-artifact@master
+      with:
+        name: wtfd-static
+        path: static
+    - name Zip
+      run: |
+        set -e
+        zip -r wtfd-static.zip static/.
+        zip -r wtfd-dynamic.zip dynamic/.
+    - name: Upload
+      uses: softprops/action-gh-release@v1
+      with:
+        files: |
+          wtfd-static.zip
+          wtfd-dynamic.zip
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
