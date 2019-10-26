@@ -380,10 +380,10 @@ func register(w http.ResponseWriter, r *http.Request) {
 				_, _ = fmt.Fprintf(w, "The entered e-mail address is invalid")
 			} else {
 				// Check if registration is restricted to certain email domains
-				if config.RestrictEmailDomains != nil {
+				if len(config.RestrictEmailDomains) != 0 {
 					valid := false
 					for _, domain := range config.RestrictEmailDomains {
-						if strings.Split(Form.Get("username"), "@")[1] == domain {
+						if strings.Split(r.Form.Get("username"), "@")[1] == domain {
 							valid = true
 						}
 					}
