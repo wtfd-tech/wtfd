@@ -83,8 +83,8 @@ func BRDispatchBugreport(u *User, subject string, content string) error {
 
 	recipient := BRServiceDeskAddress
 	recipients := []string{recipient}
-	formatContent := fmt.Sprintf("From: %s\nSubject: %s\nReply-To: %s\n\n%s",
-		BRSMTPUser+"@"+BRSMTPHost, subject, u.Name, content)
+	formatContent := fmt.Sprintf("To: %s\r\nFrom: %s\r\nSubject: %s\r\nReply-To: %s\r\n\r\n%s\r\n",
+		recipient, BRSMTPUser+"@"+BRSMTPHost,  subject, u.Name, content)
 
 	auth := smtp.PlainAuth("", BRSMTPUser+"@"+BRSMTPHost, BRSMTPPassword, BRSMTPHost)
 
