@@ -12,13 +12,13 @@ import (
 var (
 	/* Runtime Parameter */        /* Defaults */
 	BRServiceDeskAddress         = "mail@example.com" // Server recieving service desk mails
-	BRServiceDeskEnabled         = false             // Is service desk support enabled
-	BRRateLimitInterval  float64 = 180               // 3 Minutes
-	BRRateLimitReports           = 2                 // 2 Reports during interval before beeing rate limited
-	BRSMTPPort                   = 25                // server to server smtp port
-	BRSMTPUser                   = "sender"
-	BRSMTPHost                   = "example.com"
-	BRSMTPPassword               = "passwd"
+	BRServiceDeskEnabled         = false              // Is service desk support enabled
+	BRRateLimitInterval  float64 = 180                // 3 Minutes
+	BRRateLimitReports           = 2                  // 2 Reports during interval before beeing rate limited
+	BRSMTPPort                   = 25                 // server to server smtp port
+	BRSMTPUser                   = "sender"           // user used for sending mails
+	BRSMTPPassword               = "passwd"           // password for user
+	BRSMTPHost                   = "example.com"      // host where the send stmp server runns at
 
 	userAccess map[string]access = make(map[string]access)
 )
