@@ -11,12 +11,14 @@ import (
 
 var (
 	/* Runtime Parameter */        /* Defaults */
-	BRServiceDeskDomain          = "example.com" // Server recieving service desk mails
-	BRServiceDeskUser            = "noreply"     // The user recieving the mails
-	BRServiceDeskPort            = 25            // server to server smtp port
-	BRServiceDeskEnabled         = false         // Is service desk support enabled
-	BRRateLimitInterval  float64 = 180           // 3 Minutes
-	BRRateLimitReports           = 2             // 2 Reports during interval before beeing rate limited
+	BRServiceDeskAddress         = "mail@example.com" // Server recieving service desk mails
+	BRServiceDeskEnabled         = false              // Is service desk support enabled
+	BRRateLimitInterval  float64 = 180                // 3 Minutes
+	BRRateLimitReports           = 2                  // 2 Reports during interval before beeing rate limited
+	BRSMTPPort                   = 25                 // server to server smtp port
+	BRSMTPUser                   = "sender"           // user used for sending mails
+	BRSMTPPassword               = "passwd"           // password for user
+	BRSMTPHost                   = "example.com"      // host where the send stmp server runns at
 
 	userAccess map[string]access = make(map[string]access)
 )
@@ -25,7 +27,6 @@ type access struct {
 	lastBlock  time.Time // Currently unused
 	lastAccess []time.Time
 }
-
 
 /**
  * Check if user is rate limited
@@ -80,13 +81,15 @@ func BRDispatchBugreport(u *User, subject string, content string) error {
 		return errors.New("Service Desk is disabled")
 	}
 
-	recipient := BRServiceDeskUser + "@" + BRServiceDeskDomain
+	recipient := BRServiceDeskAddress
 	recipients := []string{recipient}
-	formatContent := fmt.Sprintf("From: %s\nSubject: %s\n\n%s", u.Name, subject, content)
+	formatContent := fmt.Sprintf("To: %s\r\nFrom: %s\r\nSubject: %s\r\nReply-To: %s\r\n\r\n%s\r\n",
+		recipient, BRSMTPUser+"@"+BRSMTPHost,  subject, u.Name, content)
 
+	auth := smtp.PlainAuth("", BRSMTPUser+"@"+BRSMTPHost, BRSMTPPassword, BRSMTPHost)
 
-	err := smtp.SendMail(BRServiceDeskDomain+":"+strconv.Itoa(BRServiceDeskPort),
-		nil, u.Name, recipients, []byte(formatContent))
+	err := smtp.SendMail(BRSMTPHost+":"+strconv.Itoa(BRSMTPPort),
+		auth, BRSMTPUser+"@"+BRSMTPHost, recipients, []byte(formatContent))
 	if err == nil {
 		registerUserAccess(u)
 	}

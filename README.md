@@ -33,6 +33,11 @@ It shall look like that:
         "firstline": "<first line in the top left>",
 	"secondline": "<second line in the top left>",
        	"sshhost": "<The domain of your ssh challenges>"
+	"servicedeskaddress": <Mail address for a GitLab service desk instance (or '-' if it is disabled),
+	"smtprelaymailwithport": "<Sender address (e.g. wtfdsender@wtfd.tech:25)>",
+	"smtprelaymailpassword": "<Password for sender>",
+	"ServiceDeskRateLimitInterval": <Interval (in seconds) where access is tracked>,
+	"ServiceDeskRateLimitReports": <Maximun ammount of access per user in interval> 
 }
 ```
 

@@ -96,12 +96,13 @@ colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
       <h1>Report Bug</h1>
       <div id="bugreportform">
         <select id="bugreportcategory" class="bugreportcategory"></select>
-        <input type="text" placeholder="Das soll so ja nicht" id="subjectinput" class="firamono flexcell bugreportsubject"/>
+        <input type="text" placeholder="Short bug description" id="subjectinput" class="firamono flexcell bugreportsubject"/>
         </br>
-        <textarea placeholder="Alles kaputt..." id="contentinput" class="firamono flexcell bugreportcontent"></textarea>
+        <textarea placeholder="Detailed bug description" id="contentinput" class="firamono flexcell bugreportcontent"></textarea>
         </br>
         <span id="bugloading" class="loadingbar" style="display: none;"></span>
         </br>
+        <a class="unflashy">You may recieve further information via E-Mail<a/>
         <input class="button bugreportsubmit" type="submit" id="bugreportbutton" value="Send report"/>
       </div>
     </dialog>
