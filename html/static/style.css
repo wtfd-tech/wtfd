@@ -474,6 +474,10 @@ menu {
     color: #14b967;
 }
 
+.unflashy {
+    color: #4d4d4d;
+}
+
 /* Bugreport classes */
 .bugreportcategory {
     width: 10vw;
