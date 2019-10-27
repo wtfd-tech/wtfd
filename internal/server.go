@@ -536,7 +536,9 @@ func Server() error {
 			Key:               base64.StdEncoding.EncodeToString(key),
 			Port:              defaultPort,
 			ChallengeInfoDir:  "../challenges/info/",
-			ServiceDeskMail: "-", // service desk disabled
+			ServiceDeskAddress: "-", // service desk disabled
+			SMTPRelayString: "mail@example.com:25",
+			SMTPRelayPasswd: "passwd",
 			ServiceDeskRateLimitReports: BRRateLimitReports,
 			ServiceDeskRateLimitInterval: BRRateLimitInterval,
 			SSHHost:          "ctf.wtfd.tech",
@@ -568,35 +570,35 @@ func Server() error {
 		}
 
 		// setup servicedesk vars
-		if config.ServiceDeskMail == "-" {
+		if config.ServiceDeskAddress == "-" {
 			BRServiceDeskEnabled = false
 		} else {
-			BRServiceDeskEnabled = true
-			split := strings.Split(config.ServiceDeskMail, ":")
-			if len(split) > 1 {
-				port, err := strconv.Atoi(split[1])
-				if err != nil {
-					log.Printf("Config: ServiceDeskMail bad format: %s", err)
-					BRServiceDeskEnabled = false
-				} else {
-					BRServiceDeskPort = port
-				}
+			BRServiceDeskAddress = config.ServiceDeskAddress
+			BRSMTPPassword = config.SMTPRelayPasswd
 
+			// Parse relay mail string
+			split := strings.Split(config.SMTPRelayString, ":")
+
+			if len(split) < 2 {
+				return errors.New("Invalid smtprelaymailwithport format!")
+			}
+			if BRSMTPPort, err = strconv.Atoi(split[1]); err != nil {
+				return err
 			}
 			split = strings.Split(split[0], "@")
 			if len(split) < 2 {
-				log.Printf("Config: BRServiceDeskMail bad format: %s", "bad address")
-				BRServiceDeskEnabled = false
-			} else {
-				BRServiceDeskDomain = split[1]
-				BRServiceDeskUser = split[0]
+				return errors.New("Invalid smtprelaymailwithport format!")
 			}
+			BRSMTPUser = split[0]
+			BRSMTPHost = split[1]
+
+			BRServiceDeskEnabled = true
 		}
 		BRRateLimitReports = config.ServiceDeskRateLimitReports
 		BRRateLimitInterval = config.ServiceDeskRateLimitInterval
 		if BRServiceDeskEnabled {
-			fmt.Printf("ServiceDesk running at %s@%s:%d  (Max %dR/%.02fs)\n",
-				BRServiceDeskUser, BRServiceDeskDomain, BRServiceDeskPort,
+			fmt.Printf("ServiceDesk running at %s (Send via %s@%s:%d)  (Max %dR/%.02fs)\n",
+				BRServiceDeskAddress, BRSMTPUser, BRSMTPHost, BRSMTPPort,
 			    BRRateLimitReports, BRRateLimitInterval)
 		} else {
 			fmt.Println("ServiceDesk disabled")
