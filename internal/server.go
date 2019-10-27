@@ -6,11 +6,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/gobuffalo/packr/v2"
-	"github.com/gomarkdown/markdown"
-	"github.com/gorilla/mux"
-	"github.com/gorilla/securecookie"
-	"github.com/gorilla/sessions"
 	"html/template"
 	"io/ioutil"
 	"log"
@@ -18,6 +13,13 @@ import (
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/gobuffalo/packr/v2"
+	"github.com/gomarkdown/markdown"
+	"github.com/gorilla/mux"
+	"github.com/gorilla/securecookie"
+	"github.com/gorilla/sessions"
+	"golang.org/x/crypto/bcrypt"
 )
 
 const (
@@ -363,7 +365,6 @@ func register(w http.ResponseWriter, r *http.Request) {
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = fmt.Fprintf(w, "Invalid Request")
-
 	} else {
 		if err := r.ParseForm(); err != nil {
 			_, _ = fmt.Fprintf(w, "ParseForm() err: %v", err)
@@ -373,12 +374,27 @@ func register(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			_, _ = fmt.Fprintf(w, "Already logged in")
 		} else {
-
-			if len(r.Form.Get("username")) < 5 {
+			// username here means e-mail address
+			if !validateEmailAddress(r.Form.Get("username")) {
 				w.WriteHeader(http.StatusBadRequest)
-				_, _ = fmt.Fprintf(w, "Username must be at least 5 characters")
-
+				_, _ = fmt.Fprintf(w, "The entered e-mail address is invalid")
 			} else {
+				// Check if registration is restricted to certain email domains
+				if len(config.RestrictEmailDomains) != 0 {
+					valid := false
+					for _, domain := range config.RestrictEmailDomains {
+						if strings.Split(r.Form.Get("username"), "@")[1] == domain {
+							valid = true
+						}
+					}
+
+					if !valid {
+						w.WriteHeader(http.StatusBadRequest)
+						_, _ = fmt.Fprintf(w, "The entered e-mail address is not allowed")
+						return
+					}
+				}
+
 				u, err := NewUser(r.Form.Get("username"), r.Form.Get("password"), r.Form.Get("displayname"))
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
@@ -395,6 +411,60 @@ func register(w http.ResponseWriter, r *http.Request) {
 
 	}
 
+}
+
+func changePassword(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("HERE HERE HERE")
+
+	if r.Method != "POST" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = fmt.Fprintf(w, "Invalid Request")
+	} else {
+		if err := r.ParseForm(); err != nil {
+			_, _ = fmt.Fprintf(w, "ParseForm() err: %v", err)
+			return
+		}
+		// Check if user is logged in and get it
+		if u, ok := getUser(r); ok {
+			// Check if old password matches the entered one
+			if bcrypt.CompareHashAndPassword(u.Hash, []byte(r.Form.Get("oldpassword"))) != nil {
+				w.WriteHeader(http.StatusBadRequest)
+				_, _ = fmt.Fprintf(w, "The old password entered is incorrect")
+				fmt.Println("Old password wrong")
+				return
+			}
+
+			// Check if both new passwords are the same
+			if r.Form.Get("newpassword") != r.Form.Get("repeatnewpassword") {
+				w.WriteHeader(http.StatusBadRequest)
+				_, _ = fmt.Fprintf(w, "The entered new password are not the same")
+				fmt.Println("New passwords wrong")
+				return
+			}
+
+			// Hash the entered password...
+			hash, err := bcrypt.GenerateFromPassword([]byte(r.Form.Get("newpassword")), 14)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				_, _ = fmt.Fprintf(w, "Server Error: %v", err)
+				return
+			}
+
+			// ...and update it for the current user
+			u.Hash = hash
+
+			if ormUpdateUser(u) != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				_, _ = fmt.Fprintf(w, "Server Error: %v", err)
+				return
+			}
+
+			fmt.Println("Done changing")
+		} else {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = fmt.Fprintf(w, "You have to be logged in to change your password")
+		}
+	}
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
@@ -541,11 +611,13 @@ func Server() error {
 			SMTPRelayPasswd: "passwd",
 			ServiceDeskRateLimitReports: BRRateLimitReports,
 			ServiceDeskRateLimitInterval: BRRateLimitInterval,
-			SSHHost:          "ctf.wtfd.tech",
-			SocialMedia:      `<a class="link sociallink" href="https://github.com/wtfd-tech/wtfd"><span class="mdi mdi-github-circle"></span> GitHub</a>`,
-			Icon:             "icon.svg",
-			FirstLine:        "WTFd",
-			SecondLine:       `CTF`,
+			SSHHost:                      "ctf.wtfd.tech",
+			RestrictEmailDomains:         nil,
+			RequireEmailVerification:     false,
+			SocialMedia:                  `<a class="link sociallink" href="https://github.com/wtfd-tech/wtfd"><span class="mdi mdi-github-circle"></span> GitHub</a>`,
+			Icon:                         "icon.svg",
+			FirstLine:                    "WTFd",
+			SecondLine:                   `CTF`,
 		}
 		configBytes, _ := json.MarshalIndent(config, "", "\t")
 		_ = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
@@ -742,6 +814,7 @@ func Server() error {
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)
 	r.HandleFunc("/register", register)
+	r.HandleFunc("/changepassword", changePassword)
 	r.HandleFunc("/submitflag", submitFlag)
 	r.HandleFunc("/ws", leaderboardWS)
 	r.HandleFunc("/reportbug", reportBug)

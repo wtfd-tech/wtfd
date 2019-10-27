@@ -1,7 +1,7 @@
 package main
 
 import (
-	"gitlab.fachschaften.org/foss-ag/wtfd/internal"
+	"github.com/wtfd-tech/wtfd/internal"
 	"log"
 )
 
