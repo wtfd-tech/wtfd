@@ -16,12 +16,12 @@ paths:
         - User: []
       tags:
         - challenge
-        - data
       parameters:
         - name: "flag"
           schema:
             type: string
           in: "query"
+          required: true
           description: "The flag you think you found"
         - name: "challengeId"
           in: "path"
@@ -52,7 +52,6 @@ paths:
       description: Returns this Challenge
       tags:
         - challenge
-        - data
       parameters:
         - name: "challengeId"
           in: "path"
@@ -89,7 +88,6 @@ paths:
   /users:
     get:
       tags:
-        - data
         - admin
       summary: Gets data about another user
       operationId: UsersGet
@@ -110,7 +108,6 @@ paths:
   /user/{email}:
     get:
       tags:
-        - data
         - admin
       summary: Gets data about another user
       parameters:
@@ -134,7 +131,7 @@ paths:
           description: not an admin
     post:
       tags:
-        - user
+        - admin
       summary: Changes a user
       security:
         - Admin: []
