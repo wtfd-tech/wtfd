@@ -805,7 +805,7 @@ func Server() error {
 		return err
 	}
 	go leaderboardMessageServer(serverChan)
-	// Http sturf
+	// Http stuff
 	r := mux.NewRouter()
 	r.HandleFunc("/", mainpage)
 	r.HandleFunc("/leaderboard", leaderboardpage)
