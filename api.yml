@@ -9,13 +9,162 @@ info:
 servers:
   - url: https://your-ctf.tech/v1/
 paths:
+  /challenge/{challengeId}:
+    post:
+      description: Solves this Challenge
+      security:
+        - User: []
+      tags:
+        - challenge
+        - data
+      parameters:
+        - name: "flag"
+          schema:
+            type: string
+          in: "query"
+          description: "The flag you think you found"
+        - name: "challengeId"
+          in: "path"
+          description: "ID of Challenge to return"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          content:
+            'application/json':
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/ChallengeDetailed'
+          description: Returns this Challenge, solved true
+        400:
+          content:
+            'application/json':
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/ChallengeDetailed'
+          description: Returns this Challenge, solved false
+        404:
+          description: Challenge not found
+    get:
+      description: Returns this Challenge
+      tags:
+        - challenge
+        - data
+      parameters:
+        - name: "challengeId"
+          in: "path"
+          description: "ID of Challenge to return"
+          required: true
+          schema:
+            type: string
+      responses:
+        200:
+          content:
+            'application/json':
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/ChallengeDetailed'
+          description: Returns this Challenge
+        404:
+          description: Challenge not found
+  /challenge:
+    get:
+      description: Returns all Challenges
+      tags:
+        - challenge
+        - data
+      responses:
+        200:
+          description: Returns all Challenges
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Challenge'
+  /users:
+    get:
+      tags:
+        - data
+        - admin
+      summary: Gets data about another user
+      operationId: UsersGet
+      security:
+        - Admin: []
+      responses:
+        200:
+          description: returns user data
+          content:
+            'application/json':
+              schema:
+                type: array
+                items:
+                  type: object
+                  $ref: '#/components/schemas/User'
+        401:
+          description: not an admin
+  /user/{email}:
+    get:
+      tags:
+        - data
+        - admin
+      summary: Gets data about another user
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+      operationId: AdminUserGet
+      security:
+        - Admin: []
+      responses:
+        200:
+          description: Returns user data
+          content:
+            'application/json':
+              schema:
+                type: object
+                $ref: '#/components/schemas/User'
+        401:
+          description: not an admin
+    post:
+      tags:
+        - user
+      summary: Changes a user
+      security:
+        - Admin: []
+      parameters:
+        - name: email
+          required: true
+          in: path
+          schema:
+            type: string
+        - name: user 
+          in: query
+          schema:
+            type: object
+            $ref: '#/components/schemas/User'
+      operationId: UserChange
+      responses:
+        200:
+          description: Change Success
+        404:
+          description: User not found
+        401:
+          description: not an admin
   /user:
     get:
       tags:
         - data
       summary: Gets data about your user
-      operationId: UserRegister
-
+      operationId: UserGet
+      security:
+        - User: []
       responses:
         200:
           description: Register Success, User is now Logged in
@@ -23,9 +172,9 @@ paths:
           description: Not logged in
     post:
       tags:
-        - login
+        - user
       summary: Registers a user
-      operationId: UserGet
+      operationId: UserRegister
       parameters:
         - name: email
           in: query
@@ -47,7 +196,7 @@ paths:
   /user/login:
     post:
       tags:
-        - login
+        - user
       summary: Loggs a user in
       operationId: UserLogin
       parameters:
@@ -69,16 +218,16 @@ paths:
   /user/logout:
     get:
       tags:
-        - login
-      summary: Loggs a user in
+        - user
+      summary: Loggs a user out
+      security:
+        - User: []
       operationId: UserLogout
       responses:
         200:
-          description: User is now Logged in
+          description: User is now Logged out
         400:
-          description: Username or Password wrong
-        404:
-          description: User not found
+          description: Not logged in
 components:
   securitySchemes:
     User:
@@ -89,3 +238,58 @@ components:
       type: "apiKey"
       name: "auth"
       in: "cookie"
+  schemas:
+    ChallengeDetailed:
+      type: "object"
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        points:
+          type: integer
+        desc:
+          type: string 
+          description: The name of the Challenge in html
+        solved:
+          type: boolean
+          description: If logged in and solved the challenge, it's true, otherwise false
+        deps:
+          type: array
+          items:
+            type: string
+            description: name of other challenge
+    Challenge:
+      type: "object"
+      required:
+        - name
+      properties:
+        name:
+          type: string
+        points:
+          type: integer
+        deps:
+          type: array
+          items:
+            type: string
+            description: name of other challenge
+    User:
+      type: "object"
+      required:
+        - name
+      properties:
+        points:
+          type: integer
+          minimum: 0
+        admin:
+          type: boolean
+        displayname:
+          type: string
+        name:
+          type: string
+        challs:
+          type: array
+          description: names of completed challenges
+          items:
+            type: string
+            description: name of challenge
