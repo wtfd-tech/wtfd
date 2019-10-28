@@ -14,6 +14,8 @@ import (
 	"strconv"
 	"strings"
 
+	"github.com/wtfd-tech/wtfd/internal/smtp"
+
 	"github.com/gobuffalo/packr/v2"
 	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
@@ -646,7 +648,7 @@ func Server() error {
 			BRServiceDeskEnabled = false
 		} else {
 			BRServiceDeskAddress = config.ServiceDeskAddress
-			BRSMTPPassword = config.SMTPRelayPasswd
+			smtp.Config.Password = config.SMTPRelayPasswd
 
 			// Parse relay mail string
 			split := strings.Split(config.SMTPRelayString, ":")
@@ -654,15 +656,15 @@ func Server() error {
 			if len(split) < 2 {
 				return errors.New("Invalid smtprelaymailwithport format!")
 			}
-			if BRSMTPPort, err = strconv.Atoi(split[1]); err != nil {
+			if smtp.Config.Port, err = strconv.Atoi(split[1]); err != nil {
 				return err
 			}
 			split = strings.Split(split[0], "@")
 			if len(split) < 2 {
 				return errors.New("Invalid smtprelaymailwithport format!")
 			}
-			BRSMTPUser = split[0]
-			BRSMTPHost = split[1]
+			smtp.Config.User = split[0]
+			smtp.Config.Host = split[1]
 
 			BRServiceDeskEnabled = true
 		}
@@ -670,7 +672,7 @@ func Server() error {
 		BRRateLimitInterval = config.ServiceDeskRateLimitInterval
 		if BRServiceDeskEnabled {
 			fmt.Printf("ServiceDesk running at %s (Send via %s@%s:%d)  (Max %dR/%.02fs)\n",
-				BRServiceDeskAddress, BRSMTPUser, BRSMTPHost, BRSMTPPort,
+				BRServiceDeskAddress, smtp.Config.User, smtp.Config.Host, smtp.Config.Port,
 			    BRRateLimitReports, BRRateLimitInterval)
 		} else {
 			fmt.Println("ServiceDesk disabled")

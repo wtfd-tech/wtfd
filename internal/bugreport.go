@@ -2,10 +2,8 @@ package wtfd
 
 import (
 	"errors"
-	"fmt"
 	"time"
-	"strconv"
-	"net/smtp"
+	"github.com/wtfd-tech/wtfd/internal/smtp"
 )
 
 
@@ -81,15 +79,7 @@ func BRDispatchBugreport(u *User, subject string, content string) error {
 		return errors.New("Service Desk is disabled")
 	}
 
-	recipient := BRServiceDeskAddress
-	recipients := []string{recipient}
-	formatContent := fmt.Sprintf("To: %s\r\nFrom: %s\r\nSubject: %s\r\nReply-To: %s\r\n\r\n%s\r\n",
-		recipient, BRSMTPUser+"@"+BRSMTPHost,  subject, u.Name, content)
-
-	auth := smtp.PlainAuth("", BRSMTPUser+"@"+BRSMTPHost, BRSMTPPassword, BRSMTPHost)
-
-	err := smtp.SendMail(BRSMTPHost+":"+strconv.Itoa(BRSMTPPort),
-		auth, BRSMTPUser+"@"+BRSMTPHost, recipients, []byte(formatContent))
+	err := smtp.DispatchMail(BRServiceDeskAddress, u.Name, subject, content, nil)
 	if err == nil {
 		registerUserAccess(u)
 	}
