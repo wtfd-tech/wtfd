@@ -1,0 +1,91 @@
+openapi: "3.0.7"
+info:
+  title: "WTFd API"
+  description: "Get all information provided by a WTFd Server"
+  version: "1.0"
+  license:
+    name: "GNU Affero General Public License v3.0"
+    url: "https://github.com/wtfd-tech/wtfd/blob/master/LICENSE"
+servers:
+  - url: https://your-ctf.tech/v1/
+paths:
+  /user:
+    get:
+      tags:
+        - data
+      summary: Gets data about your user
+      operationId: UserRegister
+
+      responses:
+        200:
+          description: Register Success, User is now Logged in
+        401:
+          description: Not logged in
+    post:
+      tags:
+        - login
+      summary: Registers a user
+      operationId: UserGet
+      parameters:
+        - name: email
+          in: query
+          schema:
+            type: string
+        - name: password
+          in: query
+          schema:
+            type: string
+        - name: displayname
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Register Success, User is now Logged in
+        409:
+          description: Register Failure, Username taken
+  /user/login:
+    post:
+      tags:
+        - login
+      summary: Loggs a user in
+      operationId: UserLogin
+      parameters:
+        - name: email
+          in: query
+          schema:
+            type: string
+        - name: password
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: User is now Logged in
+        400:
+          description: Username or Password wrong
+        404:
+          description: User not found
+  /user/logout:
+    get:
+      tags:
+        - login
+      summary: Loggs a user in
+      operationId: UserLogout
+      responses:
+        200:
+          description: User is now Logged in
+        400:
+          description: Username or Password wrong
+        404:
+          description: User not found
+components:
+  securitySchemes:
+    User:
+      type: "apiKey"
+      name: "auth"
+      in: "cookie"
+    Admin:
+      type: "apiKey"
+      name: "auth"
+      in: "cookie"
