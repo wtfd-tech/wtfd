@@ -30,6 +30,9 @@ type _ORMUser struct {
 	Admin       bool
 	Hash        []byte
 	Points      int
+	Verified    bool
+	VerifyToken string    `xorm:"varchar(32)"`
+	VerifyDeadline time.Time
 }
 
 type _ORMChallengesByUser struct {
@@ -83,7 +86,7 @@ func NewUser(name, password, displayname string) (User, error) {
 		fmt.Printf("New User %s is an Admin\n", name)
 
 	}
-	return User{Name: name, Hash: hash, DisplayName: displayname, Admin: isAdmin, Verified: false}, nil
+	return User{Name: name, Hash: hash, DisplayName: displayname, Admin: isAdmin, VerifiedInfo: VerifyInfo{IsVerified: false}}, nil
 
 }
 
@@ -207,11 +210,14 @@ func ormUpdateUser(user User) error {
 	}
 
 	u = _ORMUser{
-		Name:        user.Name,
-		Hash:        user.Hash,
-		DisplayName: user.DisplayName,
-		Points:      user.Points,
-		Admin:       user.Admin,
+		Name:           user.Name,
+		Hash:           user.Hash,
+		DisplayName:    user.DisplayName,
+		Points:         user.Points,
+		Admin:          user.Admin,
+		Verified:       user.VerifiedInfo.IsVerified,
+		VerifyToken:    user.VerifiedInfo.VerifyToken,
+		VerifyDeadline: user.VerifiedInfo.VerifyDeadline,
 	}
 	// fmt.Printf("a: %#v", u)
 
@@ -375,6 +381,11 @@ func ormLoadUser(name string) (User, error) {
 		DisplayName: user.DisplayName,
 		Admin:       user.Admin,
 		Points:      user.Points,
+		VerifiedInfo: VerifyInfo {
+			IsVerified: user.Verified,
+			VerifyToken: user.VerifyToken,
+			VerifyDeadline: user.VerifyDeadline,
+		},
 	}
 
 	if u.Completed, err = ormChallengesSolved(u); err != nil {

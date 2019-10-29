@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"sort"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -60,15 +61,21 @@ type Config struct {
 	RequireEmailVerification     bool          `json:"require_email_verification"`
 }
 
+type VerifyInfo struct {
+	IsVerified bool
+	VerifyToken string
+	VerifyDeadline time.Time
+}
+
 // User, was ist das wohl
 type User struct {
-	Name        string `json:"name"`
-	Hash        []byte
-	DisplayName string `json:"displayname"`
-	Completed   []*Challenge
-	Admin       bool `json:"admin"`
-	Points      int  `json:"points"`
-	Verified    bool
+	Name         string `json:"name"`
+	Hash         []byte
+	DisplayName  string `json:"displayname"`
+	Completed    []*Challenge
+	Admin        bool `json:"admin"`
+	Points       int  `json:"points"`
+	VerifiedInfo VerifyInfo
 }
 
 type gridinfo struct {
