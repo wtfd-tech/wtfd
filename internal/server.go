@@ -666,6 +666,7 @@ func Server() error {
 			smtp.Config.User = split[0]
 			smtp.Config.Host = split[1]
 
+			smtp.Config.Enabled = true
 			BRServiceDeskEnabled = true
 		}
 		BRRateLimitReports = config.ServiceDeskRateLimitReports
