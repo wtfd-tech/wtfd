@@ -68,6 +68,7 @@ type User struct {
 	Completed   []*Challenge
 	Admin       bool `json:"admin"`
 	Points      int  `json:"points"`
+	Verified    bool
 }
 
 type gridinfo struct {

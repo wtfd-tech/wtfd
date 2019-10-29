@@ -83,7 +83,7 @@ func NewUser(name, password, displayname string) (User, error) {
 		fmt.Printf("New User %s is an Admin\n", name)
 
 	}
-	return User{Name: name, Hash: hash, DisplayName: displayname, Admin: isAdmin}, nil
+	return User{Name: name, Hash: hash, DisplayName: displayname, Admin: isAdmin, Verified: false}, nil
 
 }
 
