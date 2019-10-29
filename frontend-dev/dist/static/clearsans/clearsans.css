@@ -1,0 +1,16 @@
+@font-face {
+    font-family: "Clear Sans";
+    font-weight: normal;
+    src: local("Clear Sans"), url("ClearSans-Regular.woff");
+}
+
+@font-face {
+    font-family: "Clear Sans";
+    font-weight: bold;
+    src: local("Clear Sans Bold"), url("ClearSans-Bold.woff");
+}
+
+.clearsans {
+    font-family: "Clear Sans", sans-serif;
+    -webkit-font-smoothing: antialiased;
+}

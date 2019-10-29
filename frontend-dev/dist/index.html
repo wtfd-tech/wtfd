@@ -1,0 +1,112 @@
+{{ template "header" . }}
+
+    <main class="flexcell gridcontainer">
+      {{ $user := .User }}
+      {{ range.Challenges }}
+      <div id="{{.Name}}" class="{{if $user.HasSolvedChallenge . }}completed {{end}}{{if .AllDepsCompleted $user}}{{else}}not-available{{end}} challenge row-{{.Row}} col-{{.DepCount}}">
+        <p class="chall-title">{{.Name}}</p>
+        <p class="score firamono"><span class="pointicon"></span> {{.Points}}</p>
+      </div>
+      {{ end }}
+
+      <script>
+        var colnum = new Map();
+        {{ range.Challenges}}
+colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
+        {{end}}
+        var bugreportCategories = ["Main Page" {{ range.Challenges }},"{{.Name}}"{{end}}];
+        function start(){
+          {{if .IsUser}}{{else}}document.getElementById("loginbutton").click();{{end}}
+          {{ if .IsUser }}
+              {{ range.Challenges }}
+                  {{ if .AllDepsCompleted $user}}
+                    addChallEventListener("{{.Name}}", "{{.Points}}");
+                  {{end}}
+              {{end}}
+          {{ else }}
+            {{ range.Challenges }}
+                document.getElementById({{.Name}}).addEventListener("click", function () {
+                    document.getElementById("loginbutton").click();
+                });
+            {{ end }}
+          {{ end }}
+          connectAll();
+  {{if .HasSelectedChallengeID }} document.getElementById("{{.SelectedChallengeID}}").click();{{else}}{{end}}
+        }
+        function connectAll(){
+          var i = 0;
+          var colors =
+          ["#262626",
+          "#4d4d4d",
+          "#808080",
+          "#606060",
+          "#3b3b3b"];
+          var svg1 = document.getElementById("svg1");
+
+          var color = new Map();
+          {{ range.Challenges}}
+          {{if .DepIDs}}
+          {{if $user.HasSolvedChallenge .}}
+          color.set({{.Name}},"#14b967");
+          {{else}}
+          color.set({{.Name}},colors[i % (colors.length-1)]);
+          {{end}}
+          connectElementss(svg1 , {{.Name}}, {{.DepIDs}},color.get({{.Name}}));
+          i++;
+            {{end}}
+            {{end}}
+        }
+
+      </script>
+    </main>
+    <div id="svgContainer"><svg id="svg1" width="0" height="0">
+      </svg></div>
+    <dialog id="detailview">
+      <span class="mdi mdi-bug bugbtn" id="bugreport"></span>
+      <span class="mdi mdi-close closebtn" id="detailclosebutton"></span>
+      <h1 id="detailtitle"></h1>
+      <h3 class="detailmeta">
+        <div class="flexcell flex-left">
+          <a id="challuri" class="challengelink" style="display: none;">Zur Challenge!</a>
+        </div>
+        <div class="flexcell flex-center">
+          <span class="pointicon"></span><span id="detailpoints" class="firamono"></span>
+        </div>
+        <div class="flexcell flex-right">
+          <a id="challauthor"></a>
+          <span class="mdi mdi-account"></span>
+        </div>
+      </h3>
+      </br>
+      <div id="detaildescription"></div>
+      <div id="flagsubmitmsg"></div>
+      <div id="detailform">
+        <input type="text" placeholder="FOSS{**********}" id="flaginput" class="firamono flexcell"/>
+        <input class="button flagsubmitbutton" type="submit" id="flagsubmitbutton" value="Submit Flag"/>
+      </div>
+      <div id="solutiondiv">
+        <button class="button" id="solutionbutton" value="Show Reccomended Solution">Show Reccomended Solution</button>
+        <div id="solutioninnerdiv"></div>
+      </div>
+      <span id="checkloading" class="loadingbar" style="display: none;"></span>
+    </dialog>
+
+    <dialog id="bugreportview">
+      <span class="mdi mdi-close closebtn" id="bugreportclosebutton"></span>
+      <h1>Report Bug</h1>
+      <div id="bugreportform">
+        <select id="bugreportcategory" class="bugreportcategory"></select>
+        <input type="text" placeholder="Short bug description" id="subjectinput" class="firamono flexcell bugreportsubject"/>
+        </br>
+        <textarea placeholder="Detailed bug description" id="contentinput" class="firamono flexcell bugreportcontent"></textarea>
+        </br>
+        <span id="bugloading" class="loadingbar" style="display: none;"></span>
+        </br>
+        <a class="unflashy">You may recieve further information via E-Mail<a/>
+        <input class="button bugreportsubmit" type="submit" id="bugreportbutton" value="Send report"/>
+      </div>
+    </dialog>
+
+{{ template "footer" . }}
+
+    <script src="static/main.js" type="text/javascript"></script>

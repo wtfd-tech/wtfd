@@ -1,0 +1,9 @@
+@font-face {
+    font-family: "Fira Mono";
+    font-weight: normal;
+    src: local("Fira Mono"), local("Fira Code"), url("FiraMono-Regular.woff2");
+}
+
+.firamono {
+    font-family: "Fira Mono", monospace;
+}
