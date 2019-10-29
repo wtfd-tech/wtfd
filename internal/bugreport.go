@@ -78,6 +78,9 @@ func BRDispatchBugreport(u *User, subject string, content string) error {
 	if !BRServiceDeskEnabled {
 		return errors.New("Service Desk is disabled")
 	}
+	if !smtp.Config.Enabled {
+		return errors.New("SMTP is disabled")
+	}
 
 	err := smtp.DispatchMail(BRServiceDeskAddress, u.Name, subject, content, nil)
 	if err == nil {
