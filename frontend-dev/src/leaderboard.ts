@@ -1,10 +1,11 @@
-import dialogPolyfill from 'dialog-polyfill'
-if(location.pathname === "/admin"){
-var chart;
-(function() {
-  var c = document.getElementById("graph").getContext("2d");
+import dialogPolyfill from 'dialog-polyfill';
+import Chart from 'chart.js';
 
-  chart = new Chart(c, {
+export default class Leaderboard {
+constructor() {
+  const c = document.getElementById("graph").getContext("2d");
+
+  let chart = new Chart(c, {
     type: "line",
     options: {
       scales: {
@@ -54,7 +55,7 @@ var chart;
     }
   });
 
-  ws = new WebSocket("ws://" + window.location.host + "/ws");
+  let ws = new WebSocket("ws://" + window.location.host + "/ws");
   ws.onopen = function() {
     // Web Socket is connected, send data uting send()
     console.log("ws connected");
@@ -66,25 +67,25 @@ var chart;
   ws.onmessage = evt => {
     var rec = evt.data;
     console.log(evt.data);
-    score = JSON.parse(rec);
+    let score = JSON.parse(rec);
 
     chart.data = {
       datasets: score.chart
     };
     chart.update();
 
-    table = document.getElementsByTagName("tbody")[0];
+    let table = document.getElementsByTagName("tbody")[0];
     table.innerHTML = "<tr><th>Name</th><th>Points</th></tr>";
-    for (i = 0; i < score.table.name.length; i++) {
-      row = table.insertRow();
-      namecell = row.insertCell();
+    for (let i = 0; i < score.table.name.length; i++) {
+      let row = table.insertRow();
+      let namecell = row.insertCell();
       namecell.innerHTML = score.table.name[i];
-      pointcell = row.insertCell();
+      let pointcell = row.insertCell();
       pointcell.innerHTML = score.table.points[i];
     }
   };
   window.addEventListener("resize", function() {
     chart.update();
   });
-})();
+  }
 }

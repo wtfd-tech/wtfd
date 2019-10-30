@@ -1,10 +1,11 @@
-import dialogPolyfill from 'dialog-polyfill'
-function showDialog(dlg) {
+import dialogPolyfill from 'dialog-polyfill';
+export default class LoginRegister {
+showDialog(dlg: HTMLDialogElement) {
     dlg.showModal();
     registerBackdropClickHandler(dlg);
 }
 
-(function(){
+constructor(){
     const loginButton = document.getElementById("loginbutton");
     if (loginButton != null) {
         const loginDialogCancelButton = document.getElementById("logincancelbutton");
@@ -103,7 +104,6 @@ function showDialog(dlg) {
   registerForm.addEventListener("submit", function(e){
     registerLoading.style.display = "block";
     e.preventDefault();
-    console.log(new URLSearchParams(new FormData(registerForm)));
     fetch("/register", {body: new URLSearchParams(new FormData(registerForm)), method: 'post'})
     .then((resp)=> resp.text())
     .then((resp) => {
@@ -132,7 +132,6 @@ function showDialog(dlg) {
   edituserForm.addEventListener("submit", function(e){
     edituserLoading.style.display = "block";
     e.preventDefault();
-    console.log(new URLSearchParams(new FormData(edituserForm)));
     fetch("/changepassword", {body: new URLSearchParams(new FormData(edituserForm)), method: 'post'})
     .then((resp)=> resp.text())
     .then((resp) => {
@@ -152,4 +151,5 @@ function showDialog(dlg) {
     return false;
 
   });
-})();
+}
+}

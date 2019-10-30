@@ -1,18 +1,20 @@
 import dialogPolyfill from 'dialog-polyfill'
 
-const stateObj = {foo: "baar"};
+export default class MainPage {
 
-let flagsubmiteventlistenerfunc = function () {
+stateObj = {foo: "baar"};
+
+flagsubmiteventlistenerfunc = function () {
 };
-let solutioneventlistenerfunc = function () {
+solutioneventlistenerfunc = function () {
 };
-let flaginputeventlistenerfunc = function () {
+flaginputeventlistenerfunc = function () {
 };
 
 // Used for selection dialog in bugreport
-let selCategory = document.getElementById("bugreportcategory");
+selCategory = document.getElementById("bugreportcategory");
 
-function addChallEventListener(title, points) {
+addChallEventListener(title: string, points: number) {
     let elem = document.getElementById(title);
     elem.addEventListener("click", function () {
         let detView = document.getElementById("detailview");
@@ -28,12 +30,12 @@ function addChallEventListener(title, points) {
         let checkLoading = document.getElementById("checkloading");
         let challUri = document.getElementById("challuri");
         let challAuthor = document.getElementById("challauthor");
-        history.pushState(stateObj, "challenge " + title, title);
-        flagsubmitbutton.removeEventListener("click", flagsubmiteventlistenerfunc);
-        flagInput.removeEventListener("keypress", flaginputeventlistenerfunc);
-        solutionbutton.removeEventListener("click", solutioneventlistenerfunc);
+        history.pushState(this.stateObj, "challenge " + title, title);
+        flagsubmitbutton.removeEventListener("click", this.flagsubmiteventlistenerfunc);
+        flagInput.removeEventListener("keypress", this.flaginputeventlistenerfunc);
+        solutionbutton.removeEventListener("click", this.solutioneventlistenerfunc);
 
-        flagsubmiteventlistenerfunc = function () {
+        this.flagsubmiteventlistenerfunc = function () {
             const data = new URLSearchParams();
             checkLoading.style.display = "block";
             data.append("flag", flagInput.value);
@@ -124,8 +126,8 @@ function addChallEventListener(title, points) {
 
 }
 
-function registerBackdropClickHandler(dlg) {
-    Array.prototype.slice.call(document.getElementsByClassName("backdrop")).forEach(function (elem) {
+registerBackdropClickHandler(dlg: HTMLDialogElement) {
+    Array.prototype.slice.call(document.getElementsByClassName("backdrop")).forEach(function (elem: Element) {
         elem.addEventListener("click", function () {
             history.pushState(stateObj, "index", "/");
             dlg.close();
@@ -133,11 +135,11 @@ function registerBackdropClickHandler(dlg) {
     });
 }
 
-function absolute(a) {
+const absolute(a: number): number {
     return Math.abs(a);
 }
 
-function signum(a) {
+const signum(a: number): number {
     if (a < 0) return -1.0;
     if (a > 0) return 1.0;
     return a;
@@ -145,13 +147,13 @@ function signum(a) {
 
 const svgNS = "http://www.w3.org/2000/svg";
 
-function drawPath(svg, path, startX, startY, endX, endY, drawFunction, nothinginbetween) {
+drawPath(svg: Element, path: SVGElement, startX: number, startY: number, endX: number, endY: number, drawFunction: boolean, nothinginbetween: boolean) {
     // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
     const stroke = parseFloat(path.getAttribute("stroke-width"));
     // check if the svg is big enough to draw the path, if not, set heigh/width
-    if (svg.getAttribute("height") < (endY + stroke)) svg.setAttributeNS(null, "height", (endY + stroke));
-    if (svg.getAttribute("width") < (startX + stroke)) svg.setAttributeNS(null, "width", (startX + stroke));
-    if (svg.getAttribute("width") < (endX + stroke)) svg.setAttributeNS(null, "width", (endX + stroke));
+    if (Number(svg.getAttribute("height")) < (endY + stroke)) svg.setAttributeNS(null, "height", String(endY + stroke));
+    if (Number(svg.getAttribute("width")) < (startX + stroke)) svg.setAttributeNS(null, "width", String(startX + stroke));
+    if (Number(svg.getAttribute("width")) < (endX + stroke)) svg.setAttributeNS(null, "width", String(endX + stroke));
 
     //var deltaX = (endX - startX) * 0.15;
     //var deltaY = (endY - startY) * 0.15;
@@ -161,7 +163,7 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction, nothingin
     const deltaY = (endY === startY) ? 0 : deltaNum;
 
     // for further calculations which ever is the shortest distance
-    const delta = deltaY < absolute(deltaX) ? deltaY : absolute(deltaX);
+    const delta = deltaY < this.absolute(deltaX) ? deltaY : this.absolute(deltaX);
     console.log("deltax: " + deltaX + ", deltay:" + deltaY + ", delta: " + delta);
     // set sweep-flag (counter/clock-wise)
     // if start element is closer to the left edge,
@@ -211,8 +213,8 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction, nothingin
                 " H" + (startX + delta) +
                 " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 2 * delta) + " " + (startY + delta) +
                 " V" + (startY + 2 * delta) +
-                " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 3 * delta * signum(deltaX)) + " " + (startY + 3 * delta) +
-                " H" + (endX - 3 * delta * signum(deltaX)) +
+                " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 3 * delta * this.signum(deltaX)) + " " + (startY + 3 * delta) +
+                " H" + (endX - 3 * delta * this.signum(deltaX)) +
                 " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (endX - 2 * delta) + " " + (startY + 4 * delta) +
                 " V" + (endY - delta) +
                 " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (endX - delta) + " " + endY +
@@ -222,7 +224,7 @@ function drawPath(svg, path, startX, startY, endX, endY, drawFunction, nothingin
     }
 }
 
-function connectElementss(svg, startElem, endElems, color) {
+connectElementss(svg: Element, startElem: string, endElems: string[], color: string) {
     let elem = document.getElementById(startElem);
     endElems.forEach(function (item) {
         console.log("start: " + startElem + " end: " + item);
@@ -233,10 +235,10 @@ function connectElementss(svg, startElem, endElems, color) {
 
 }
 
-function isInbetween(startElem){
-  return new Promise(function(resolve,reject){
-vals = colnum.values();
-    a = vals.next();
+isInbetween(startElem: any){
+  return new Promise(function(resolve){
+let vals: any  = colnum.values();
+    let a: any = vals.next();
   while(!a.done){
     //console.log(a.value, startElem, a.value.col, parseInt(startElem.col)+1, a.value.row === startElem.row && parseInt(a.value.col)-1 === parseInt(startElem.col));
     if(a.value.row === startElem.row && parseInt(a.value.col)-1 === parseInt(startElem.col)) resolve(true);
@@ -249,7 +251,7 @@ vals = colnum.values();
 
 }
 
-function connectElements(svg, startElem, endElem, color) {
+connectElements(svg: HTMLElement, startElem: HTMLElement, endElem: HTMLElement, color: string) {
     const drawFunction = colnum.get(endElem.id).col - colnum.get(startElem.id).col > 1;
     
     const path = document.createElementNS(svgNS, "path");
@@ -293,7 +295,7 @@ function connectElements(svg, startElem, endElem, color) {
 
 }
 
-(function () {
+constructer() {
     let svg1 = document.getElementById("svg1");
     window.addEventListener("resize", function () {
         svg1.setAttribute("width", "0");
@@ -309,7 +311,7 @@ function connectElements(svg, startElem, endElem, color) {
     detailclosebutton.addEventListener("click", function () {
         detailview.close();
 
-        history.pushState(stateObj, "index", "/");
+        history.pushState(this.stateObj, "index", "/");
 
     });
 
@@ -392,4 +394,5 @@ function connectElements(svg, startElem, endElem, color) {
     //////// END BUGREPORT STUFF
 
     start();
-})();
+}
+}

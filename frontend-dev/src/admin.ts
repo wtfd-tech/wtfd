@@ -1,6 +1,6 @@
 import dialogPolyfill from "dialog-polyfill";
 
-class AdminPage {
+export default class AdminPage {
   uv: Element;
   uve: Element;
   uvd: Element;
