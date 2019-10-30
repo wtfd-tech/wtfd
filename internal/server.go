@@ -603,6 +603,8 @@ func favicon(w http.ResponseWriter, r *http.Request) {
 // Server is the main server func, start it with
 //  log.Fatal(wtfd.Server())
 func Server() error {
+	utilInit()
+
 	gob.Register(&User{})
 
 	var key []byte

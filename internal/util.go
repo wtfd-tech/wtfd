@@ -4,7 +4,17 @@ import (
 	"math/rand"
 	"strconv"
 	"strings"
+	"time"
 )
+
+const (
+	letterBytes = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-" //64 chars
+)
+
+// Initialize utilities
+func utilInit() {
+	rand.Seed(time.Now().UnixNano())
+}
 
 // https://stackoverflow.com/a/35099450
 func stringCompareLess(si, sj string) bool {
@@ -14,6 +24,14 @@ func stringCompareLess(si, sj string) bool {
 		return si < sj
 	}
 	return siLower < sjLower
+}
+
+func generateRandomString(n int) string {
+	b := make([]byte, n)
+	for i := 0; i < n; i++ {
+		b[i] = letterBytes[int(rand.Int() & 0b00111111)]
+	}
+	return string(b)
 }
 
 func generateUserName() (string, error) {
