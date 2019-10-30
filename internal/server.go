@@ -582,7 +582,52 @@ func requestVerify(w http.ResponseWriter, r *http.Request) {
 }
 
 func verify(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var user User
 
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = fmt.Fprintf(w, "Invalid Request")
+		return
+	}
+
+	token := r.URL.Query().Get("token")
+	if token == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = fmt.Fprintf(w, "Invalid Request")
+		return
+	}
+
+	/* load user */
+	user, err = ormUserByToken(token)
+	if err != nil {
+		// Any error just ends in an invalid token
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = fmt.Fprintf(w, "Invalid Token")
+		// print real error
+		log.Printf("ORM Error: %s\n", err.Error())
+		return
+	}
+
+	/* check verify deadline */
+	if user.VerifiedInfo.VerifyDeadline.Before(time.Now()) {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = fmt.Fprintf(w, "Invalid Token")
+		return
+	}
+
+	user.VerifiedInfo.IsVerified = true
+	user.VerifiedInfo.VerifyDeadline = time.Time{}
+	user.VerifiedInfo.VerifyToken = ""
+
+	/* write user back to db */
+	if err = ormUpdateUser(user); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("ORM error: %s", err.Error())
+		return
+	}
+
+	_, _ = fmt.Fprintf(w, "Succesfully verified \"%s\"\n", user.Name)
 }
 
 func solutionview(w http.ResponseWriter, r *http.Request) {
