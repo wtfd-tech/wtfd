@@ -4,12 +4,16 @@ import (
 	"fmt"
 	"strconv"
 	"net/smtp"
+	"errors"
 )
 
 /**
  * Dispatch a mail via send config
  */
 func DispatchMail(recipient string, subject string, content string, fields map[string]string) error {
+	if !Config.Enabled {
+		return errors.New("SMTP is disabled")
+	}
 
 	auth := smtp.PlainAuth("", Config.User+"@"+Config.Host, Config.Password, Config.Host)
 
