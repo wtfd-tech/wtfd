@@ -531,6 +531,53 @@ func reportBug(w http.ResponseWriter, r *http.Request) {
 }
 
 func requestVerify(w http.ResponseWriter, r *http.Request) {
+	var err error
+
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = fmt.Fprintf(w, "Invalid Request")
+		return
+	}
+
+	/* Check user login */
+	user, ok := getUser(r)
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = fmt.Fprintln(w, "Not logged in")
+		return
+	}
+
+	/* Check user verification */
+	if user.VerifiedInfo.IsVerified {
+		w.WriteHeader(http.StatusConflict)
+		_, _ = fmt.Fprintln(w, "Already verified")
+		return
+	}
+
+	/* Check rate limit */
+	//TODO
+
+	token := generateRandomString(32)
+	content := fmt.Sprintf("Click here to verify your WTFd account:"+
+		"http://%s/verify?token=%s\r\n\r\n"+
+		"If you don't know about this, you can ignore this Mail", r.Host, token)
+
+	/* Send mail */
+	err = smtp.DispatchMail(user.Name, "WTFd Verification", content, nil)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("SMTP error: %s", err.Error())
+		return
+	}
+
+	/* Setup user info */
+	user.VerifiedInfo.VerifyToken = token
+	user.VerifiedInfo.VerifyDeadline = time.Now().Add(config.EmailVerificationTokenLifetime)
+	if err = ormUpdateUser(user); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("ORM error: %s", err.Error())
+		return
+	}
 
 }
 
