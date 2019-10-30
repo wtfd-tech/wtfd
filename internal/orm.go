@@ -400,13 +400,14 @@ func ormLoadUser(name string) (User, error) {
 // his own user object while verifying the token. Current architecture does
 // not allow to solve this without expense
 func ormUserByToken(token string) (User, error) {
-	var user User
+	var user _ORMUser
 
 	if _, err := engine.Where("VerifyToken = ?", token).Get(&user); err != nil {
 		return User{}, err
 	}
 
-	return user, nil
+	// Load all data into real User struct
+	return ormLoadUser(user.Name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////
