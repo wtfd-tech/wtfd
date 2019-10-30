@@ -38,6 +38,9 @@ It shall look like that:
 	"smtprelaymailpassword": "<Password for sender>",
 	"ServiceDeskRateLimitInterval": <Interval (in seconds) where access is tracked>,
 	"ServiceDeskRateLimitReports": <Maximun ammount of access per user in interval> 
+	"restrict_email_domains": <array of domains>
+	"require_email_verification": <bool>
+	"email_verification_token_lifetime": <duration string (in "ns", "us" (or "µs"), "ms", "s", "m", "h")>
 }
 ```
 

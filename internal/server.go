@@ -13,6 +13,7 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/wtfd-tech/wtfd/internal/smtp"
 
@@ -628,6 +629,7 @@ func Server() error {
 			Icon:                         "icon.svg",
 			FirstLine:                    "WTFd",
 			SecondLine:                   `CTF`,
+			EmailVerificationTokenLifetimeString: "168h", // One week
 		}
 		configBytes, _ := json.MarshalIndent(config, "", "\t")
 		_ = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
@@ -685,6 +687,13 @@ func Server() error {
 			    BRRateLimitReports, BRRateLimitInterval)
 		} else {
 			fmt.Println("ServiceDesk disabled")
+		}
+
+		// Email verification
+		config.EmailVerificationTokenLifetime, err = time.ParseDuration(config.EmailVerificationTokenLifetimeString)
+		if err != nil {
+			log.Printf("Could not parse email_verification_lifetime: %s", err.Error())
+			return err
 		}
 	}
 
