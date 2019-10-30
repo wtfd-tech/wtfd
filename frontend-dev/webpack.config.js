@@ -14,28 +14,17 @@ const webpack = require('webpack');
  *
  */
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-/*
- * We've enabled HtmlWebpackPlugin for you! This generates a html
- * page for you when you compile webpack, which will make you start
- * developing and prototyping faster.
- *
- * https://github.com/jantimon/html-webpack-plugin
- *
- */
-
 module.exports = {
 	mode: 'development',
         devtool: 'inline-source-map',
 	entry: './src/index.ts',
 
 	output: {
-		filename: '[name].[chunkhash].js',
-		path: path.resolve(__dirname, 'dist')
+		filename: 'bundle.js',
+		path: path.resolve(__dirname, 'dist', 'static')
 	},
 
-	plugins: [new webpack.ProgressPlugin(), new HtmlWebpackPlugin()],
+	plugins: [new webpack.ProgressPlugin()],
 
 	module: {
 		rules: [
