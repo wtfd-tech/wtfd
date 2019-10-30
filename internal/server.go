@@ -566,7 +566,7 @@ func requestVerify(w http.ResponseWriter, r *http.Request) {
 	err = smtp.DispatchMail(user.Name, "WTFd Verification", content, nil)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		log.Printf("SMTP error: %s", err.Error())
+		log.Printf("SMTP error: %s\n", err.Error())
 		return
 	}
 
@@ -575,7 +575,7 @@ func requestVerify(w http.ResponseWriter, r *http.Request) {
 	user.VerifiedInfo.VerifyDeadline = time.Now().Add(config.EmailVerificationTokenLifetime)
 	if err = ormUpdateUser(user); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		log.Printf("ORM error: %s", err.Error())
+		log.Printf("ORM error: %s\n", err.Error())
 		return
 	}
 
