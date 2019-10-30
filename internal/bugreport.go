@@ -82,7 +82,10 @@ func BRDispatchBugreport(u *User, subject string, content string) error {
 		return errors.New("SMTP is disabled")
 	}
 
-	err := smtp.DispatchMail(BRServiceDeskAddress, u.Name, subject, content, nil)
+	fields := make(map[string]string)
+	fields["ReplyTo"] = u.Name
+
+	err := smtp.DispatchMail(BRServiceDeskAddress, subject, content, fields)
 	if err == nil {
 		registerUserAccess(u)
 	}

@@ -9,13 +9,19 @@ import (
 /**
  * Dispatch a mail via send config
  */
-func DispatchMail(recipient string, replyTo string, subject string, content string, fields map[string]string) error {
+func DispatchMail(recipient string, subject string, content string, fields map[string]string) error {
+
 	auth := smtp.PlainAuth("", Config.User+"@"+Config.Host, Config.Password, Config.Host)
 
 	recipients := []string{recipient}
 
-	formatContent := fmt.Sprintf("To: %s\r\nFrom: %s\r\nSubject: %s\r\nReply-To: %s\r\n\r\n%s\r\n",
-		recipient, Config.User+"@"+Config.Host,  subject, replyTo, content)
+	extraFields := ""
+	for field, value := range(fields) {
+		extraFields += fmt.Sprintf("%s: %s\r\n", field, value)
+	}
+
+	formatContent := fmt.Sprintf("To: %s\r\nFrom: %s\r\nSubject: %s\r\n%s\r\n%s\r\n",
+		recipient, Config.User+"@"+Config.Host,  subject, extraFields, content)
 
 	err := smtp.SendMail(Config.Host+":"+strconv.Itoa(Config.Port), auth,
 		Config.User+"@"+Config.Host, recipients, []byte(formatContent))
