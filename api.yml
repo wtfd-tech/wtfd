@@ -248,7 +248,7 @@ paths:
       tags:
         - user
         - verification
-      summary: Requests an EMail verifcation
+      summary: Verifies a token-url recieved by mail
       operationId: UserVerify
       parameters:
         - name: token
