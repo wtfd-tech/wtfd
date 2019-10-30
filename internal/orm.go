@@ -30,7 +30,7 @@ type _ORMUser struct {
 	Admin       bool
 	Hash        []byte
 	Points      int
-	Verified    bool
+	Verified    int
 	VerifyToken string    `xorm:"varchar(32)"`
 	VerifyDeadline time.Time
 }
@@ -209,13 +209,18 @@ func ormUpdateUser(user User) error {
 		return errUserNotExisting
 	}
 
+	verified := 0
+	if user.VerifiedInfo.IsVerified {
+		verified = 1
+	}
+
 	u = _ORMUser{
 		Name:           user.Name,
 		Hash:           user.Hash,
 		DisplayName:    user.DisplayName,
 		Points:         user.Points,
 		Admin:          user.Admin,
-		Verified:       user.VerifiedInfo.IsVerified,
+		Verified:       verified,
 		VerifyToken:    user.VerifiedInfo.VerifyToken,
 		VerifyDeadline: user.VerifiedInfo.VerifyDeadline,
 	}
@@ -375,6 +380,11 @@ func ormLoadUser(name string) (User, error) {
 		return User{}, err
 	}
 
+	verified := false
+	if user.Verified == 1 {
+		verified = true
+	}
+
 	u = User{
 		Name:        user.Name,
 		Hash:        user.Hash,
@@ -382,7 +392,7 @@ func ormLoadUser(name string) (User, error) {
 		Admin:       user.Admin,
 		Points:      user.Points,
 		VerifiedInfo: VerifyInfo {
-			IsVerified: user.Verified,
+			IsVerified: verified,
 			VerifyToken: user.VerifyToken,
 			VerifyDeadline: user.VerifyDeadline,
 		},
