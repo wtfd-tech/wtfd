@@ -617,8 +617,7 @@ func verify(w http.ResponseWriter, r *http.Request) {
 	}
 
 	user.VerifiedInfo.IsVerified = true
-	user.VerifiedInfo.VerifyDeadline = time.Time{}
-	user.VerifiedInfo.VerifyToken = ""
+	user.VerifiedInfo.VerifyDeadline = time.Date(0, 0, 0, 0, 0, 0, 0, time.Local) // invalidate
 
 	/* write user back to db */
 	if err = ormUpdateUser(user); err != nil {
