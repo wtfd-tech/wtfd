@@ -529,6 +529,14 @@ func reportBug(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "OK")
 }
 
+func requestVerify(w http.ResponseWriter, r *http.Request) {
+
+}
+
+func verify(w http.ResponseWriter, r *http.Request) {
+
+}
+
 func solutionview(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	chall, err := challs.Find(vars["chall"])
@@ -820,6 +828,9 @@ func Server() error {
 	r.HandleFunc("/changepassword", changePassword)
 	r.HandleFunc("/submitflag", submitFlag)
 	r.HandleFunc("/ws", leaderboardWS)
+	r.HandleFunc("/reportbug", reportBug)
+	r.HandleFunc("/request_verify", requestVerify)
+	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/reportbug", reportBug)
 	r.HandleFunc("/{chall}", mainpage)
 	r.HandleFunc("/detailview/{chall}", detailview)
