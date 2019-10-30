@@ -239,6 +239,8 @@ paths:
           description: Successfully sent verification mail
         401:
           description: Not logged in
+        409:
+          description: Already verified
         429:
           description: Too many requests
   /user/verify:
