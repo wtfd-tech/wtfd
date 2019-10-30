@@ -395,4 +395,18 @@ func ormLoadUser(name string) (User, error) {
 	return u, nil
 }
 
+// get a username by a verify token.
+// NOTE: race condition possible, when user changes properties of
+// his own user object while verifying the token. Current architecture does
+// not allow to solve this without expense
+func ormUserByToken(token string) (User, error) {
+	var user User
+
+	if _, err := engine.Where("VerifyToken = ?", token).Get(&user); err != nil {
+		return User{}, err
+	}
+
+	return user, nil
+}
+
 ////////////////////////////////////////////////////////////////////////////////
