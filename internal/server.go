@@ -558,7 +558,7 @@ func requestVerify(w http.ResponseWriter, r *http.Request) {
 	//TODO
 
 	token := generateRandomString(32)
-	content := fmt.Sprintf("Click here to verify your WTFd account:"+
+	content := fmt.Sprintf("Click here to verify your WTFd account: "+
 		"http://%s/verify?token=%s\r\n\r\n"+
 		"If you don't know about this, you can ignore this Mail", r.Host, token)
 
