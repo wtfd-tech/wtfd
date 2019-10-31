@@ -1,5 +1,5 @@
 import dialogPolyfill from "dialog-polyfill";
-import {showDialog} from './util';
+import { showDialog } from "./util";
 
 export default class AdminPage {
   uv: HTMLDialogElement;
@@ -10,11 +10,11 @@ export default class AdminPage {
   table: Element;
 
   constructor() {
-    this.uv = <HTMLDialogElement> document.getElementById("ud");
-    this.uve = <HTMLInputElement> document.getElementById("namechange");
-    this.uvd = <HTMLInputElement> document.getElementById("displaynamechange");
-    this.uvp = <HTMLInputElement> document.getElementById("pointschange");
-    this.uva = <HTMLInputElement> document.getElementById("adminchange");
+    this.uv = <HTMLDialogElement>document.getElementById("ud");
+    this.uve = <HTMLInputElement>document.getElementById("namechange");
+    this.uvd = <HTMLInputElement>document.getElementById("displaynamechange");
+    this.uvp = <HTMLInputElement>document.getElementById("pointschange");
+    this.uva = <HTMLInputElement>document.getElementById("adminchange");
     this.table = document.getElementsByClassName("tbody")[0];
     dialogPolyfill.registerDialog(this.uv);
     for (let e of this.table.getElementsByClassName("show-dialog-button")) {
