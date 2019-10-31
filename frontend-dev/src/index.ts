@@ -3,6 +3,10 @@ import AdminPage from './admin';
 import MainPage from './main';
 import LoginRegister from './login-register';
 
+(function(){
+
+console.log("test");
+
 new LoginRegister();
 
 switch(location.pathname){
@@ -20,3 +24,5 @@ switch(location.pathname){
     break;
   }
 }
+
+})();

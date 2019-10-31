@@ -1,37 +1,42 @@
-import dialogPolyfill from 'dialog-polyfill'
+import dialogPolyfill from 'dialog-polyfill';
+import {showDialog} from './util';
+
+function absolute(a: number): number {
+    return Math.abs(a);
+}
+
+function signum(a: number): number {
+    if (a < 0) return -1.0;
+    if (a > 0) return 1.0;
+    return a;
+}
 
 export default class MainPage {
 
-stateObj = {foo: "baar"};
-
-flagsubmiteventlistenerfunc = function () {
-};
-solutioneventlistenerfunc = function () {
-};
-flaginputeventlistenerfunc = function () {
-};
-
+flagsubmitbutton = document.getElementById("flagsubmitbutton");
+flagsubmiteventlistenerfunc = (e: any) => { console.log(e) };
+flaginputeventlistenerfunc = (e: any) => { console.log(e) };
+solutioneventlistenerfunc = (e: any) => { console.log(e) };
 // Used for selection dialog in bugreport
-selCategory = document.getElementById("bugreportcategory");
+selCategory = <HTMLInputElement> document.getElementById("bugreportcategory");
 
 addChallEventListener(title: string, points: number) {
     let elem = document.getElementById(title);
-    elem.addEventListener("click", function () {
-        let detView = document.getElementById("detailview");
+    elem.addEventListener("click", () => {
+        let detView = <HTMLDialogElement> document.getElementById("detailview");
         let detDescription = document.getElementById("detaildescription");
         let detTitle = document.getElementById("detailtitle");
         let detPoints = document.getElementById("detailpoints");
-        let flagsubmitbutton = document.getElementById("flagsubmitbutton");
         let solutionbutton = document.getElementById("solutionbutton");
         let solutiondiv = document.getElementById("solutiondiv");
         let solutioninnerdiv = document.getElementById("solutioninnerdiv");
-        let flagInput = document.getElementById("flaginput");
+        let flagInput = <HTMLInputElement> document.getElementById("flaginput");
         let msgBox = document.getElementById("flagsubmitmsg");
         let checkLoading = document.getElementById("checkloading");
-        let challUri = document.getElementById("challuri");
+        let challUri = <HTMLAnchorElement> document.getElementById("challuri");
         let challAuthor = document.getElementById("challauthor");
-        history.pushState(this.stateObj, "challenge " + title, title);
-        flagsubmitbutton.removeEventListener("click", this.flagsubmiteventlistenerfunc);
+        history.pushState({foo: "bar"}, "challenge " + title, title);
+        this.flagsubmitbutton.removeEventListener("click", this.flagsubmiteventlistenerfunc);
         flagInput.removeEventListener("keypress", this.flaginputeventlistenerfunc);
         solutionbutton.removeEventListener("click", this.solutioneventlistenerfunc);
 
@@ -48,21 +53,21 @@ addChallEventListener(title: string, points: number) {
                     if (resp === "correct") {
                         location.href = "/";
                     } else {
-                        flagsubmitbutton.setAttribute("class", "button fail");
+                        this.flagsubmitbutton.setAttribute("class", "button fail");
                         setTimeout(() => {
-                            flagsubmitbutton.setAttribute("class", "button");
+                            this.flagsubmitbutton.setAttribute("class", "button");
                         }, 1000);
                         msgBox.innerHTML = resp;
                     }
                 });
             flagInput.value = "";
         };
-        flaginputeventlistenerfunc = function (e) {
+        this.flaginputeventlistenerfunc = (e: any) => {
             if (e.key === 'Enter') {
-                flagsubmiteventlistenerfunc();
+                this.flagsubmiteventlistenerfunc(e);
             }
         };
-        solutioneventlistenerfunc = function () {
+        this.solutioneventlistenerfunc = function () {
             solutioninnerdiv.innerHTML = "<i>Loading, please wait...</i>";
             fetch("/solutionview/" + title)
                 .then(response => response.text())
@@ -72,9 +77,9 @@ addChallEventListener(title: string, points: number) {
 
 
         };
-        flagInput.addEventListener("keypress", flaginputeventlistenerfunc);
-        flagsubmitbutton.addEventListener("click", flagsubmiteventlistenerfunc);
-        solutionbutton.addEventListener("click", solutioneventlistenerfunc);
+        flagInput.addEventListener("keypress", this.flaginputeventlistenerfunc);
+        this.flagsubmitbutton.addEventListener("click", this.flagsubmiteventlistenerfunc);
+        solutionbutton.addEventListener("click", this.solutioneventlistenerfunc);
 
 
         detView.addEventListener("close", function () {
@@ -90,15 +95,15 @@ addChallEventListener(title: string, points: number) {
         fetch("/detailview/" + title).then(resp => resp.text()).then(function (response) {
             detDescription.innerHTML = response;
             detTitle.innerHTML = title;
-            detPoints.innerHTML = points;
+            detPoints.innerHTML = points.toString();
         });
         if (elem.getAttribute("class").includes("completed")) {
-            flagsubmitbutton.style.display = "none";
+            this.flagsubmitbutton.style.display = "none";
             flagInput.style.display = "none";
             solutionbutton.style.display = "";
             solutiondiv.style.display = "";
         } else {
-            flagsubmitbutton.style.display = "";
+            this.flagsubmitbutton.style.display = "";
             flagInput.style.display = "";
             solutionbutton.style.display = "none";
             solutiondiv.style.display = "none";
@@ -120,32 +125,15 @@ addChallEventListener(title: string, points: number) {
             }
         });
 
-        selCategory.value = title;
+        this.selCategory.value = title;
         showDialog(detView);
     });
 
 }
 
-registerBackdropClickHandler(dlg: HTMLDialogElement) {
-    Array.prototype.slice.call(document.getElementsByClassName("backdrop")).forEach(function (elem: Element) {
-        elem.addEventListener("click", function () {
-            history.pushState(stateObj, "index", "/");
-            dlg.close();
-        });
-    });
-}
 
-const absolute(a: number): number {
-    return Math.abs(a);
-}
 
-const signum(a: number): number {
-    if (a < 0) return -1.0;
-    if (a > 0) return 1.0;
-    return a;
-}
-
-const svgNS = "http://www.w3.org/2000/svg";
+svgNS = "http://www.w3.org/2000/svg";
 
 drawPath(svg: Element, path: SVGElement, startX: number, startY: number, endX: number, endY: number, drawFunction: boolean, nothinginbetween: boolean) {
     // get the path's stroke width (if one wanted to be  really precize, one could use half the stroke size)
@@ -163,7 +151,7 @@ drawPath(svg: Element, path: SVGElement, startX: number, startY: number, endX: n
     const deltaY = (endY === startY) ? 0 : deltaNum;
 
     // for further calculations which ever is the shortest distance
-    const delta = deltaY < this.absolute(deltaX) ? deltaY : this.absolute(deltaX);
+    const delta = deltaY < absolute(deltaX) ? deltaY : absolute(deltaX);
     console.log("deltax: " + deltaX + ", deltay:" + deltaY + ", delta: " + delta);
     // set sweep-flag (counter/clock-wise)
     // if start element is closer to the left edge,
@@ -213,8 +201,8 @@ drawPath(svg: Element, path: SVGElement, startX: number, startY: number, endX: n
                 " H" + (startX + delta) +
                 " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (startX + 2 * delta) + " " + (startY + delta) +
                 " V" + (startY + 2 * delta) +
-                " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 3 * delta * this.signum(deltaX)) + " " + (startY + 3 * delta) +
-                " H" + (endX - 3 * delta * this.signum(deltaX)) +
+                " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (startX + 3 * delta * signum(deltaX)) + " " + (startY + 3 * delta) +
+                " H" + (endX - 3 * delta * signum(deltaX)) +
                 " A" + delta + " " + delta + " 0 0 " + arc2 + " " + (endX - 2 * delta) + " " + (startY + 4 * delta) +
                 " V" + (endY - delta) +
                 " A" + delta + " " + delta + " 0 0 " + arc1 + " " + (endX - delta) + " " + endY +
@@ -229,7 +217,7 @@ connectElementss(svg: Element, startElem: string, endElems: string[], color: str
     endElems.forEach(function (item) {
         console.log("start: " + startElem + " end: " + item);
         let selem = document.getElementById(item);
-        connectElements(svg, elem, selem, color)
+        this.connectElements(svg, elem, selem, color)
 
     });
 
@@ -237,6 +225,7 @@ connectElementss(svg: Element, startElem: string, endElems: string[], color: str
 
 isInbetween(startElem: any){
   return new Promise(function(resolve){
+    // @ts-ignore
 let vals: any  = colnum.values();
     let a: any = vals.next();
   while(!a.done){
@@ -252,9 +241,10 @@ let vals: any  = colnum.values();
 }
 
 connectElements(svg: HTMLElement, startElem: HTMLElement, endElem: HTMLElement, color: string) {
+    // @ts-ignore
     const drawFunction = colnum.get(endElem.id).col - colnum.get(startElem.id).col > 1;
     
-    const path = document.createElementNS(svgNS, "path");
+    const path = <SVGPathElement> document.createElementNS(this.svgNS, "path");
     path.setAttributeNS(null, "d", "M0 0");
     path.setAttributeNS(null, "stroke", color);
     path.setAttributeNS(null, "fill", "none");
@@ -287,8 +277,9 @@ connectElements(svg: HTMLElement, startElem: HTMLElement, endElem: HTMLElement, 
     const endY = endCoord.top - 0.5 * (endElem.offsetHeight);
 
   console.log(startElem);
-    isInbetween(colnum.get(startElem.id)).then((ibt) => {
-    drawPath(svg, path, startX, startY, endX, endY, drawFunction, !ibt);
+  // @ts-ignore
+    this.isInbetween(colnum.get(startElem.id)).then((ibt) => {
+    this.drawPath(svg, path, startX, startY, endX, endY, drawFunction, !ibt);
 
     });
     // call function for drawing the path
@@ -301,17 +292,18 @@ constructer() {
         svg1.setAttribute("width", "0");
         svg1.setAttribute("height", "0");
         svg1.innerHTML = "";
+        // @ts-ignore
         connectAll();
     });
 
-    const detailview = document.getElementById("detailview");
+    const detailview = <HTMLDialogElement> document.getElementById("detailview");
     // noinspection JSUnresolvedVariable
     dialogPolyfill.registerDialog(detailview);
     const detailclosebutton = document.getElementById("detailclosebutton");
-    detailclosebutton.addEventListener("click", function () {
+    detailclosebutton.addEventListener("click", () =>  {
         detailview.close();
 
-        history.pushState(this.stateObj, "index", "/");
+        history.pushState({ foo: "bar" }, "index", "/");
 
     });
 
@@ -321,33 +313,33 @@ constructer() {
     // noinspection JSUnresolvedVariable
 
     // Submit bugreport form
-    flagsubmiteventlistenerfunc = function () {
-        fetch("/submitflag", {method: 'post', body: data})
+    this.flagsubmiteventlistenerfunc = function () {
+        fetch("/submitflag", {method: 'post', body: this.data})
             .then(resp => resp.text())
             .then((resp) => {
-                checkLoading.style.display = "none";
+                this.checkLoading.style.display = "none";
                 if (resp === "correct") {
                     location.href = "/";
                 } else {
-                    flagsubmitbutton.setAttribute("class", "button fail");
+                    this.flagsubmitbutton.setAttribute("class", "button fail");
                     setTimeout(() => {
-                        flagsubmitbutton.setAttribute("class", "button");
+                        this.flagsubmitbutton.setAttribute("class", "button");
                     }, 1000);
-                    msgBox.innerHTML = resp;
+                    this.msgBox.innerHTML = resp;
                 }
             });
-        flagInput.value = "";
+        this.flagInput.value = "";
     }
 
     // BUGREPORT STUFF
-    flagsubmitbutton.addEventListener("click", flagsubmiteventlistenerfunc);
+    this.flagsubmitbutton.addEventListener("click", this.flagsubmiteventlistenerfunc);
     let btnBugreport = document.getElementById("bugreport");
     let btnBugreportMain = document.getElementById("mainbugreport");
-    let dlgBugreport = document.getElementById("bugreportview");
+    let dlgBugreport = <HTMLDialogElement> document.getElementById("bugreportview");
     let btnBugreportClose = document.getElementById("bugreportclosebutton");
     let btnBugreportSubmit = document.getElementById("bugreportbutton");
-    let txtBugreportSubject = document.getElementById("subjectinput");
-    let txtBugreportContent = document.getElementById("contentinput");
+    let txtBugreportSubject = <HTMLInputElement> document.getElementById("subjectinput");
+    let txtBugreportContent = <HTMLInputElement> document.getElementById("contentinput");
     let bugreportCheckLoading = document.getElementById("bugloading");
     btnBugreportClose.addEventListener("click", function () {
         dlgBugreport.close();
@@ -356,14 +348,14 @@ constructer() {
     btnBugreport.addEventListener("click", function() {
         showDialog(dlgBugreport);
     });
-    btnBugreportMain.addEventListener("click", function() {
-        selCategory.value = "Main Page";
+    btnBugreportMain.addEventListener("click", () => {
+        this.selCategory.value = "Main Page";
         showDialog(dlgBugreport);
     });
-    btnBugreportSubmit.addEventListener("click", function () {
+    btnBugreportSubmit.addEventListener("click", () => {
         const data = new URLSearchParams();
         bugreportCheckLoading.style.display = "block";
-        data.append("subject", "[" + selCategory.value + "] "
+        data.append("subject", "[" + this.selCategory.value + "] "
                     + txtBugreportSubject.value);
         data.append("content", txtBugreportContent.value);
 
@@ -385,14 +377,16 @@ constructer() {
     });
 
     // Add categories to bugreport selection
+    // @ts-ignore
     bugreportCategories.forEach(function(elem) {
         var opt = document.createElement("option");
         opt.value= elem;
         opt.innerHTML = elem;
-        selCategory.appendChild(opt);
+        this.selCategory.appendChild(opt);
     });
     //////// END BUGREPORT STUFF
 
+    // @ts-ignore
     start();
 }
 }

@@ -15,17 +15,12 @@ const webpack = require('webpack');
  */
 
 module.exports = {
-	mode: 'development',
-        devtool: 'inline-source-map',
 	entry: './src/index.ts',
-
 	output: {
 		filename: 'bundle.js',
-		path: path.resolve(__dirname, 'dist', 'static')
+		path: path.resolve(__dirname, '..', 'html', 'static')
 	},
-
 	plugins: [new webpack.ProgressPlugin()],
-
 	module: {
 		rules: [
 			{
@@ -36,27 +31,21 @@ module.exports = {
 			}
 		]
 	},
-
-	optimization: {
-		splitChunks: {
-			cacheGroups: {
-				vendors: {
-					priority: -10,
-					test: /[\\/]node_modules[\\/]/
-				}
-			},
-
-			chunks: 'async',
-			minChunks: 1,
-			minSize: 30000,
-			name: true
-		}
-	},
-
-	devServer: {
-		open: true
-	},
-
+ 	optimization: {
+ 		splitChunks: {
+ 			cacheGroups: {
+ 				vendors: {
+ 					priority: -10,
+ 					test: /[\\/]node_modules[\\/]/
+ 				}
+ 			},
+ 
+ 			chunks: 'async',
+ 			minChunks: 1,
+ 			minSize: 30000,
+ 			name: true
+ 		}
+ 	},
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js']
 	}

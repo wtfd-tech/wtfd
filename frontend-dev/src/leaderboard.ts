@@ -1,11 +1,9 @@
-import dialogPolyfill from 'dialog-polyfill';
 import Chart from 'chart.js';
 
 export default class Leaderboard {
 constructor() {
-  const c = document.getElementById("graph").getContext("2d");
-
-  let chart = new Chart(c, {
+  const canvas = <HTMLCanvasElement> document.getElementById("graph");
+  let chart = new Chart(canvas.getContext("2d"), {
     type: "line",
     options: {
       scales: {
@@ -13,7 +11,9 @@ constructor() {
           {
             type: "time",
             time: {
+              // @ts-ignore
               unit: "minute",
+              // @ts-ignore
               max: Date.now(),
               tooltipFormat: "dd HH:mm:ss"
             }
@@ -40,11 +40,17 @@ constructor() {
          callbacks: {
             label: function(tooltipItem, data) {
               console.log(tooltipItem.datasetIndex);
+              // @ts-ignore
               dataset = data.datasets[tooltipItem.datasetIndex];
+              // @ts-ignore
               datapoint = dataset.data[tooltipItem.index];
+              // @ts-ignore
               challName = datapoint.tooltipLabel;
+              // @ts-ignore
               userName = dataset.label;
+              // @ts-ignore
               points = datapoint.y;
+              // @ts-ignore
               return userName + ': ' + challName + ' ('+points+')';
             }
          }
