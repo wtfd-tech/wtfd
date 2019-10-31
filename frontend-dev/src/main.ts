@@ -20,6 +20,111 @@ solutioneventlistenerfunc = (e: any) => { console.log(e) };
 // Used for selection dialog in bugreport
 selCategory = <HTMLInputElement> document.getElementById("bugreportcategory");
 
+constructor() {
+    console.log("starting mainpage");
+    let svg1 = document.getElementById("svg1");
+    window.addEventListener("resize", function () {
+        svg1.setAttribute("width", "0");
+        svg1.setAttribute("height", "0");
+        svg1.innerHTML = "";
+        // @ts-ignore
+        connectAll();
+    });
+
+    const detailview = <HTMLDialogElement> document.getElementById("detailview");
+    // noinspection JSUnresolvedVariable
+    dialogPolyfill.registerDialog(detailview);
+    const detailclosebutton = document.getElementById("detailclosebutton");
+    detailclosebutton.addEventListener("click", () =>  {
+        detailview.close();
+
+        history.pushState({ foo: "bar" }, "index", "/");
+
+    });
+
+    svg1.setAttribute("width", "0");
+    svg1.setAttribute("height", "0");
+    svg1.innerHTML = "";
+    // noinspection JSUnresolvedVariable
+
+    // Submit bugreport form
+    this.flagsubmiteventlistenerfunc = function () {
+        fetch("/submitflag", {method: 'post', body: this.data})
+            .then(resp => resp.text())
+            .then((resp) => {
+                this.checkLoading.style.display = "none";
+                if (resp === "correct") {
+                    location.href = "/";
+                } else {
+                    this.flagsubmitbutton.setAttribute("class", "button fail");
+                    setTimeout(() => {
+                        this.flagsubmitbutton.setAttribute("class", "button");
+                    }, 1000);
+                    this.msgBox.innerHTML = resp;
+                }
+            });
+        this.flagInput.value = "";
+    }
+
+    // BUGREPORT STUFF
+    this.flagsubmitbutton.addEventListener("click", this.flagsubmiteventlistenerfunc);
+    let btnBugreport = document.getElementById("bugreport");
+    let btnBugreportMain = document.getElementById("mainbugreport");
+    let dlgBugreport = <HTMLDialogElement> document.getElementById("bugreportview");
+    let btnBugreportClose = document.getElementById("bugreportclosebutton");
+    let btnBugreportSubmit = document.getElementById("bugreportbutton");
+    let txtBugreportSubject = <HTMLInputElement> document.getElementById("subjectinput");
+    let txtBugreportContent = <HTMLInputElement> document.getElementById("contentinput");
+    let bugreportCheckLoading = document.getElementById("bugloading");
+    btnBugreportClose.addEventListener("click", function () {
+        dlgBugreport.close();
+    });
+    dialogPolyfill.registerDialog(dlgBugreport);
+    btnBugreport.addEventListener("click", function() {
+        showDialog(dlgBugreport);
+    });
+    btnBugreportMain.addEventListener("click", () => {
+        this.selCategory.value = "Main Page";
+        showDialog(dlgBugreport);
+    });
+    btnBugreportSubmit.addEventListener("click", () => {
+        const data = new URLSearchParams();
+        bugreportCheckLoading.style.display = "block";
+        data.append("subject", "[" + this.selCategory.value + "] "
+                    + txtBugreportSubject.value);
+        data.append("content", txtBugreportContent.value);
+
+        fetch("/reportbug", {method: 'POST', body: data})
+            .then(resp => resp.text())
+            .then((resp) => {
+                bugreportCheckLoading.style.display = "none";
+                if (resp === "OK") {
+                    txtBugreportContent.value = "";
+                    txtBugreportSubject.value = "";
+                } else {
+                    btnBugreportSubmit.setAttribute("class", "button fail bugreportsubmit");
+                    setTimeout(() => {
+                        btnBugreportSubmit.setAttribute("class", "button bug bugreportsubmit");
+                    }, 1000);
+                }
+                bugreportCheckLoading.style.display = "none";
+            });
+    });
+
+    // Add categories to bugreport selection
+    // @ts-ignore
+    bugreportCategories.forEach(function(elem) {
+        var opt = document.createElement("option");
+        opt.value= elem;
+        opt.innerHTML = elem;
+        this.selCategory.appendChild(opt);
+    });
+    //////// END BUGREPORT STUFF
+
+    // @ts-ignore
+    start();
+}
+
 addChallEventListener(title: string, points: number) {
     let elem = document.getElementById(title);
     elem.addEventListener("click", () => {
@@ -286,107 +391,5 @@ connectElements(svg: HTMLElement, startElem: HTMLElement, endElem: HTMLElement, 
 
 }
 
-constructer() {
-    let svg1 = document.getElementById("svg1");
-    window.addEventListener("resize", function () {
-        svg1.setAttribute("width", "0");
-        svg1.setAttribute("height", "0");
-        svg1.innerHTML = "";
-        // @ts-ignore
-        connectAll();
-    });
 
-    const detailview = <HTMLDialogElement> document.getElementById("detailview");
-    // noinspection JSUnresolvedVariable
-    dialogPolyfill.registerDialog(detailview);
-    const detailclosebutton = document.getElementById("detailclosebutton");
-    detailclosebutton.addEventListener("click", () =>  {
-        detailview.close();
-
-        history.pushState({ foo: "bar" }, "index", "/");
-
-    });
-
-    svg1.setAttribute("width", "0");
-    svg1.setAttribute("height", "0");
-    svg1.innerHTML = "";
-    // noinspection JSUnresolvedVariable
-
-    // Submit bugreport form
-    this.flagsubmiteventlistenerfunc = function () {
-        fetch("/submitflag", {method: 'post', body: this.data})
-            .then(resp => resp.text())
-            .then((resp) => {
-                this.checkLoading.style.display = "none";
-                if (resp === "correct") {
-                    location.href = "/";
-                } else {
-                    this.flagsubmitbutton.setAttribute("class", "button fail");
-                    setTimeout(() => {
-                        this.flagsubmitbutton.setAttribute("class", "button");
-                    }, 1000);
-                    this.msgBox.innerHTML = resp;
-                }
-            });
-        this.flagInput.value = "";
-    }
-
-    // BUGREPORT STUFF
-    this.flagsubmitbutton.addEventListener("click", this.flagsubmiteventlistenerfunc);
-    let btnBugreport = document.getElementById("bugreport");
-    let btnBugreportMain = document.getElementById("mainbugreport");
-    let dlgBugreport = <HTMLDialogElement> document.getElementById("bugreportview");
-    let btnBugreportClose = document.getElementById("bugreportclosebutton");
-    let btnBugreportSubmit = document.getElementById("bugreportbutton");
-    let txtBugreportSubject = <HTMLInputElement> document.getElementById("subjectinput");
-    let txtBugreportContent = <HTMLInputElement> document.getElementById("contentinput");
-    let bugreportCheckLoading = document.getElementById("bugloading");
-    btnBugreportClose.addEventListener("click", function () {
-        dlgBugreport.close();
-    });
-    dialogPolyfill.registerDialog(dlgBugreport);
-    btnBugreport.addEventListener("click", function() {
-        showDialog(dlgBugreport);
-    });
-    btnBugreportMain.addEventListener("click", () => {
-        this.selCategory.value = "Main Page";
-        showDialog(dlgBugreport);
-    });
-    btnBugreportSubmit.addEventListener("click", () => {
-        const data = new URLSearchParams();
-        bugreportCheckLoading.style.display = "block";
-        data.append("subject", "[" + this.selCategory.value + "] "
-                    + txtBugreportSubject.value);
-        data.append("content", txtBugreportContent.value);
-
-        fetch("/reportbug", {method: 'POST', body: data})
-            .then(resp => resp.text())
-            .then((resp) => {
-                bugreportCheckLoading.style.display = "none";
-                if (resp === "OK") {
-                    txtBugreportContent.value = "";
-                    txtBugreportSubject.value = "";
-                } else {
-                    btnBugreportSubmit.setAttribute("class", "button fail bugreportsubmit");
-                    setTimeout(() => {
-                        btnBugreportSubmit.setAttribute("class", "button bug bugreportsubmit");
-                    }, 1000);
-                }
-                bugreportCheckLoading.style.display = "none";
-            });
-    });
-
-    // Add categories to bugreport selection
-    // @ts-ignore
-    bugreportCategories.forEach(function(elem) {
-        var opt = document.createElement("option");
-        opt.value= elem;
-        opt.innerHTML = elem;
-        this.selCategory.appendChild(opt);
-    });
-    //////// END BUGREPORT STUFF
-
-    // @ts-ignore
-    start();
-}
 }
