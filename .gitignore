@@ -39,3 +39,4 @@ testdblog
 config.json
 node_modules
 html/static/bundle.js
+*.js.map
