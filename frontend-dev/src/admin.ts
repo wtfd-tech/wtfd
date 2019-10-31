@@ -15,7 +15,7 @@ export default class AdminPage {
     this.uvd = <HTMLInputElement>document.getElementById("displaynamechange");
     this.uvp = <HTMLInputElement>document.getElementById("pointschange");
     this.uva = <HTMLInputElement>document.getElementById("adminchange");
-    this.table = document.getElementsByClassName("tbody")[0];
+    this.table = document.getElementById("admintable");
     dialogPolyfill.registerDialog(this.uv);
     for (let e of this.table.getElementsByClassName("show-dialog-button")) {
       e.addEventListener("click", () => {

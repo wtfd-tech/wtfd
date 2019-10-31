@@ -1,97 +1,101 @@
-import Chart from "chart.js";
+import Chart from 'chart.js';
+import 'moment';
 
 export default class Leaderboard {
-  constructor() {
-    const canvas = <HTMLCanvasElement>document.getElementById("graph");
-    let chart = new Chart(canvas.getContext("2d"), {
-      type: "line",
-      options: {
-        scales: {
-          xAxes: [
-            {
-              type: "time",
-              time: {
-                // @ts-ignore
-                unit: "minute",
-                // @ts-ignore
-                max: Date.now(),
-                tooltipFormat: "dd HH:mm:ss"
-              }
+constructor() {
+  const canvas = <HTMLCanvasElement> document.getElementById("graph");
+  let chart = new Chart(canvas.getContext("2d"), {
+    type: "line",
+    options: {
+      spanGaps: true,
+      scales: {
+        xAxes: [
+          {
+            type: "time",
+            time: {
+              parser: "ddd MMM DD HH:mm:ss ZZ Y",
+              // @ts-ignore
+              unit: "minute",
+              tooltipFormat: "ddd HH:mm:ss"
+            },
+            ticks: {
+              source: "auto"
             }
-          ],
-          yAxes: [
-            {
-              ticks: {
-                beginAtZero: true
-              }
-            }
-          ]
-        },
-        elements: {
-          line: {
-            tension: 0,
-            fill: false
           }
-        },
-        legend: {
-          display: false
-        },
-        tooltips: {
-          callbacks: {
+        ],
+        yAxes: [
+          {
+            ticks: {
+              beginAtZero: true
+            }
+          }
+        ]
+      },
+      elements: {
+        line: {
+          tension: 0,
+          fill: false
+        }
+      },
+      legend: {
+        display: false
+      },
+      tooltips: {
+         callbacks: {
             label: function(tooltipItem, data) {
-              console.log(tooltipItem.datasetIndex);
+              let dataset = data.datasets[tooltipItem.datasetIndex];
+              let datapoint = dataset.data[tooltipItem.index];
               // @ts-ignore
-              dataset = data.datasets[tooltipItem.datasetIndex];
+              let challName = datapoint.tooltipLabel;
+              let userName = dataset.label;
               // @ts-ignore
-              datapoint = dataset.data[tooltipItem.index];
-              // @ts-ignore
-              challName = datapoint.tooltipLabel;
-              // @ts-ignore
-              userName = dataset.label;
-              // @ts-ignore
-              points = datapoint.y;
-              // @ts-ignore
-              return userName + ": " + challName + " (" + points + ")";
+              let points = datapoint.y;
+              return userName + ': ' + challName + ' ('+points+')';
             }
-          }
-        },
-        mantainAspectRatio: false,
-        responsive: true,
-        showScale: false
-      }
-    });
+         }
+      },
+      maintainAspectRatio: false,
+      responsive: true,
+//      showScale: false
+    }
+  });
 
-    let ws = new WebSocket("ws://" + window.location.host + "/ws");
-    ws.onopen = function() {
-      // Web Socket is connected, send data uting send()
-      console.log("ws connected");
+  let ws = new WebSocket("ws://" + window.location.host + "/ws");
+  ws.onopen = function() {
+    // Web Socket is connected, send data uting send()
+    console.log("ws connected");
+  };
+  ws.onclose = function() {
+    alert("WS Disconnected, reload the page");
+  };
+
+  ws.onmessage = evt => {
+    var rec = evt.data;
+    console.log(evt.data);
+    let score = JSON.parse(rec);
+
+    let table = <HTMLTableElement> document.getElementById("leaderboardtable");
+    table.innerHTML = "<tr><th>Name</th><th>Points</th></tr>";
+    for (let i = 0; i < score.table.name.length; i++) {
+      let row = table.insertRow();
+      let namecell = row.insertCell();
+      namecell.innerHTML = score.table.name[i];
+      let pointcell = row.insertCell();
+      pointcell.innerHTML = score.table.points[i];
+    }
+
+    chart.data = {
+      datasets: score.chart,
+      labels: ["a"]
     };
-    ws.onclose = function() {
-      alert("WS Disconnected, reload the page");
-    };
+    // @ts-ignore
+    chart.options.scales.xAxes[0].ticks.min = chart.data.datasets[0].data[0].t;
+    chart.options.scales.xAxes[0].ticks.max = Date.now();
+    chart.update();
 
-    ws.onmessage = evt => {
-      var rec = evt.data;
-      console.log(evt.data);
-      let score = JSON.parse(rec);
-
-      chart.data = {
-        datasets: score.chart
-      };
-      chart.update();
-
-      let table = document.getElementsByTagName("tbody")[0];
-      table.innerHTML = "<tr><th>Name</th><th>Points</th></tr>";
-      for (let i = 0; i < score.table.name.length; i++) {
-        let row = table.insertRow();
-        let namecell = row.insertCell();
-        namecell.innerHTML = score.table.name[i];
-        let pointcell = row.insertCell();
-        pointcell.innerHTML = score.table.points[i];
-      }
-    };
-    window.addEventListener("resize", function() {
-      chart.update();
-    });
+  };
+  window.addEventListener("resize", function() {
+    chart.update();
+  });
   }
 }
