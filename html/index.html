@@ -15,12 +15,12 @@
 colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
         {{end}}
         var bugreportCategories = ["Main Page" {{ range.Challenges }},"{{.Name}}"{{end}}];
-        function start(){
+        function start(o){
           {{if .IsUser}}{{else}}document.getElementById("loginbutton").click();{{end}}
           {{ if .IsUser }}
               {{ range.Challenges }}
                   {{ if .AllDepsCompleted $user}}
-                    addChallEventListener("{{.Name}}", "{{.Points}}");
+                    o.addChallEventListener("{{.Name}}", "{{.Points}}");
                   {{end}}
               {{end}}
           {{ else }}
@@ -30,10 +30,12 @@ colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
                 });
             {{ end }}
           {{ end }}
-          connectAll();
+          console.log(o);
+          connectAll(o);
   {{if .HasSelectedChallengeID }} document.getElementById("{{.SelectedChallengeID}}").click();{{else}}{{end}}
         }
-        function connectAll(){
+        function connectAll(o){
+          console.log(o);
           var i = 0;
           var colors =
           ["#262626",
@@ -51,7 +53,7 @@ colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
           {{else}}
           color.set({{.Name}},colors[i % (colors.length-1)]);
           {{end}}
-          connectElementss(svg1 , {{.Name}}, {{.DepIDs}},color.get({{.Name}}));
+          o.connectElementss(svg1 , {{.Name}}, {{.DepIDs}},color.get({{.Name}}));
           i++;
             {{end}}
             {{end}}

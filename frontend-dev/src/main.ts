@@ -23,12 +23,12 @@ selCategory = <HTMLInputElement> document.getElementById("bugreportcategory");
 constructor() {
     console.log("starting mainpage");
     let svg1 = document.getElementById("svg1");
-    window.addEventListener("resize", function () {
+    window.addEventListener("resize", () => {
         svg1.setAttribute("width", "0");
         svg1.setAttribute("height", "0");
         svg1.innerHTML = "";
         // @ts-ignore
-        connectAll();
+        connectAll(this);
     });
 
     const detailview = <HTMLDialogElement> document.getElementById("detailview");
@@ -80,7 +80,7 @@ constructor() {
         dlgBugreport.close();
     });
     dialogPolyfill.registerDialog(dlgBugreport);
-    btnBugreport.addEventListener("click", function() {
+    btnBugreport.addEventListener("click", () => {
         showDialog(dlgBugreport);
     });
     btnBugreportMain.addEventListener("click", () => {
@@ -113,7 +113,7 @@ constructor() {
 
     // Add categories to bugreport selection
     // @ts-ignore
-    bugreportCategories.forEach(function(elem) {
+    bugreportCategories.forEach((elem) => {
         var opt = document.createElement("option");
         opt.value= elem;
         opt.innerHTML = elem;
@@ -122,7 +122,7 @@ constructor() {
     //////// END BUGREPORT STUFF
 
     // @ts-ignore
-    start();
+    start(this);
 }
 
 addChallEventListener(title: string, points: number) {
@@ -317,34 +317,6 @@ drawPath(svg: Element, path: SVGElement, startX: number, startY: number, endX: n
     }
 }
 
-connectElementss(svg: Element, startElem: string, endElems: string[], color: string) {
-    let elem = document.getElementById(startElem);
-    endElems.forEach(function (item) {
-        console.log("start: " + startElem + " end: " + item);
-        let selem = document.getElementById(item);
-        this.connectElements(svg, elem, selem, color)
-
-    });
-
-}
-
-isInbetween(startElem: any){
-  return new Promise(function(resolve){
-    // @ts-ignore
-let vals: any  = colnum.values();
-    let a: any = vals.next();
-  while(!a.done){
-    //console.log(a.value, startElem, a.value.col, parseInt(startElem.col)+1, a.value.row === startElem.row && parseInt(a.value.col)-1 === parseInt(startElem.col));
-    if(a.value.row === startElem.row && parseInt(a.value.col)-1 === parseInt(startElem.col)) resolve(true);
-    a = vals.next();
-    if(a.done){
-  resolve(false);
-    }
-  }
-  });
-
-}
-
 connectElements(svg: HTMLElement, startElem: HTMLElement, endElem: HTMLElement, color: string) {
     // @ts-ignore
     const drawFunction = colnum.get(endElem.id).col - colnum.get(startElem.id).col > 1;
@@ -390,6 +362,35 @@ connectElements(svg: HTMLElement, startElem: HTMLElement, endElem: HTMLElement, 
     // call function for drawing the path
 
 }
+
+connectElementss(svg: HTMLElement, startElem: string, endElems: string[], color: string) {
+    let elem = document.getElementById(startElem);
+    endElems.forEach((item) => {
+        console.log("start: " + startElem + " end: " + item);
+        let selem = document.getElementById(item);
+        this.connectElements(svg, elem, selem, color);
+
+    });
+
+}
+
+isInbetween(startElem: any){
+  return new Promise(function(resolve){
+    // @ts-ignore
+let vals: any  = colnum.values();
+    let a: any = vals.next();
+  while(!a.done){
+    //console.log(a.value, startElem, a.value.col, parseInt(startElem.col)+1, a.value.row === startElem.row && parseInt(a.value.col)-1 === parseInt(startElem.col));
+    if(a.value.row === startElem.row && parseInt(a.value.col)-1 === parseInt(startElem.col)) resolve(true);
+    a = vals.next();
+    if(a.done){
+  resolve(false);
+    }
+  }
+  });
+
+}
+
 
 
 }
