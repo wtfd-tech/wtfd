@@ -56,10 +56,11 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
+    - uses: actions/setup-node@v1
     - name: Install Dependencies
       run: |
         set -e
-        sudo apt-get update && sudo apt-get -y install musl-tools npm
+        sudo apt-get update && sudo apt-get -y install musl-tools
 
     - name: Build (with musl)
       env:
