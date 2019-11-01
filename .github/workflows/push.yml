@@ -23,6 +23,7 @@ jobs:
     - name: Build
       run: |
         set -e
+        pushd frontend-dev
         npm install
         npx webpack --config webpack.prod.js
         popd
