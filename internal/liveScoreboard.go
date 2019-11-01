@@ -107,12 +107,12 @@ func updateScoreboard() error {
 
 	log.Printf("Scoreboard Update\n")
 	users, err := ormAllUsersSortedByPoints()
-	datas := make([]chartData, len(users))
+	datas := make([]chartData, len(users)-1)
 	for _, u := range users {
 		solves := ormGetSolvesWithTime(u.Name)
 		data := make([]chartDataPoint, len(solves)+1)
 		sum := 0
-		data[0] = chartDataPoint{T: u.Created.Format(time.RFC3339), Y: sum} //, Label: s.ChallengeName}
+		data[0] = chartDataPoint{T: u.Created.Format(time.RubyDate), Y: sum, Label: "User Created"}
 		for i, s := range solves {
 			chall, err := challs.Find(s.ChallengeName)
 			if err != nil {
@@ -120,7 +120,7 @@ func updateScoreboard() error {
 				return err
 			}
 			sum += chall.Points
-			data[i+1] = chartDataPoint{T: s.Created.Format(time.RFC3339), Y: sum, Label: s.ChallengeName}
+			data[i+1] = chartDataPoint{T: s.Created.Format(time.RubyDate), Y: sum, Label: s.ChallengeName}
 		}
 		a := fmt.Sprintf("#%X", crc32.ChecksumIEEE([]byte(u.DisplayName)))[0:7]
 		datas = append(datas, chartData{Pcolor: a, Color: a, Label: u.DisplayName, Data: data})

@@ -375,12 +375,12 @@ func register(w http.ResponseWriter, r *http.Request) {
 		}
 		if _, ok := getLoginEmail(r); ok {
 			w.WriteHeader(http.StatusBadRequest)
-			_, _ = fmt.Fprintf(w, "Already logged in")
+			_, _ = fmt.Fprintf(w, "Server Error: Already logged in")
 		} else {
 			// username here means e-mail address
 			if !validateEmailAddress(r.Form.Get("username")) {
 				w.WriteHeader(http.StatusBadRequest)
-				_, _ = fmt.Fprintf(w, "The entered e-mail address is invalid")
+				_, _ = fmt.Fprintf(w, "Server Error: The entered e-mail address is invalid")
 			} else {
 				// Check if registration is restricted to certain email domains
 				if len(config.RestrictEmailDomains) != 0 {
@@ -393,7 +393,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 
 					if !valid {
 						w.WriteHeader(http.StatusBadRequest)
-						_, _ = fmt.Fprintf(w, "The entered e-mail address is not allowed")
+						_, _ = fmt.Fprintf(w, "Server Error: The entered e-mail address is not allowed")
 						return
 					}
 				}

@@ -1,49 +1,48 @@
-function showDialog(dlg) {
-    dlg.showModal();
-    registerBackdropClickHandler(dlg);
-}
+import dialogPolyfill from 'dialog-polyfill';
+import {showDialog} from './util';
+export default class LoginRegister {
 
-(function(){
+constructor(){
     const loginButton = document.getElementById("loginbutton");
     if (loginButton != null) {
-        const loginDialogCancelButton = document.getElementById("logincancelbutton");
-        const loginDialog = document.getElementById("logindialog");
+        const loginDialogCancelButton = <HTMLButtonElement> document.getElementById("logincancelbutton");
+        const loginDialog = <HTMLDialogElement> document.getElementById("logindialog");
         // noinspection JSUnresolvedVariable
         dialogPolyfill.registerDialog(loginDialog);
 
-        loginButton.addEventListener("click", function () {
+        loginButton.addEventListener("click", () => {
             showDialog(loginDialog);
         });
         loginDialogCancelButton.addEventListener("click", function () {
             loginDialog.close();
         });
 
-        const registerButton = document.getElementById("registerbutton");
-        const registerDialogCancelButton = document.getElementById(
+        const registerButton = <HTMLButtonElement> document.getElementById("registerbutton");
+        const registerDialogCancelButton = <HTMLButtonElement> document.getElementById(
             "registercancelbutton"
         );
-        const registerDialog = document.getElementById("registerdialog");
+        const registerDialog = <HTMLDialogElement> document.getElementById("registerdialog");
         // noinspection JSUnresolvedVariable
         dialogPolyfill.registerDialog(registerDialog);
 
         const loginTabButton = document.getElementById("logintabbutton");
 
-        const loginUserBox = document.getElementById("loginuserbox");
-        const loginPassBox = document.getElementById("loginpassbox");
-        const registerUserBox = document.getElementById("registeruserbox");
-        const registerPassBox = document.getElementById("registerpassbox");
+        const loginUserBox = <HTMLInputElement> document.getElementById("loginuserbox");
+        const loginPassBox = <HTMLInputElement> document.getElementById("loginpassbox");
+        const registerUserBox = <HTMLInputElement> document.getElementById("registeruserbox");
+        const registerPassBox = <HTMLInputElement> document.getElementById("registerpassbox");
 
-        registerButton.addEventListener("click", function () {
+        registerButton.addEventListener("click", () => {
             registerUserBox.value = loginUserBox.value;
             registerPassBox.value = loginPassBox.value;
             loginDialog.close();
             showDialog(registerDialog);
         });
-        registerDialogCancelButton.addEventListener("click", function () {
+        registerDialogCancelButton.addEventListener("click", () => {
             registerDialog.close();
         });
 
-        loginTabButton.addEventListener("click", function () {
+        loginTabButton.addEventListener("click", ()=> {
             loginUserBox.value = registerUserBox.value;
             loginPassBox.value = registerPassBox.value;
             registerDialog.close();
@@ -55,18 +54,18 @@ function showDialog(dlg) {
             location.href = "/logout";
         });
         
-        const userDialogButton = document.getElementById("userdialogbutton");
-        const userDialog = document.getElementById("userdialog");
+        const userDialogButton = <HTMLButtonElement> document.getElementById("userdialogbutton");
+        const userDialog = <HTMLDialogElement> document.getElementById("userdialog");
         // noinspection JSUnresolvedVariable
         dialogPolyfill.registerDialog(userDialog);
 
-        userDialogButton.addEventListener("click", function () {
+        userDialogButton.addEventListener("click", ()=> {
             showDialog(userDialog);
         });
     }
 
 
-  const loginForm = document.getElementById("loginform");
+  const loginForm = <HTMLFormElement> document.getElementById("loginform");
   const loginError = document.getElementById("loginerror");
   const loginSubmit = document.getElementById("loginsubmit");
   const loginLoading = document.getElementById("loginloading");
@@ -74,6 +73,7 @@ function showDialog(dlg) {
   loginForm.addEventListener("submit", function(e){
     loginLoading.style.display = "block";
     e.preventDefault();
+    // @ts-ignore
     fetch("/login", {body: new URLSearchParams(new FormData(loginForm)), method: 'post'})
     .then((resp)=> resp.text())
     .then((resp) => {
@@ -94,15 +94,15 @@ function showDialog(dlg) {
 
   });
   
-  const registerForm = document.getElementById("registerform");
+  const registerForm = <HTMLFormElement> document.getElementById("registerform");
   const registerError = document.getElementById("registererror");
   const registerSubmit = document.getElementById("registersubmit");
   const registerLoading = document.getElementById("registerloading");
 
-  registerForm.addEventListener("submit", function(e){
-    registerLoading.style.display = "block";
+  registerForm.addEventListener("submit", (e) => {
     e.preventDefault();
-    console.log(new URLSearchParams(new FormData(registerForm)));
+    registerLoading.style.display = "block";
+    // @ts-ignore
     fetch("/register", {body: new URLSearchParams(new FormData(registerForm)), method: 'post'})
     .then((resp)=> resp.text())
     .then((resp) => {
@@ -113,17 +113,18 @@ function showDialog(dlg) {
         setTimeout(()=>{
             registerError.innerHTML = "";
             registerSubmit.setAttribute("class", "button");
-        },"2000")
+        },2000)
       } else {
         location.href = "/";
       }
 
     });
-    return false;
+    e.preventDefault();
+    e.stopPropagation();
 
   });
 
-  const edituserForm = document.getElementById("edituserform");
+  const edituserForm = <HTMLFormElement> document.getElementById("edituserform");
   const edituserError = document.getElementById("editusererror");
   const edituserSubmit = document.getElementById("editusersubmit");
   const edituserLoading = document.getElementById("edituserloading");
@@ -131,7 +132,7 @@ function showDialog(dlg) {
   edituserForm.addEventListener("submit", function(e){
     edituserLoading.style.display = "block";
     e.preventDefault();
-    console.log(new URLSearchParams(new FormData(edituserForm)));
+    // @ts-ignore
     fetch("/changepassword", {body: new URLSearchParams(new FormData(edituserForm)), method: 'post'})
     .then((resp)=> resp.text())
     .then((resp) => {
@@ -142,7 +143,7 @@ function showDialog(dlg) {
         setTimeout(()=>{
             edituserError.innerHTML = "";
             edituserSubmit.setAttribute("class", "button");
-        },"2000")
+        },2000)
       } else {
         location.href = "/";
       }
@@ -151,4 +152,6 @@ function showDialog(dlg) {
     return false;
 
   });
-})();
+}
+
+}

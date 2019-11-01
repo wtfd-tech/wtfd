@@ -77,8 +77,32 @@ The `meta.json` shall look like that:
 The `README.md` and `SOLUTION.md` are markdown files ([syntax](https://github.com/gomarkdown/markdown#extensions)).
 The `SOLUTION.md` contents can only be seen by users who already solved the challenge
 
+## Building WTFd yourself
+
+You need to have `go`, `sqlite3` and `npm` installed
+
+```bash
+git clone https://github.com/wtfd-tech/wtfd
+cd wtfd
+cd frontend-dev
+npm install # Install JS Dependencies
+npx webpack --config webpack.prod.js # Compile the JS
+cd ..
+go build ./cmd/wtfd.go
+```
+
 ## Running WTFd
 
 Now you can finally start wtfd by downloading it from the [releases](https://github.com/wtfd-tech/wtfd/releases), giving it permissions `chmod +x wtfd` and running it `./wtfd`
 
 WTFd is HTTP only, if you need HTTPS use a reverse proxy like [Traefik](https://traefik.io/) or [nginx](https://nginx.com/)
+
+## Development notes
+
+To make working with the Javascirpt easier, you can do 
+
+```bash
+npx webpack --config webpack.dev.js -w
+```
+
+to automatically compile the JS on changes

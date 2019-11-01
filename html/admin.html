@@ -2,7 +2,7 @@
 <main class="" style="display: flex; flex-flow: row wrap; align-content: strech;">
   <div id="table" class="flexcell" >
     <table>
-      <tbody>
+      <tbody id="leaderboardtable">
       </tbody>
     </table>
   </div>
@@ -13,7 +13,7 @@
   <div class="flexcell">
   <!-- User Management -->
   <table style="flex-basis: 30%;">
-    <tbody>
+    <tbody id="admintable">
       <tr>
         <th>Name</th>
         <th>Email</th>
@@ -27,14 +27,12 @@
     <td>{{.Name}}</td>
     <td>{{.Points}}</td>
     <td>{{.Admin}}</td>
-    <td><button onclick=update({{.Name}})>Update</button></td>
+    <td><button class="show-dialog-button" id="{{.Name}}">Update</button></td>
   </tr>
   {{end}}
     </tbody>
   </table>
   </div>
-    <script src="static/Chart.bundle.min.js" type="text/javascript"></script>
-    <script src="static/leaderboard.js" type="text/javascript"></script>
     <dialog id="ud">
       <form style="display: grid; grid-template-columns: auto auto; justify-content: space-between; grid-row-gap: 0.5em;" method="POST">
         <label class="row-0 col-0" for="namechange">E-Mail: </label>

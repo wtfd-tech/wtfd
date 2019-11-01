@@ -20,9 +20,15 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
+    - uses: actions/setup-node@v1
+
     - name: Build
       run: |
         set -e
+        pushd frontend-dev
+        npm install
+        npx webpack --config webpack.prod.js
+        popd
         go build cmd/wtfd.go
         strip wtfd
 
@@ -52,6 +58,7 @@ jobs:
     - name: Check out code into the Go module directory
       uses: actions/checkout@v1
 
+    - uses: actions/setup-node@v1
     - name: Install Dependencies
       run: |
         set -e
@@ -62,6 +69,10 @@ jobs:
         CC: musl-gcc
       run: | 
         set -e
+        pushd frontend-dev
+        npm install
+        npx webpack --config webpack.prod.js
+        popd
         go build -ldflags '-linkmode external -extldflags "-static"' -v cmd/wtfd.go
         strip wtfd
 
