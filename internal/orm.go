@@ -30,6 +30,9 @@ type _ORMUser struct {
 	Admin       bool
 	Hash        []byte
 	Points      int
+	Verified    int
+	VerifyToken string    `xorm:"varchar(32)"`
+	VerifyDeadline time.Time
 }
 
 type _ORMChallengesByUser struct {
@@ -83,7 +86,7 @@ func NewUser(name, password, displayname string) (User, error) {
 		fmt.Printf("New User %s is an Admin\n", name)
 
 	}
-	return User{Name: name, Hash: hash, DisplayName: displayname, Admin: isAdmin}, nil
+	return User{Name: name, Hash: hash, DisplayName: displayname, Admin: isAdmin, VerifiedInfo: VerifyInfo{IsVerified: false}}, nil
 
 }
 
@@ -206,12 +209,20 @@ func ormUpdateUser(user User) error {
 		return errUserNotExisting
 	}
 
+	verified := 0
+	if user.VerifiedInfo.IsVerified {
+		verified = 1
+	}
+
 	u = _ORMUser{
-		Name:        user.Name,
-		Hash:        user.Hash,
-		DisplayName: user.DisplayName,
-		Points:      user.Points,
-		Admin:       user.Admin,
+		Name:           user.Name,
+		Hash:           user.Hash,
+		DisplayName:    user.DisplayName,
+		Points:         user.Points,
+		Admin:          user.Admin,
+		Verified:       verified,
+		VerifyToken:    user.VerifiedInfo.VerifyToken,
+		VerifyDeadline: user.VerifiedInfo.VerifyDeadline,
 	}
 	// fmt.Printf("a: %#v", u)
 
@@ -369,12 +380,22 @@ func ormLoadUser(name string) (User, error) {
 		return User{}, err
 	}
 
+	verified := false
+	if user.Verified == 1 {
+		verified = true
+	}
+
 	u = User{
 		Name:        user.Name,
 		Hash:        user.Hash,
 		DisplayName: user.DisplayName,
 		Admin:       user.Admin,
 		Points:      user.Points,
+		VerifiedInfo: VerifyInfo {
+			IsVerified: verified,
+			VerifyToken: user.VerifyToken,
+			VerifyDeadline: user.VerifyDeadline,
+		},
 	}
 
 	if u.Completed, err = ormChallengesSolved(u); err != nil {
@@ -382,6 +403,21 @@ func ormLoadUser(name string) (User, error) {
 	}
 
 	return u, nil
+}
+
+// get a username by a verify token.
+// NOTE: race condition possible, when user changes properties of
+// his own user object while verifying the token. Current architecture does
+// not allow to solve this without expense
+func ormUserByToken(token string) (User, error) {
+	var user _ORMUser
+
+	if _, err := engine.Where("VerifyToken = ?", token).Get(&user); err != nil {
+		return User{}, err
+	}
+
+	// Load all data into real User struct
+	return ormLoadUser(user.Name)
 }
 
 ////////////////////////////////////////////////////////////////////////////////

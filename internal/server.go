@@ -13,6 +13,9 @@ import (
 	"os"
 	"strconv"
 	"strings"
+	"time"
+
+	"github.com/wtfd-tech/wtfd/internal/smtp"
 
 	"github.com/gobuffalo/packr/v2"
 	"github.com/gomarkdown/markdown"
@@ -527,6 +530,105 @@ func reportBug(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, "OK")
 }
 
+func requestVerify(w http.ResponseWriter, r *http.Request) {
+	var err error
+
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = fmt.Fprintf(w, "Invalid Request")
+		return
+	}
+
+	/* Check user login */
+	user, ok := getUser(r)
+	if !ok {
+		w.WriteHeader(http.StatusUnauthorized)
+		_, _ = fmt.Fprintln(w, "Not logged in")
+		return
+	}
+
+	/* Check user verification */
+	if user.VerifiedInfo.IsVerified {
+		w.WriteHeader(http.StatusConflict)
+		_, _ = fmt.Fprintln(w, "Already verified")
+		return
+	}
+
+	/* Check rate limit */
+	//TODO
+
+	token := generateRandomString(32)
+	content := fmt.Sprintf("Click here to verify your WTFd account: "+
+		"http://%s/verify?token=%s\r\n\r\n"+
+		"If you don't know about this, you can ignore this Mail", r.Host, token)
+
+	/* Send mail */
+	err = smtp.DispatchMail(user.Name, "WTFd Verification", content, nil)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("SMTP error: %s\n", err.Error())
+		return
+	}
+
+	/* Setup user info */
+	user.VerifiedInfo.VerifyToken = token
+	user.VerifiedInfo.VerifyDeadline = time.Now().Add(config.EmailVerificationTokenLifetime)
+	if err = ormUpdateUser(user); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("ORM error: %s\n", err.Error())
+		return
+	}
+
+}
+
+func verify(w http.ResponseWriter, r *http.Request) {
+	var err error
+	var user User
+
+	if r.Method != "GET" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = fmt.Fprintf(w, "Invalid Request")
+		return
+	}
+
+	token := r.URL.Query().Get("token")
+	if token == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		_, _ = fmt.Fprintf(w, "Invalid Request")
+		return
+	}
+
+	/* load user */
+	user, err = ormUserByToken(token)
+	if err != nil {
+		// Any error just ends in an invalid token
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = fmt.Fprintf(w, "Invalid Token")
+		// print real error
+		log.Printf("ORM Error: %s\n", err.Error())
+		return
+	}
+
+	/* check verify deadline */
+	if user.VerifiedInfo.VerifyDeadline.Before(time.Now()) {
+		w.WriteHeader(http.StatusNotFound)
+		_, _ = fmt.Fprintf(w, "Invalid Token")
+		return
+	}
+
+	user.VerifiedInfo.IsVerified = true
+	user.VerifiedInfo.VerifyDeadline = time.Date(0, 0, 0, 0, 0, 0, 0, time.Local) // invalidate
+
+	/* write user back to db */
+	if err = ormUpdateUser(user); err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		log.Printf("ORM error: %s", err.Error())
+		return
+	}
+
+	_, _ = fmt.Fprintf(w, "Succesfully verified \"%s\"\n", user.Name)
+}
+
 func solutionview(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	chall, err := challs.Find(vars["chall"])
@@ -592,6 +694,8 @@ func favicon(w http.ResponseWriter, r *http.Request) {
 // Server is the main server func, start it with
 //  log.Fatal(wtfd.Server())
 func Server() error {
+	utilInit()
+
 	gob.Register(&User{})
 
 	var key []byte
@@ -618,6 +722,7 @@ func Server() error {
 			Icon:                         "icon.svg",
 			FirstLine:                    "WTFd",
 			SecondLine:                   `CTF`,
+			EmailVerificationTokenLifetimeString: "168h", // One week
 		}
 		configBytes, _ := json.MarshalIndent(config, "", "\t")
 		_ = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
@@ -646,7 +751,7 @@ func Server() error {
 			BRServiceDeskEnabled = false
 		} else {
 			BRServiceDeskAddress = config.ServiceDeskAddress
-			BRSMTPPassword = config.SMTPRelayPasswd
+			smtp.Config.Password = config.SMTPRelayPasswd
 
 			// Parse relay mail string
 			split := strings.Split(config.SMTPRelayString, ":")
@@ -654,26 +759,34 @@ func Server() error {
 			if len(split) < 2 {
 				return errors.New("Invalid smtprelaymailwithport format!")
 			}
-			if BRSMTPPort, err = strconv.Atoi(split[1]); err != nil {
+			if smtp.Config.Port, err = strconv.Atoi(split[1]); err != nil {
 				return err
 			}
 			split = strings.Split(split[0], "@")
 			if len(split) < 2 {
 				return errors.New("Invalid smtprelaymailwithport format!")
 			}
-			BRSMTPUser = split[0]
-			BRSMTPHost = split[1]
+			smtp.Config.User = split[0]
+			smtp.Config.Host = split[1]
 
+			smtp.Config.Enabled = true
 			BRServiceDeskEnabled = true
 		}
 		BRRateLimitReports = config.ServiceDeskRateLimitReports
 		BRRateLimitInterval = config.ServiceDeskRateLimitInterval
 		if BRServiceDeskEnabled {
 			fmt.Printf("ServiceDesk running at %s (Send via %s@%s:%d)  (Max %dR/%.02fs)\n",
-				BRServiceDeskAddress, BRSMTPUser, BRSMTPHost, BRSMTPPort,
+				BRServiceDeskAddress, smtp.Config.User, smtp.Config.Host, smtp.Config.Port,
 			    BRRateLimitReports, BRRateLimitInterval)
 		} else {
 			fmt.Println("ServiceDesk disabled")
+		}
+
+		// Email verification
+		config.EmailVerificationTokenLifetime, err = time.ParseDuration(config.EmailVerificationTokenLifetimeString)
+		if err != nil {
+			log.Printf("Could not parse email_verification_lifetime: %s", err.Error())
+			return err
 		}
 	}
 
@@ -817,6 +930,9 @@ func Server() error {
 	r.HandleFunc("/changepassword", changePassword)
 	r.HandleFunc("/submitflag", submitFlag)
 	r.HandleFunc("/ws", leaderboardWS)
+	r.HandleFunc("/reportbug", reportBug)
+	r.HandleFunc("/request_verify", requestVerify)
+	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/reportbug", reportBug)
 	r.HandleFunc("/{chall}", mainpage)
 	r.HandleFunc("/detailview/{chall}", detailview)

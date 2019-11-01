@@ -225,6 +225,41 @@ paths:
           description: User is now Logged out
         400:
           description: Not logged in
+  /user/request_verify:
+    get:
+      tags:
+        - user
+        - verification
+      summary: Requests an EMail verifcation
+      security:
+        - User: []
+      operationId: UserRequestVerify
+      responses:
+        200:
+          description: Successfully sent verification mail
+        401:
+          description: Not logged in
+        409:
+          description: Already verified
+        429:
+          description: Too many requests
+  /user/verify:
+    get:
+      tags:
+        - user
+        - verification
+      summary: Verifies a token-url recieved by mail
+      operationId: UserVerify
+      parameters:
+        - name: token
+          in: query
+          schema:
+            type: string
+      responses:
+        200:
+          description: Successfully verified user
+        404:
+          description: Invalid token
 components:
   securitySchemes:
     User:

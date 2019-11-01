@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"html/template"
 	"sort"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -56,18 +57,27 @@ type Config struct {
 	SMTPRelayPasswd     string `json:"smtprelaymailpassword"`
 	ServiceDeskRateLimitInterval float64 `servicedeskratelimitinterval` // See bugreport.go
 	ServiceDeskRateLimitReports  int `servicedeskratelimitreports`  // See bugreport.go
-	RestrictEmailDomains         []string      `json:"restrict_email_domains"`
-	RequireEmailVerification     bool          `json:"require_email_verification"`
+	RestrictEmailDomains         []string       `json:"restrict_email_domains"`
+	RequireEmailVerification     bool           `json:"require_email_verification"`
+	EmailVerificationTokenLifetimeString string `json:"email_verification_token_lifetime"`
+	EmailVerificationTokenLifetime       time.Duration `json:"-"`
+}
+
+type VerifyInfo struct {
+	IsVerified bool
+	VerifyToken string
+	VerifyDeadline time.Time
 }
 
 // User, was ist das wohl
 type User struct {
-	Name        string `json:"name"`
-	Hash        []byte
-	DisplayName string `json:"displayname"`
-	Completed   []*Challenge
-	Admin       bool `json:"admin"`
-	Points      int  `json:"points"`
+	Name         string `json:"name"`
+	Hash         []byte
+	DisplayName  string `json:"displayname"`
+	Completed    []*Challenge
+	Admin        bool `json:"admin"`
+	Points       int  `json:"points"`
+	VerifiedInfo VerifyInfo
 }
 
 type gridinfo struct {
