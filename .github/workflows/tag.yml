@@ -22,6 +22,9 @@ jobs:
       - name: Build
         run: |
           set -e
+          npm install
+          npx webpack --config webpack.prod.js
+          popd
           go build cmd/wtfd.go
           strip wtfd
 
