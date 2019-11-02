@@ -35,7 +35,7 @@ jobs:
         run: |
           set -e
           mkdir build
-          cp -r icon.svg html/ wtfd build/
+          cp -r README.md LICENSE icon.svg html/ wtfd build/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@master
@@ -79,7 +79,7 @@ jobs:
         run: |
           set -e
           mkdir build
-          cp -r wtfd icon.svg html build/
+          cp -r LICENSE README.md wtfd icon.svg html build/
 
       - name: Upload artifacts
         uses: actions/upload-artifact@master
