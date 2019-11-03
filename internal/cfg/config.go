@@ -20,19 +20,19 @@ const (
 
 // Config stores settings
 type Config struct {
-	Port                                 int64         `json:port`
+	Port                                 int64         `json:"port"`
 	SocialMedia                          template.HTML `json:"social"`
 	Icon                                 string        `json:"icon"`
 	FirstLine                            template.HTML `json:"firstline"`
 	SecondLine                           template.HTML `json:"secondline"`
-	Key                                  string        `json:key`
+	Key                                  string        `json:"key"`
 	ChallengeInfoDir                     string        `json:"challinfodir"`
 	SSHHost                              string        `json:"sshhost"`
 	ServiceDeskAddress                   string        `json:"servicedeskaddress"`
 	SMTPRelayString                      string        `json:"smtprelaymailwithport"`
 	SMTPRelayPasswd                      string        `json:"smtprelaymailpassword"`
-	ServiceDeskRateLimitInterval         float64       `servicedeskratelimitinterval` // See bugreport.go
-	ServiceDeskRateLimitReports          int           `servicedeskratelimitreports`  // See bugreport.go
+        ServiceDeskRateLimitInterval         float64       `json:"servicedeskratelimitinterval"` // See bugreport.go
+        ServiceDeskRateLimitReports          int           `json:"servicedeskratelimitreports"`  // See bugreport.go
 	RestrictEmailDomains                 []string      `json:"restrict_email_domains"`
 	RequireEmailVerification             bool          `json:"require_email_verification"`
 	EmailVerificationTokenLifetimeString string        `json:"email_verification_token_lifetime"`
