@@ -15,22 +15,18 @@ import (
 	"strings"
 	"time"
 
+	"github.com/wtfd-tech/wtfd/internal/cfg"
 	"github.com/wtfd-tech/wtfd/internal/smtp"
 
 	"github.com/gobuffalo/packr/v2"
 	"github.com/gomarkdown/markdown"
 	"github.com/gorilla/mux"
-	"github.com/gorilla/securecookie"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
 )
 
-const (
-	defaultPort = int64(8080)
-)
-
 var (
-	config Config
+	config cfg.Config
 	store  sessions.Store
 
 	errUserExisting     = errors.New("user with this name exists")
@@ -83,7 +79,7 @@ var (
 type adminPageData struct {
 	PageTitle     string
 	User          *User
-	Config        Config
+	Config        cfg.Config
 	IsUser        bool
 	Points        int
 	Leaderboard   bool
@@ -96,7 +92,7 @@ type adminPageData struct {
 type leaderboardPageData struct {
 	PageTitle     string
 	User          *User
-	Config        Config
+	Config        cfg.Config
 	IsUser        bool
 	Points        int
 	Leaderboard   bool
@@ -113,7 +109,7 @@ type mainPageData struct {
 	SelectedChallengeID    string
 	HasSelectedChallengeID bool
 	GeneratedName          string
-	Config                 Config
+	Config                 cfg.Config
 	User                   *User
 	IsUser                 bool
 	Points                 int
@@ -698,96 +694,57 @@ func Server() error {
 
 	gob.Register(&User{})
 
-	var key []byte
+	config, err := cfg.GetConfig()
+	if err != nil {
+		return err
+	}
 
-	//Test if config file exists
-	if _, err := os.Stat("config.json"); os.IsNotExist(err) {
-		// Generate a new key
-		key = securecookie.GenerateRandomKey(32)
-
-		//Write default config to disk
-		config = Config{
-			Key:               base64.StdEncoding.EncodeToString(key),
-			Port:              defaultPort,
-			ChallengeInfoDir:  "../challenges/info/",
-			ServiceDeskAddress: "-", // service desk disabled
-			SMTPRelayString: "mail@example.com:25",
-			SMTPRelayPasswd: "passwd",
-			ServiceDeskRateLimitReports: BRRateLimitReports,
-			ServiceDeskRateLimitInterval: BRRateLimitInterval,
-			SSHHost:                      "ctf.wtfd.tech",
-			RestrictEmailDomains:         nil,
-			RequireEmailVerification:     false,
-			SocialMedia:                  `<a class="link sociallink" href="https://github.com/wtfd-tech/wtfd"><span class="mdi mdi-github-circle"></span> GitHub</a>`,
-			Icon:                         "icon.svg",
-			FirstLine:                    "WTFd",
-			SecondLine:                   `CTF`,
-			EmailVerificationTokenLifetimeString: "168h", // One week
-		}
-		configBytes, _ := json.MarshalIndent(config, "", "\t")
-		_ = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
+	// setup servicedesk vars
+	if config.ServiceDeskAddress == "-" {
+		BRServiceDeskEnabled = false
 	} else {
-		//Load config file
-		var (
-			configBytes []byte
-			err         error
-		)
+		BRServiceDeskAddress = config.ServiceDeskAddress
+		smtp.Config.Password = config.SMTPRelayPasswd
 
-		if configBytes, err = ioutil.ReadFile("config.json"); err != nil {
-			log.Fatal(err)
+		// Parse relay mail string
+		split := strings.Split(config.SMTPRelayString, ":")
+
+		if len(split) < 2 {
+			return errors.New("Invalid smtprelaymailwithport format!")
 		}
-		if err := json.Unmarshal(configBytes, &config); err != nil {
+		if smtp.Config.Port, err = strconv.Atoi(split[1]); err != nil {
 			return err
 		}
-
-		// Decode key
-		key, err = base64.StdEncoding.DecodeString(config.Key)
-		if err != nil {
-			log.Fatal("Could not decode config.json:Key")
+		split = strings.Split(split[0], "@")
+		if len(split) < 2 {
+			return errors.New("Invalid smtprelaymailwithport format!")
 		}
+		smtp.Config.User = split[0]
+		smtp.Config.Host = split[1]
 
-		// setup servicedesk vars
-		if config.ServiceDeskAddress == "-" {
-			BRServiceDeskEnabled = false
-		} else {
-			BRServiceDeskAddress = config.ServiceDeskAddress
-			smtp.Config.Password = config.SMTPRelayPasswd
+		smtp.Config.Enabled = true
+		BRServiceDeskEnabled = true
+	}
+	BRRateLimitReports = config.ServiceDeskRateLimitReports
+	BRRateLimitInterval = config.ServiceDeskRateLimitInterval
+	if BRServiceDeskEnabled {
+		fmt.Printf("ServiceDesk running at %s (Send via %s@%s:%d)  (Max %dR/%.02fs)\n",
+			BRServiceDeskAddress, smtp.Config.User, smtp.Config.Host, smtp.Config.Port,
+			BRRateLimitReports, BRRateLimitInterval)
+	} else {
+		fmt.Println("ServiceDesk disabled")
+	}
 
-			// Parse relay mail string
-			split := strings.Split(config.SMTPRelayString, ":")
+	// Email verification
+	config.EmailVerificationTokenLifetime, err = time.ParseDuration(config.EmailVerificationTokenLifetimeString)
+	if err != nil {
+		log.Printf("Could not parse email_verification_lifetime: %s", err.Error())
+		return err
+	}
 
-			if len(split) < 2 {
-				return errors.New("Invalid smtprelaymailwithport format!")
-			}
-			if smtp.Config.Port, err = strconv.Atoi(split[1]); err != nil {
-				return err
-			}
-			split = strings.Split(split[0], "@")
-			if len(split) < 2 {
-				return errors.New("Invalid smtprelaymailwithport format!")
-			}
-			smtp.Config.User = split[0]
-			smtp.Config.Host = split[1]
-
-			smtp.Config.Enabled = true
-			BRServiceDeskEnabled = true
-		}
-		BRRateLimitReports = config.ServiceDeskRateLimitReports
-		BRRateLimitInterval = config.ServiceDeskRateLimitInterval
-		if BRServiceDeskEnabled {
-			fmt.Printf("ServiceDesk running at %s (Send via %s@%s:%d)  (Max %dR/%.02fs)\n",
-				BRServiceDeskAddress, smtp.Config.User, smtp.Config.Host, smtp.Config.Port,
-			    BRRateLimitReports, BRRateLimitInterval)
-		} else {
-			fmt.Println("ServiceDesk disabled")
-		}
-
-		// Email verification
-		config.EmailVerificationTokenLifetime, err = time.ParseDuration(config.EmailVerificationTokenLifetimeString)
-		if err != nil {
-			log.Printf("Could not parse email_verification_lifetime: %s", err.Error())
-			return err
-		}
+	key, err := base64.StdEncoding.DecodeString(config.Key)
+	if err != nil {
+		return err
 	}
 
 	store = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
