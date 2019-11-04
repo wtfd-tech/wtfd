@@ -37,7 +37,7 @@ func generateRandomString(n int) string {
 func generateUserName() (string, error) {
 	var name string
 	for _, s := range coolNames {
-		if exists, err := ormDisplayNameExists(s); !exists {
+		if exists, err := wtfdDB.DisplayNameExists(s); !exists {
 			if err != nil {
 				return "", err
 
@@ -48,7 +48,7 @@ func generateUserName() (string, error) {
 	}
 	for name == "" {
 		name = strconv.FormatInt(rand.Int63(), 10)
-		if exists, err := ormDisplayNameExists(name); !exists {
+		if exists, err := wtfdDB.DisplayNameExists(name); !exists {
 			if err != nil {
 				return "", err
 

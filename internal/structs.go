@@ -3,113 +3,20 @@ package wtfd
 import (
 	"fmt"
 	"sort"
-	"time"
+        "github.com/wtfd-tech/wtfd/internal/types"
+        "github.com/wtfd-tech/wtfd/internal/db"
 
-	"golang.org/x/crypto/bcrypt"
 )
 
-// Challenges Array of challenges but in nice with funcitons
-type Challenges []*Challenge
-
-// Challenge is a challenge obv
-type Challenge struct {
-	Name        string `json:"name"`
-	Description string `json:"desc"`
-	Flag        string `json:"flag"`
-	Points      int    `json:"points"`
-	URI         string `json:"uri"`
-	DepCount    int
-	MinRow      int
-	Row         int
-	Solution    string `json:"solution"`
-	Author      string `json:"author"`
-	DepIDs      []string
-	Deps        []*Challenge
-	HasURI      bool // This emerges from URI != ""
-}
-
-// ChallengeJSON is Challenge as JSON
-type ChallengeJSON struct {
-	Name        string   `json:"name"`
-	Description string   `json:"desc"`
-	Solution    string   `json:"solution"`
-	Author      string   `json:"author"`
-	Flag        string   `json:"flag"`
-	Points      int      `json:"points"`
-	URI         string   `json:"uri"`
-	Deps        []string `json:"deps"`
-	HasURI      bool     // This emerges from URI != ""
-}
-
-// VerifyInfo saves if a users e-mail is verified
-type VerifyInfo struct {
-	IsVerified     bool
-	VerifyToken    string
-	VerifyDeadline time.Time
-}
-
-// User was ist das wohl
-type User struct {
-	Name         string `json:"name"`
-	Hash         []byte
-	DisplayName  string `json:"displayname"`
-	Completed    []*Challenge
-	Admin        bool `json:"admin"`
-	Points       int  `json:"points"`
-	VerifiedInfo VerifyInfo
-	Created      time.Time
-}
 
 type gridinfo struct {
 	Index int
 	Pos   int
 }
 
-// FillChallengeURI Fill host into each challenge's URI field and set HasURI
-func (c Challenges) FillChallengeURI(host string) {
-	for i := range c {
-		if c[i].URI != "" {
-			c[i].HasURI = true
-			c[i].URI = fmt.Sprintf(c[i].URI, host)
-		} else {
-			c[i].HasURI = false
-		}
-	}
-}
 
-// Find finds a challenge from a string
-func (c Challenges) Find(id string) (*Challenge, error) {
-	for _, v := range c {
-		if v.Name == id {
-			return v, nil
-		}
-	}
-	return &Challenge{}, fmt.Errorf("no challenge with this id")
-}
-
-// AllDepsCompleted checks if User u has completed all Dependent challenges of c
-func (c Challenge) AllDepsCompleted(u User) bool {
-	for _, ch := range c.Deps {
-		a := false
-		for _, uch := range u.Completed {
-			if uch.Name == ch.Name {
-				a = true
-			}
-		}
-		if a == false {
-			return false
-		}
-	}
-	return true
-}
-
-// ComparePassword checks if the password is valid
-func (u *User) ComparePassword(password string) bool {
-	return bcrypt.CompareHashAndPassword(u.Hash, []byte(password)) == nil
-}
-
-func resolveDeps(a []string) []*Challenge {
-	var toReturn []*Challenge
+func resolveDeps(a []string) []*types.Challenge {
+	var toReturn []*types.Challenge
 	for _, b := range a {
 		for _, c := range challs {
 			if c.Name == b {
@@ -121,7 +28,7 @@ func resolveDeps(a []string) []*Challenge {
 
 }
 
-func countDeps(chall *Challenge) int {
+func countDeps(chall *types.Challenge) int {
 	max := 1
 	if len(chall.Deps) == 0 {
 		return 0
@@ -160,7 +67,7 @@ func reverseResolveAllDepIDs() {
 }
 
 func calculateRowNums() {
-	cols := make(map[int][]*Challenge)
+	cols := make(map[int][]*types.Challenge)
 
 	for _, chall := range challs {
 		col := chall.DepCount
@@ -210,7 +117,7 @@ func calculateRowNums() {
 		}
 	}
 }
-func resolveChalls(jsons []*ChallengeJSON) {
+func resolveChalls(jsons []*types.ChallengeJSON) {
 	i := 0
 	var idsInChalls []string
 	for len(jsons) != 0 {
@@ -218,7 +125,7 @@ func resolveChalls(jsons []*ChallengeJSON) {
 		this := jsons[i]
 		if bContainsAllOfA(this.Deps, idsInChalls) {
 			idsInChalls = append(idsInChalls, this.Name)
-			challs = append(challs, &Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, MinRow: -1, Row: -1, Author: this.Author})
+			challs = append(challs, &types.Challenge{Name: this.Name, Description: this.Description, Flag: this.Flag, URI: this.URI, Points: this.Points, Deps: resolveDeps(this.Deps), Solution: this.Solution, MinRow: -1, Row: -1, Author: this.Author})
 			jsons[i] = jsons[len(jsons)-1]
 			jsons = jsons[:len(jsons)-1]
 			i = 0
@@ -232,8 +139,8 @@ func resolveChalls(jsons []*ChallengeJSON) {
 	calculateRowNums()
 }
 
-func fixDeps(jsons []*ChallengeJSON) {
-	challsByName := make(map[string]*ChallengeJSON)
+func fixDeps(jsons []*types.ChallengeJSON) {
+	challsByName := make(map[string]*types.ChallengeJSON)
 	for _, chall := range jsons {
 		challsByName[chall.Name] = chall
 	}
@@ -267,23 +174,19 @@ func fixDeps(jsons []*ChallengeJSON) {
 	}
 }
 
-// HasSolvedChallenge returns true if u has solved chall
-func (u User) HasSolvedChallenge(chall *Challenge) bool {
-	for _, c := range u.Completed {
-		if c.Name == chall.Name {
-			return true
+// AllDepsCompleted checks if User u has completed all Dependent challenges of c
+func AllDepsCompleted(u *db.User, c *types.Challenge) bool {
+	for _, ch := range c.Deps {
+		a := false
+		for _, uch := range u.Completed {
+			if uch.Name == ch.Name {
+				a = true
+			}
+		}
+		if a == false {
+			return false
 		}
 	}
-	return false
+	return true
 }
 
-// CalculatePoints calculates Points and updates user.Points
-func (u *User) CalculatePoints() {
-	points := 0
-
-	for _, c := range u.Completed {
-		points += c.Points
-	}
-
-	u.Points = points
-}

@@ -74,7 +74,7 @@ func leaderboardWS(w http.ResponseWriter, r *http.Request) {
 }
 
 func generateTableData() (tableData, error) {
-	allu, err := ormAllUsersSortedByPoints()
+	allu, err := wtfdDB.AllUsersSortedByPoints()
 	if err != nil {
 		return tableData{}, err
 	}
@@ -106,10 +106,10 @@ func updateScoreboard() error {
 	}
 
 	log.Printf("Scoreboard Update\n")
-	users, err := ormAllUsersSortedByPoints()
+	users, err := wtfdDB.AllUsersSortedByPoints()
 	var datas []chartData
 	for _, u := range users {
-		solves := ormGetSolvesWithTime(u.Name)
+		solves := wtfdDB.GetSolvesWithTime(u.Name)
 		data := make([]chartDataPoint, len(solves)+1)
 		sum := 0
 		data[0] = chartDataPoint{T: u.Created.Format(time.RubyDate), Y: sum, Label: "User Created"}

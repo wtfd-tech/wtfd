@@ -1,4 +1,4 @@
-package wtfd
+package db
 
 import (
 	"fmt"
