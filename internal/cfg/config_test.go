@@ -9,7 +9,7 @@ import (
 
 func TestJsonConfigGeneration(t *testing.T) {
 	os.Remove("config.json") // Cleanup
-	generatedConfig, err := getConfigJson()
+	generatedConfig, err := getConfigJSON()
 	if err != nil {
 		t.Errorf("Config Generation failed with error: %v", err)
 	}
@@ -70,9 +70,9 @@ func TestJsonConfigReading(t *testing.T) {
 	if err != nil {
 		t.Errorf("config file writing failed with error: %v", err)
 	}
-        generatedConfig, err := getConfigJson()
+        generatedConfig, err := getConfigJSON()
 	if err != nil {
-		t.Errorf("getConfigJson failed with error: %v", err)
+		t.Errorf("getConfigJSON failed with error: %v", err)
 	}
         configFromJSON := Config{}
         err = json.Unmarshal(configstring, &configFromJSON)
