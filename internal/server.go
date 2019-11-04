@@ -16,7 +16,9 @@ import (
 	"time"
 
 	"github.com/wtfd-tech/wtfd/internal/cfg"
+	"github.com/wtfd-tech/wtfd/internal/db"
 	"github.com/wtfd-tech/wtfd/internal/smtp"
+	"github.com/wtfd-tech/wtfd/internal/types"
 
 	"github.com/gobuffalo/packr/v2"
 	"github.com/gomarkdown/markdown"
@@ -26,13 +28,13 @@ import (
 )
 
 var (
-	config cfg.Config
-	store  sessions.Store
-
+	config              cfg.Config
+	store               sessions.Store
+	wtfdDB              db.DB
 	errUserExisting     = errors.New("user with this name exists")
 	errWrongPassword    = errors.New("wrong Password")
 	errUserNotExisting  = errors.New("user with this name does not exist")
-	challs              = Challenges{}
+	challs              = types.Challenges{}
 	mainpagetemplate    = template.New("")
 	leaderboardtemplate = template.New("")
 	admintemplate       = template.New("")
@@ -78,12 +80,12 @@ var (
 
 type adminPageData struct {
 	PageTitle     string
-	User          *User
+	User          *db.User
 	Config        cfg.Config
 	IsUser        bool
 	Points        int
 	Leaderboard   bool
-	AllUsers      []User
+	AllUsers      []db.User
 	GeneratedName string
 	Style         template.HTMLAttr
 	RowNums       []gridinfo
@@ -91,12 +93,12 @@ type adminPageData struct {
 }
 type leaderboardPageData struct {
 	PageTitle     string
-	User          *User
+	User          *db.User
 	Config        cfg.Config
 	IsUser        bool
 	Points        int
 	Leaderboard   bool
-	AllUsers      []User
+	AllUsers      []db.User
 	GeneratedName string
 	Style         template.HTMLAttr
 	RowNums       []gridinfo
@@ -104,13 +106,14 @@ type leaderboardPageData struct {
 }
 type mainPageData struct {
 	PageTitle              string
-	Challenges             []*Challenge
+	Challenges             []*types.Challenge
 	Leaderboard            bool
 	SelectedChallengeID    string
 	HasSelectedChallengeID bool
+	ADC                    func(*db.User, *types.Challenge) bool
 	GeneratedName          string
 	Config                 cfg.Config
-	User                   *User
+	User                   *db.User
 	IsUser                 bool
 	Points                 int
 	RowNums                []gridinfo
@@ -126,11 +129,11 @@ func getUserData(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusUnauthorized)
 		return
 	}
-	u, err := ormLoadUser(vars["user"])
+	u, err := wtfdDB.LoadUser(vars["user"])
 	if err != nil {
 		_, _ = fmt.Fprintf(w, "Error: %v", err)
 	}
-	userToReturn := User{Name: u.Name, DisplayName: u.DisplayName, Points: u.Points, Admin: u.Admin}
+	userToReturn := db.User{Name: u.Name, DisplayName: u.DisplayName, Points: u.Points, Admin: u.Admin}
 	jsonToReturn, err := json.Marshal(&userToReturn)
 	if err != nil {
 		_, _ = fmt.Fprintf(w, "Error: %v", err)
@@ -159,10 +162,10 @@ func adminpage(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		isAdmin := r.FormValue("admin") == "on"
-		u := User{Name: r.FormValue("name"), DisplayName: r.FormValue("displayname"), Points: dumb, Admin: isAdmin}
+		u := db.User{Name: r.FormValue("name"), DisplayName: r.FormValue("displayname"), Points: dumb, Admin: isAdmin}
 		//                fmt.Printf("a: %#v",u)
 
-		err = ormUpdateUser(u)
+		err = wtfdDB.UpdateUser(u)
 		if err != nil {
 			_, _ = fmt.Fprintf(w, "Error: %v", err)
 			return
@@ -180,7 +183,7 @@ func adminpage(w http.ResponseWriter, r *http.Request) {
 			_, _ = fmt.Fprintf(w, "Error: %v", err)
 		}
 	}
-	allUsers, err := ormAllUsersSortedByPoints()
+	allUsers, err := wtfdDB.AllUsersSortedByPoints()
 	if err != nil {
 		_, _ = fmt.Fprintf(w, "Error: %v", err)
 	}
@@ -213,7 +216,7 @@ func leaderboardpage(w http.ResponseWriter, r *http.Request) {
 			_, _ = fmt.Fprintf(w, "Error: %v", err)
 		}
 	}
-	allUsers, err := ormAllUsersSortedByPoints()
+	allUsers, err := wtfdDB.AllUsersSortedByPoints()
 	if err != nil {
 		_, _ = fmt.Fprintf(w, "Error: %v", err)
 	}
@@ -268,6 +271,7 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		Config:                 config,
 		Challenges:             challs,
 		GeneratedName:          genu,
+		ADC:                    AllDepsCompleted,
 		HasSelectedChallengeID: hasChall,
 		SelectedChallengeID:    vars["chall"],
 		User:                   user,
@@ -298,7 +302,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 			_, _ = fmt.Fprintf(w, "Already logged in")
 		} else {
 			email := r.Form.Get("username")
-			err := Login(email, r.Form.Get("password"))
+			err := wtfdDB.Login(email, r.Form.Get("password"))
 			if err != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				_, _ = fmt.Fprintf(w, "Server Error: %v", err)
@@ -338,13 +342,13 @@ func submitFlag(w http.ResponseWriter, r *http.Request) {
 		if r.Form.Get("flag") == completedChallenge.Flag {
 			user.Completed = append(user.Completed, completedChallenge)
 
-			if err = ormSolvedChallenge(user, completedChallenge); err != nil {
+			if err = wtfdDB.SolvedChallenge(user, completedChallenge); err != nil {
 				_ = fmt.Errorf("ORM Error: %s", err)
 			}
 
 			user.CalculatePoints()
 
-			if err = ormUpdateUser(user); err != nil {
+			if err = wtfdDB.UpdateUser(user); err != nil {
 				_ = fmt.Errorf("ORM Error: %s", err)
 			}
 
@@ -394,12 +398,12 @@ func register(w http.ResponseWriter, r *http.Request) {
 					}
 				}
 
-				u, err := NewUser(r.Form.Get("username"), r.Form.Get("password"), r.Form.Get("displayname"))
+				u, err := db.NewUserStruct(wtfdDB, r.Form.Get("username"), r.Form.Get("password"), r.Form.Get("displayname"))
 				if err != nil {
 					w.WriteHeader(http.StatusInternalServerError)
 					_, _ = fmt.Fprintf(w, "Server Error: %v", err)
 				} else {
-					_ = ormNewUser(u)
+					_ = wtfdDB.NewUser(u)
 					login(w, r)
 					_ = updateScoreboard()
 
@@ -452,7 +456,7 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 			// ...and update it for the current user
 			u.Hash = hash
 
-			if ormUpdateUser(u) != nil {
+			if wtfdDB.UpdateUser(u) != nil {
 				w.WriteHeader(http.StatusInternalServerError)
 				_, _ = fmt.Fprintf(w, "Server Error: %v", err)
 				return
@@ -569,7 +573,7 @@ func requestVerify(w http.ResponseWriter, r *http.Request) {
 	/* Setup user info */
 	user.VerifiedInfo.VerifyToken = token
 	user.VerifiedInfo.VerifyDeadline = time.Now().Add(config.EmailVerificationTokenLifetime)
-	if err = ormUpdateUser(user); err != nil {
+	if err = wtfdDB.UpdateUser(user); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Printf("ORM error: %s\n", err.Error())
 		return
@@ -579,7 +583,7 @@ func requestVerify(w http.ResponseWriter, r *http.Request) {
 
 func verify(w http.ResponseWriter, r *http.Request) {
 	var err error
-	var user User
+	var user db.User
 
 	if r.Method != "GET" {
 		w.WriteHeader(http.StatusBadRequest)
@@ -595,7 +599,7 @@ func verify(w http.ResponseWriter, r *http.Request) {
 	}
 
 	/* load user */
-	user, err = ormUserByToken(token)
+	user, err = wtfdDB.UserByToken(token)
 	if err != nil {
 		// Any error just ends in an invalid token
 		w.WriteHeader(http.StatusNotFound)
@@ -616,7 +620,7 @@ func verify(w http.ResponseWriter, r *http.Request) {
 	user.VerifiedInfo.VerifyDeadline = time.Date(0, 0, 0, 0, 0, 0, 0, time.Local) // invalidate
 
 	/* write user back to db */
-	if err = ormUpdateUser(user); err != nil {
+	if err = wtfdDB.UpdateUser(user); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Printf("ORM error: %s", err.Error())
 		return
@@ -657,7 +661,7 @@ func detailview(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	_, _ = fmt.Fprintf(w, "%s<br><p>Solves: %d</p>", chall.Description, ormGetSolveCount(*chall))
+	_, _ = fmt.Fprintf(w, "%s<br><p>Solves: %d</p>", chall.Description, wtfdDB.GetSolveCount(*chall))
 
 }
 
@@ -692,7 +696,7 @@ func favicon(w http.ResponseWriter, r *http.Request) {
 func Server() error {
 	utilInit()
 
-	gob.Register(&User{})
+	gob.Register(&db.User{})
 
 	config, err := cfg.GetConfig()
 	if err != nil {
@@ -750,7 +754,7 @@ func Server() error {
 	store = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
 
 	//Load challs from dirs
-	var challsStructure []*ChallengeJSON
+	var challsStructure []*types.ChallengeJSON
 
 	files, err := ioutil.ReadDir(config.ChallengeInfoDir)
 	if err != nil {
@@ -768,7 +772,7 @@ func Server() error {
 			readmeBytes   []byte
 			solutionBytes []byte
 
-			jsonStruct ChallengeJSON
+			jsonStruct types.ChallengeJSON
 
 			err error
 		)
@@ -809,7 +813,7 @@ func Server() error {
 	resolveChalls(challsStructure)
 
 	// Load database
-	err = ormStart("./dblog")
+	wtfdDB, err = db.StartDB(&challs)
 	if err != nil {
 		return err
 	}

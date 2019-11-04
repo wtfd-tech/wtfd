@@ -3,6 +3,7 @@ package wtfd
 import (
 	"errors"
 	"github.com/wtfd-tech/wtfd/internal/smtp"
+	"github.com/wtfd-tech/wtfd/internal/db"
 	"time"
 )
 
@@ -33,7 +34,7 @@ type access struct {
 }
 
 // BRIsUserRateLimited Checks if user is rate limited
-func BRIsUserRateLimited(u *User) bool {
+func BRIsUserRateLimited(u *db.User) bool {
 	record, ok := userAccess[u.Name]
 	if !ok {
 		return false
@@ -55,7 +56,7 @@ func BRIsUserRateLimited(u *User) bool {
 /**
  * Register a user access
  */
-func registerUserAccess(u *User) {
+func registerUserAccess(u *db.User) {
 	record, ok := userAccess[u.Name]
 
 	if !ok {
@@ -76,7 +77,7 @@ func registerUserAccess(u *User) {
 }
 
 // BRDispatchBugreport sends a bugreport
-func BRDispatchBugreport(u *User, subject string, content string) error {
+func BRDispatchBugreport(u *db.User, subject string, content string) error {
 	if !BRServiceDeskEnabled {
 		return errors.New("Service Desk is disabled")
 	}

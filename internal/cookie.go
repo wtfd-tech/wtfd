@@ -2,6 +2,7 @@ package wtfd
 
 import (
 	"net/http"
+	"github.com/wtfd-tech/wtfd/internal/db"
 )
 
 func getLoginEmail(r *http.Request) (string, bool) {
@@ -10,12 +11,12 @@ func getLoginEmail(r *http.Request) (string, bool) {
 	return email, ok && email != ""
 }
 
-func getUser(r *http.Request) (User, bool) {
+func getUser(r *http.Request) (db.User, bool) {
 	email, loggedIn := getLoginEmail(r)
 	if !loggedIn {
-		return User{}, false
+		return db.User{}, false
 	}
-	loadeduser, err := Get(email)
+	loadeduser, err := wtfdDB.Get(email)
 	return loadeduser, err == nil
 }
 

@@ -1,12 +1,11 @@
-package wtfd
+package db
 
 import (
 	"errors"
 	"fmt"
 	"github.com/go-xorm/xorm"
 	_ "github.com/mattn/go-sqlite3" // needed for xorm
-	"golang.org/x/crypto/bcrypt"
-	"os"
+	"github.com/wtfd-tech/wtfd/internal/types"
 	"time"
 	"xorm.io/core"
 )
@@ -17,21 +16,27 @@ const (
 )
 
 var (
-	engine *xorm.Engine
+	errUserExisting    = errors.New("user with this name exists")
+	errWrongPassword   = errors.New("wrong Password")
+	errUserNotExisting = errors.New("user with this name does not exist")
 )
+
+type xormdb struct {
+	engine *xorm.Engine
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 // ORM definitions /////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 type _ORMUser struct {
-	Name        string    `xorm:"unique"`
-	DisplayName string    `xorm:"unique"`
-	Created     time.Time `xorm:"created" json:"time"`
-	Admin       int
-	Hash        []byte
-	Points      int
-	Verified    int
-	VerifyToken string    `xorm:"varchar(32)"`
+	Name           string    `xorm:"unique"`
+	DisplayName    string    `xorm:"unique"`
+	Created        time.Time `xorm:"created" json:"time"`
+	Admin          int
+	Hash           []byte
+	Points         int
+	Verified       int
+	VerifyToken    string `xorm:"varchar(32)"`
 	VerifyDeadline time.Time
 }
 
@@ -49,83 +54,24 @@ func (c _ORMChallengesByUser) TableName() string {
 	return _ORMChallengeByUserName
 }
 
-func ormSync() {
-	_ = engine.Sync(_ORMUser{})
-	_ = engine.Sync(_ORMChallengesByUser{})
+func (d xormdb) ormSync() {
+	_ = d.engine.Sync(_ORMUser{})
+	_ = d.engine.Sync(_ORMChallengesByUser{})
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-// Login checks if password is right for username and returns the User object of it
-func Login(username, passwd string) error {
-	user, err := Get(username)
-	if err != nil {
-		return err
-	}
-	if pwdRight := user.ComparePassword(passwd); !pwdRight {
-		return errWrongPassword
-	}
-	fmt.Printf("User login: %s\n", username)
-	return nil
-
-}
-
-// NewUser creates a new user object
-func NewUser(name, password, displayname string) (User, error) {
-	if Contains(name, displayname) {
-		return User{}, errUserExisting
-	}
-	hash, err := bcrypt.GenerateFromPassword([]byte(password), 14)
-	if err != nil {
-		return User{}, err
-	}
-
-	fmt.Printf("New User added: %s\n", name)
-	isAdmin := ormGetUserCount() == 0
-	if isAdmin {
-		fmt.Printf("New User %s is an Admin\n", name)
-
-	}
-	return User{Name: name, Hash: hash, DisplayName: displayname, Admin: isAdmin, VerifiedInfo: VerifyInfo{IsVerified: false}}, nil
-
-}
-
-// Contains looks if a username is in the datenbank
-func Contains(username, displayname string) bool {
-	count, _ := ormUserExists(User{Name: username, DisplayName: displayname})
-	return count
-}
-
-// Get gets username based on username
-func Get(username string) (User, error) {
-	user, err := ormLoadUser(username)
-	if err != nil {
-		fmt.Printf("Get Error: username: %v, user: %v, err: %v\n", username, user, err)
-		return User{}, err
-	}
-	return user, err
-
-}
-
-func ormStart(logFile string) error {
+func (d *xormdb) Start() error {
 	var err error
-	engine, err = xorm.NewEngine("sqlite3", "./state.db")
+	d.engine, err = xorm.NewEngine("sqlite3", "./state.db")
 
 	if err != nil {
 		return err
 	}
 
-	if logFile != "" {
-		f, err := os.Create(logFile)
-		if err != nil {
-			return err
-		}
-		engine.SetLogger(xorm.NewSimpleLogger(f))
-	}
+	d.engine.SetMapper(core.SameMapper{})
 
-	engine.SetMapper(core.SameMapper{})
-
-	ormSync()
+	d.ormSync()
 	return nil
 }
 
@@ -139,8 +85,8 @@ func _ORMGenericError(desc string) error {
 ////////////////////////////////////////////////////////////////////////////////
 
 // Create new User DB record from a User struct
-func ormNewUser(user User) error {
-	exists, err := ormUserExists(user)
+func (d xormdb) NewUser(user User) error {
+	exists, err := d.UserExists(user)
 	if err != nil {
 		return err
 	}
@@ -149,12 +95,12 @@ func ormNewUser(user User) error {
 		return errUserExisting
 	}
 
-	admin := 1;
+	admin := 1
 	if user.Admin {
 		admin = 2
 	}
 
-	_, err = engine.Insert(_ORMUser{
+	_, err = d.engine.Insert(_ORMUser{
 		Name:        user.Name,
 		Hash:        user.Hash,
 		Admin:       admin,
@@ -166,10 +112,10 @@ func ormNewUser(user User) error {
 }
 
 // ormGetSolveCount returns the number of solves for the Challenge chall
-func ormGetSolvesWithTime(u string) []_ORMChallengesByUser {
+func (d xormdb) GetSolvesWithTime(u string) []_ORMChallengesByUser {
 
 	var a []_ORMChallengesByUser
-	if err := engine.Where("UserName = ?", u).Find(&a); err != nil {
+	if err := d.engine.Where("UserName = ?", u).Find(&a); err != nil {
 		fmt.Printf("ORM Error: %v\n", err)
 		return []_ORMChallengesByUser{}
 	}
@@ -178,9 +124,9 @@ func ormGetSolvesWithTime(u string) []_ORMChallengesByUser {
 }
 
 // ormGetSolveCount returns the number of solves for the Challenge chall
-func ormGetUserCount() int64 {
+func (d xormdb) GetUserCount() int64 {
 
-	count, err := engine.Count(_ORMUser{})
+	count, err := d.engine.Count(_ORMUser{})
 	if err != nil {
 		return 0
 	}
@@ -189,9 +135,9 @@ func ormGetUserCount() int64 {
 }
 
 // ormGetSolveCount returns the number of solves for the Challenge chall
-func ormGetSolveCount(chall Challenge) int64 {
+func (d xormdb) GetSolveCount(chall types.Challenge) int64 {
 
-	count, err := engine.Where("ChallengeName = ?", chall.Name).Count(_ORMChallengesByUser{})
+	count, err := d.engine.Where("ChallengeName = ?", chall.Name).Count(_ORMChallengesByUser{})
 	if err != nil {
 		return 0
 	}
@@ -201,12 +147,12 @@ func ormGetSolveCount(chall Challenge) int64 {
 
 // Update existing user record (user.Name) with other values from user
 // Solved challenges WON'T be updated (refer to ormChallengeSolved)
-func ormUpdateUser(user User) error {
+func (d xormdb) UpdateUser(user User) error {
 	var exists bool
 	var err error
 	var u _ORMUser
 
-	if exists, err = ormUserExists(user); err != nil {
+	if exists, err = d.UserExists(user); err != nil {
 		return err
 	}
 
@@ -236,7 +182,7 @@ func ormUpdateUser(user User) error {
 	}
 	// fmt.Printf("a: %#v", u)
 
-	if _, err = engine.Where("Name = ?", user.Name).Update(&u); err != nil {
+	if _, err = d.engine.Where("Name = ?", user.Name).Update(&u); err != nil {
 		return err
 	}
 
@@ -244,12 +190,12 @@ func ormUpdateUser(user User) error {
 }
 
 // remove user from db (matches user.Name)
-func ormDeleteUser(user User) error {
+func (d xormdb) DeleteUser(user User) error {
 	var u _ORMUser
 	var exists bool
 	var err error
 
-	if exists, err = ormUserExists(user); err != nil {
+	if exists, err = d.UserExists(user); err != nil {
 		return err
 	}
 
@@ -257,11 +203,11 @@ func ormDeleteUser(user User) error {
 		return errUserNotExisting
 	}
 
-	if _, err = engine.Where("Name = ?", user.Name).Get(&u); err != nil {
+	if _, err = d.engine.Where("Name = ?", user.Name).Get(&u); err != nil {
 		return err
 	}
 
-	if _, err = engine.Where("Name = ?", user.Name).Delete(&u); err != nil {
+	if _, err = d.engine.Where("Name = ?", user.Name).Delete(&u); err != nil {
 		return err
 	}
 
@@ -269,9 +215,9 @@ func ormDeleteUser(user User) error {
 }
 
 // check if user exists in db
-func ormUserExists(user User) (bool, error) {
-	count, err := engine.Where("Name = ?", user.Name).Count(_ORMUser{})
-	//fmt.Printf("ormUserExists: user: %v, count: %v, err: %v\n", user, count, err)
+func (d xormdb) UserExists(user User) (bool, error) {
+	count, err := d.engine.Where("Name = ?", user.Name).Count(_ORMUser{})
+	//fmt.Printf("UserExists: user: %v, count: %v, err: %v\n", user, count, err)
 	if err != nil {
 		return false, err
 	}
@@ -286,9 +232,9 @@ func ormUserExists(user User) (bool, error) {
 
 }
 
-func ormDisplayNameExists(name string) (bool, error) {
-	count, err := engine.Where("DisplayName = ?", name).Count(_ORMUser{})
-	//fmt.Printf("ormUserExists: user: %v, count: %v, err: %v\n", user, count, err)
+func (d xormdb) DisplayNameExists(name string) (bool, error) {
+	count, err := d.engine.Where("DisplayName = ?", name).Count(_ORMUser{})
+	//fmt.Printf("UserExists: user: %v, count: %v, err: %v\n", user, count, err)
 	if err != nil {
 		return false, err
 	}
@@ -304,13 +250,13 @@ func ormDisplayNameExists(name string) (bool, error) {
 }
 
 // get Challenges{} solved by user (db-state)
-func ormChallengesSolved(user User) ([]*Challenge, error) {
-	var challenges []*Challenge
+func (d xormdb) ChallengesSolved(user User) ([]*types.Challenge, error) {
+	var challenges []*types.Challenge
 
-	_ = engine.Where("UserName = ?", user.Name).Iterate(_ORMChallengesByUser{}, func(i int, bean interface{}) error {
+	_ = d.engine.Where("UserName = ?", user.Name).Iterate(_ORMChallengesByUser{}, func(i int, bean interface{}) error {
 		relation := bean.(*_ORMChallengesByUser)
 
-		for _, c := range challs {
+		for _, c := range *challs {
 			if c.Name == relation.ChallengeName {
 				challenges = append(challenges, c)
 			}
@@ -321,15 +267,34 @@ func ormChallengesSolved(user User) ([]*Challenge, error) {
 
 	return challenges, nil
 }
+func (d xormdb) AllUsersSortedByPoints() ([]User, error) {
+	var users []User
+
+	_ = d.engine.Desc("Points").Iterate(_ORMUser{}, func(i int, bean interface{}) error {
+		u := bean.(*_ORMUser)
+
+		if u.Name != "" {
+			user, _ := d.LoadUser(u.Name)
+			fmt.Printf("%s, %#v\n", user.Name, user.Created.String())
+
+			users = append(users, user)
+		}
+
+		return nil
+	})
+
+	return users, nil
+
+}
 
 // Write solved state (user solved chall) in db
-func ormSolvedChallenge(user User, chall *Challenge) error {
+func (d xormdb) SolvedChallenge(user User, chall *types.Challenge) error {
 	var exists bool
 	var err error
 	var relation _ORMChallengesByUser
 	var count int64
 
-	if exists, err = ormUserExists(user); err != nil {
+	if exists, err = d.UserExists(user); err != nil {
 		return err
 	}
 
@@ -337,7 +302,7 @@ func ormSolvedChallenge(user User, chall *Challenge) error {
 		return errUserNotExisting
 	}
 
-	count, err = engine.Where("UserName = ?", user.Name).And("ChallengeName = ?", chall.Name).Count(_ORMChallengesByUser{})
+	count, err = d.engine.Where("UserName = ?", user.Name).And("ChallengeName = ?", chall.Name).Count(_ORMChallengesByUser{})
 	if err != nil {
 		return nil
 	}
@@ -353,41 +318,18 @@ func ormSolvedChallenge(user User, chall *Challenge) error {
 		UserName:      user.Name,
 	}
 
-	_, err = engine.Insert(relation)
+	_, err = d.engine.Insert(relation)
 
 	return err
 }
 
-func ormAllUsersSortedByPoints() ([]User, error) {
-	var users []User
-
-	fmt.Println("---")
-
-	_ = engine.Desc("Points").Iterate(_ORMUser{}, func(i int, bean interface{}) error {
-		u      := bean.(*_ORMUser)
-
-		if u.Name != "" {
-			user,_ := ormLoadUser(u.Name)
-			fmt.Printf("%s, %#v\n", user.Name, user.Created.String())
-
-			users = append(users, user)
-		}
-
-		return  nil
-	})
-
-
-	return users, nil
-
-}
-
 // load a single user from db (search by name)
 // The remaining fields of u will be filled by this function
-func ormLoadUser(name string) (User, error) {
+func (d xormdb) LoadUser(name string) (User, error) {
 	var user _ORMUser
 	var u User
 
-	exists, err := ormUserExists(User{Name: name})
+	exists, err := d.UserExists(User{Name: name})
 	// fmt.Printf("ormLoadUser: name: %v, exists: %v, err: %v\n",name, exists,err)
 	if err != nil {
 		return User{}, err
@@ -397,7 +339,7 @@ func ormLoadUser(name string) (User, error) {
 		return User{}, errUserNotExisting
 	}
 
-	if _, err := engine.Where("Name = ?", name).Get(&user); err != nil {
+	if _, err := d.engine.Where("Name = ?", name).Get(&user); err != nil {
 		// fmt.Printf("User %s seems to not exist", name)
 		return User{}, err
 	}
@@ -418,33 +360,62 @@ func ormLoadUser(name string) (User, error) {
 		Admin:       admin,
 		Points:      user.Points,
 		Created:     user.Created,
-		VerifiedInfo: VerifyInfo {
-			IsVerified: verified,
-			VerifyToken: user.VerifyToken,
+		VerifiedInfo: VerifyInfo{
+			IsVerified:     verified,
+			VerifyToken:    user.VerifyToken,
 			VerifyDeadline: user.VerifyDeadline,
 		},
 	}
 
-	if u.Completed, err = ormChallengesSolved(u); err != nil {
+	if u.Completed, err = d.ChallengesSolved(u); err != nil {
 		return u, err
 	}
 
 	return u, nil
 }
 
-// get a username by a verify token.
+// ormUserByToken gets a username by a verify token.
 // NOTE: race condition possible, when user changes properties of
 // his own user object while verifying the token. Current architecture does
 // not allow to solve this without expense
-func ormUserByToken(token string) (User, error) {
+func (d xormdb) UserByToken(token string) (User, error) {
 	var user _ORMUser
 
-	if _, err := engine.Where("VerifyToken = ?", token).Get(&user); err != nil {
+	if _, err := d.engine.Where("VerifyToken = ?", token).Get(&user); err != nil {
 		return User{}, err
 	}
 
 	// Load all data into real User struct
-	return ormLoadUser(user.Name)
+	return d.LoadUser(user.Name)
+}
+// Contains looks if a username is in the datenbank
+func (d xormdb) Contains(username, displayname string) bool {
+	count, _ := d.UserExists(User{Name: username, DisplayName: displayname})
+	return count
+}
+
+// Get gets username based on username
+func (d xormdb) Get(username string) (User, error) {
+	user, err := d.LoadUser(username)
+	if err != nil {
+		fmt.Printf("Get Error: username: %v, user: %v, err: %v\n", username, user, err)
+		return User{}, err
+	}
+	return user, err
+
+}
+
+// Login checks if password is right for username and returns the User object of it
+func (d xormdb) Login(username, passwd string) error {
+	user, err := d.Get(username)
+	if err != nil {
+		return err
+	}
+	if pwdRight := user.ComparePassword(passwd); !pwdRight {
+		return errWrongPassword
+	}
+	fmt.Printf("User login: %s\n", username)
+	return nil
 }
 
 ////////////////////////////////////////////////////////////////////////////////

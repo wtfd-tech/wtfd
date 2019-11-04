@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"testing"
+	"github.com/wtfd-tech/wtfd/internal/types"
+	"github.com/wtfd-tech/wtfd/internal/db"
 )
 
 func TestChallenges(t *testing.T) {
@@ -69,7 +71,7 @@ func TestChallenges(t *testing.T) {
       "points": 1
     }
   ]`
-	var challsStructure []*ChallengeJSON
+	var challsStructure []*types.ChallengeJSON
 	if err := json.Unmarshal([]byte(jsonstring), &challsStructure); err != nil {
 		t.Errorf("JSON Unmarshal Error: %v", err)
 	}
@@ -95,12 +97,12 @@ func TestChallenges(t *testing.T) {
 	}
 	t.Run("TestAllDepsCompleted", func(t *testing.T) {
 
-		un := User{Name: "a", Completed: []*Challenge{{Name: "chall-b"}}}
-		uy := User{Name: "a", Completed: []*Challenge{{Name: "chall-a"}}}
-		if challn.AllDepsCompleted(un) {
+		un := db.User{Name: "a", Completed: []*types.Challenge{{Name: "chall-b"}}}
+		uy := db.User{Name: "a", Completed: []*types.Challenge{{Name: "chall-a"}}}
+		if AllDepsCompleted(&un, challn) {
 			t.Errorf("AllDepsCompleted is wrong: %v", fmt.Errorf("user hasn't completed dependent but AllDepsCompleted thinks it has"))
 		}
-		if !challn.AllDepsCompleted(uy) {
+		if !AllDepsCompleted(&uy, challn) {
 			t.Errorf("AllDepsCompleted is wrong: %v", fmt.Errorf("user has completed dependent but AllDepsCompleted thinks it hasn't"))
 		}
 
