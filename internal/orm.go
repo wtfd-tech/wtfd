@@ -27,7 +27,7 @@ type _ORMUser struct {
 	Name        string    `xorm:"unique"`
 	DisplayName string    `xorm:"unique"`
 	Created     time.Time `xorm:"created" json:"time"`
-	Admin       bool
+	Admin       int
 	Hash        []byte
 	Points      int
 	Verified    int
@@ -149,10 +149,15 @@ func ormNewUser(user User) error {
 		return errUserExisting
 	}
 
+	admin := 1;
+	if user.Admin {
+		admin = 2
+	}
+
 	_, err = engine.Insert(_ORMUser{
 		Name:        user.Name,
 		Hash:        user.Hash,
-		Admin:       user.Admin,
+		Admin:       admin,
 		DisplayName: user.DisplayName,
 		Points:      0,
 	})
@@ -214,12 +219,17 @@ func ormUpdateUser(user User) error {
 		verified = 1
 	}
 
+	admin := 1
+	if user.Admin {
+		admin = 2
+	}
+
 	u = _ORMUser{
 		Name:           user.Name,
 		Hash:           user.Hash,
 		DisplayName:    user.DisplayName,
 		Points:         user.Points,
-		Admin:          user.Admin,
+		Admin:          admin,
 		Verified:       verified,
 		VerifyToken:    user.VerifiedInfo.VerifyToken,
 		VerifyDeadline: user.VerifiedInfo.VerifyDeadline,
@@ -384,12 +394,16 @@ func ormLoadUser(name string) (User, error) {
 	if user.Verified == 1 {
 		verified = true
 	}
+	admin := false
+	if user.Admin == 2 {
+		admin = true
+	}
 
 	u = User{
 		Name:        user.Name,
 		Hash:        user.Hash,
 		DisplayName: user.DisplayName,
-		Admin:       user.Admin,
+		Admin:       admin,
 		Points:      user.Points,
 		VerifiedInfo: VerifyInfo {
 			IsVerified: verified,
