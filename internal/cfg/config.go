@@ -13,8 +13,8 @@ import (
 
 const (
 	defaultPort                 = int64(8080)
-	BRRateLimitReports          = 2   // 2 Reports during interval before beeing rate limited
-	BRRateLimitInterval float64 = 180 // 3 Minutes
+	bRRateLimitReports          = 2   // 2 Reports during interval before beeing rate limited
+	bRRateLimitInterval float64 = 180 // 3 Minutes
 )
 
 // Config stores settings
@@ -30,25 +30,25 @@ type Config struct {
 	ServiceDeskAddress                   string        `json:"servicedeskaddress"`
 	SMTPRelayString                      string        `json:"smtprelaymailwithport"`
 	SMTPRelayPasswd                      string        `json:"smtprelaymailpassword"`
-        ServiceDeskRateLimitInterval         float64       `json:"servicedeskratelimitinterval"` // See bugreport.go
-        ServiceDeskRateLimitReports          int           `json:"servicedeskratelimitreports"`  // See bugreport.go
+	ServiceDeskRateLimitInterval         float64       `json:"servicedeskratelimitinterval"` // See bugreport.go
+	ServiceDeskRateLimitReports          int           `json:"servicedeskratelimitreports"`  // See bugreport.go
 	RestrictEmailDomains                 []string      `json:"restrict_email_domains"`
 	RequireEmailVerification             bool          `json:"require_email_verification"`
 	EmailVerificationTokenLifetimeString string        `json:"email_verification_token_lifetime"`
 	EmailVerificationTokenLifetime       time.Duration `json:"-"`
 }
 
+// GetConfig returns a config struct generated either from a config.json or (TODO) from Environment
 func GetConfig() (Config, error) {
 	_, useEnv := os.LookupEnv("WTFD_USE_ENV_CONFIG")
 
 	if useEnv {
 		return getConfigEnv()
-	} else {
-		return getConfigJson()
 	}
+	return getConfigJSON()
 }
 
-func getConfigJson() (Config, error) {
+func getConfigJSON() (Config, error) {
 	config := Config{}
 
 	var key []byte
@@ -66,8 +66,8 @@ func getConfigJson() (Config, error) {
 			ServiceDeskAddress:                   "-", // service desk disabled
 			SMTPRelayString:                      "mail@example.com:25",
 			SMTPRelayPasswd:                      "passwd",
-			ServiceDeskRateLimitReports:          BRRateLimitReports,
-			ServiceDeskRateLimitInterval:         BRRateLimitInterval,
+			ServiceDeskRateLimitReports:          bRRateLimitReports,
+			ServiceDeskRateLimitInterval:         bRRateLimitInterval,
 			SSHHost:                              "ctf.wtfd.tech",
 			RestrictEmailDomains:                 nil,
 			RequireEmailVerification:             false,
@@ -79,9 +79,9 @@ func getConfigJson() (Config, error) {
 		}
 		configBytes, _ := json.MarshalIndent(config, "", "\t")
 		err = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
-                if err != nil {
-                  return config, err
-                }
+		if err != nil {
+			return config, err
+		}
 	} else {
 		//Load config file
 		var (
@@ -97,7 +97,7 @@ func getConfigJson() (Config, error) {
 		}
 
 	}
-        fmt.Fprintf(os.Stderr, "a: %v", config)
+	fmt.Fprintf(os.Stderr, "a: %v", config)
 	return config, nil
 
 }

@@ -710,14 +710,14 @@ func Server() error {
 		split := strings.Split(config.SMTPRelayString, ":")
 
 		if len(split) < 2 {
-			return errors.New("Invalid smtprelaymailwithport format!")
+			return errors.New("Invalid smtprelaymailwithport format")
 		}
 		if smtp.Config.Port, err = strconv.Atoi(split[1]); err != nil {
 			return err
 		}
 		split = strings.Split(split[0], "@")
 		if len(split) < 2 {
-			return errors.New("Invalid smtprelaymailwithport format!")
+			return errors.New("Invalid smtprelaymailwithport format")
 		}
 		smtp.Config.User = split[0]
 		smtp.Config.Host = split[1]

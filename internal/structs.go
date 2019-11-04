@@ -41,14 +41,14 @@ type ChallengeJSON struct {
 	HasURI      bool     // This emerges from URI != ""
 }
 
-
+// VerifyInfo saves if a users e-mail is verified
 type VerifyInfo struct {
-	IsVerified bool
-	VerifyToken string
+	IsVerified     bool
+	VerifyToken    string
 	VerifyDeadline time.Time
 }
 
-// User, was ist das wohl
+// User was ist das wohl
 type User struct {
 	Name         string `json:"name"`
 	Hash         []byte
@@ -188,13 +188,11 @@ func calculateRowNums() {
 			if cols[i][x].MinRow == cols[i][y].MinRow {
 				if len(cols[i][x].DepIDs) == len(cols[i][y].DepIDs) {
 					return stringCompareLess(cols[i][x].Name, cols[i][y].Name)
-				} else {
-					// Sort as less (higher) if it has more dependecies
-					return len(cols[i][x].DepIDs) > len(cols[i][y].DepIDs)
 				}
-			} else {
-				return cols[i][x].MinRow < cols[i][y].MinRow
+				// Sort as less (higher) if it has more dependecies
+				return len(cols[i][x].DepIDs) > len(cols[i][y].DepIDs)
 			}
+			return cols[i][x].MinRow < cols[i][y].MinRow
 		})
 
 		row := 0

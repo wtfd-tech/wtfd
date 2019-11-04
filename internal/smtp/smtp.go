@@ -7,9 +7,7 @@ import (
 	"errors"
 )
 
-/**
- * Dispatch a mail via send config
- */
+// DispatchMail Dispatches a mail via send config
 func DispatchMail(recipient string, subject string, content string, fields map[string]string) error {
 	if !Config.Enabled {
 		return errors.New("SMTP is disabled")
