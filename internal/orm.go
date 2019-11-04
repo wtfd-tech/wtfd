@@ -214,9 +214,9 @@ func ormUpdateUser(user User) error {
 		return errUserNotExisting
 	}
 
-	verified := 0
+	verified := 1
 	if user.VerifiedInfo.IsVerified {
-		verified = 1
+		verified = 2
 	}
 
 	admin := 1
@@ -391,7 +391,7 @@ func ormLoadUser(name string) (User, error) {
 	}
 
 	verified := false
-	if user.Verified == 1 {
+	if user.Verified == 2 {
 		verified = true
 	}
 	admin := false
