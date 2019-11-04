@@ -107,7 +107,7 @@ func updateScoreboard() error {
 
 	log.Printf("Scoreboard Update\n")
 	users, err := ormAllUsersSortedByPoints()
-	datas := make([]chartData, len(users)-1)
+	var datas []chartData
 	for _, u := range users {
 		solves := ormGetSolvesWithTime(u.Name)
 		data := make([]chartDataPoint, len(solves)+1)
