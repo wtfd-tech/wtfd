@@ -2,21 +2,27 @@ package wtfd
 
 import (
 	"errors"
-	"time"
 	"github.com/wtfd-tech/wtfd/internal/smtp"
+	"time"
 )
 
-
 var (
-	/* Runtime Parameter */        /* Defaults */
-	BRServiceDeskAddress         = "mail@example.com" // Server recieving service desk mails
-	BRServiceDeskEnabled         = false              // Is service desk support enabled
-	BRRateLimitInterval  float64 = 180                // 3 Minutes
-	BRRateLimitReports           = 2                  // 2 Reports during interval before beeing rate limited
-	BRSMTPPort                   = 25                 // server to server smtp port
-	BRSMTPUser                   = "sender"           // user used for sending mails
-	BRSMTPPassword               = "passwd"           // password for user
-	BRSMTPHost                   = "example.com"      // host where the send stmp server runns at
+	// BRServiceDeskAddress is the address where the Server is recieving service desk mails
+	BRServiceDeskAddress = "mail@example.com"
+	// BRServiceDeskEnabled sets that service desk support is enabled
+	BRServiceDeskEnabled = false
+	// BRRateLimitInterval sets the rate limiting interval, defaults to 3m
+	BRRateLimitInterval float64 = 180
+	// BRRateLimitReports sets the Reports during interval needed before beeing rate limited, defaults to 2
+	BRRateLimitReports = 2
+	// BRSMTPPort sets the server to server smtp port
+	BRSMTPPort = 25
+	// BRSMTPUser sets the server to server smtp user
+	BRSMTPUser = "sender"
+	// BRSMTPPassword sets the server to server smtp password
+	BRSMTPPassword = "passwd"
+	// BRSMTPHost sets the server to server smtp host
+	BRSMTPHost = "example.com"
 
 	userAccess map[string]access = make(map[string]access)
 )
@@ -26,9 +32,7 @@ type access struct {
 	lastAccess []time.Time
 }
 
-/**
- * Check if user is rate limited
- */
+// BRIsUserRateLimited Checks if user is rate limited
 func BRIsUserRateLimited(u *User) bool {
 	record, ok := userAccess[u.Name]
 	if !ok {
@@ -71,9 +75,7 @@ func registerUserAccess(u *User) {
 	userAccess[u.Name] = record
 }
 
-/**
- * Send bugreport
- */
+// BRDispatchBugreport sends a bugreport
 func BRDispatchBugreport(u *User, subject string, content string) error {
 	if !BRServiceDeskEnabled {
 		return errors.New("Service Desk is disabled")

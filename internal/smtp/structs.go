@@ -1,11 +1,17 @@
 package smtp
 
-type SMTPConfig struct {
-	Port     int     // server to server smtp port
-	User     string  // user used for sending mails
-	Password string  // password for user
-	Host     string  // host where the send stmp server runns at
-	Enabled  bool    // Is smtp service enabled
+type config struct {
+	// Port
+	Port int
+	// User
+	User string
+	// Password
+	Password string
+	// Host
+	Host string
+	// Enabled
+	Enabled bool
 }
 
-var Config SMTPConfig
+// Config is the config for the SMTP Server
+var Config config
