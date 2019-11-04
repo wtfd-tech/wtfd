@@ -7,7 +7,6 @@ import (
 	"github.com/gorilla/securecookie"
 	"html/template"
 	"io/ioutil"
-	"log"
 	"os"
 	"time"
 )
@@ -60,7 +59,7 @@ func getConfigJson() (Config, error) {
 		key = securecookie.GenerateRandomKey(32)
 
 		//Write default config to disk
-		config := Config{
+		config = Config{
 			Key:                                  base64.StdEncoding.EncodeToString(key),
 			Port:                                 defaultPort,
 			ChallengeInfoDir:                     "../challenges/info/",
@@ -79,7 +78,10 @@ func getConfigJson() (Config, error) {
 			EmailVerificationTokenLifetimeString: "168h", // One week
 		}
 		configBytes, _ := json.MarshalIndent(config, "", "\t")
-		_ = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
+		err = ioutil.WriteFile("config.json", configBytes, os.FileMode(0600))
+                if err != nil {
+                  return config, err
+                }
 	} else {
 		//Load config file
 		var (
@@ -88,13 +90,14 @@ func getConfigJson() (Config, error) {
 		)
 
 		if configBytes, err = ioutil.ReadFile("config.json"); err != nil {
-			log.Fatal(err)
+			return config, err
 		}
 		if err := json.Unmarshal(configBytes, &config); err != nil {
 			return config, err
 		}
 
 	}
+        fmt.Fprintf(os.Stderr, "a: %v", config)
 	return config, nil
 
 }
