@@ -358,14 +358,26 @@ func ormSolvedChallenge(user User, chall *Challenge) error {
 	return err
 }
 
-func ormAllUsersSortedByPoints() ([]_ORMUser, error) {
-	var a []_ORMUser
-	err := engine.Desc("Points").Find(&a)
-	if err != nil {
-		return a, err
+func ormAllUsersSortedByPoints() ([]User, error) {
+	var users []User
 
-	}
-	return a, nil
+	fmt.Println("---")
+
+	_ = engine.Desc("Points").Iterate(_ORMUser{}, func(i int, bean interface{}) error {
+		u      := bean.(*_ORMUser)
+
+		if u.Name != "" {
+			user,_ := ormLoadUser(u.Name)
+			fmt.Printf("%s, %#v\n", user.Name, user.Created.String())
+
+			users = append(users, user)
+		}
+
+		return  nil
+	})
+
+
+	return users, nil
 
 }
 
@@ -405,6 +417,7 @@ func ormLoadUser(name string) (User, error) {
 		DisplayName: user.DisplayName,
 		Admin:       admin,
 		Points:      user.Points,
+		Created:     user.Created,
 		VerifiedInfo: VerifyInfo {
 			IsVerified: verified,
 			VerifyToken: user.VerifyToken,
