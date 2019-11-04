@@ -57,6 +57,7 @@ type User struct {
 	Admin        bool `json:"admin"`
 	Points       int  `json:"points"`
 	VerifiedInfo VerifyInfo
+	Created      time.Time
 }
 
 type gridinfo struct {

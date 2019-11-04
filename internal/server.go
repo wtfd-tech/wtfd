@@ -83,7 +83,7 @@ type adminPageData struct {
 	IsUser        bool
 	Points        int
 	Leaderboard   bool
-	AllUsers      []_ORMUser
+	AllUsers      []User
 	GeneratedName string
 	Style         template.HTMLAttr
 	RowNums       []gridinfo
@@ -96,7 +96,7 @@ type leaderboardPageData struct {
 	IsUser        bool
 	Points        int
 	Leaderboard   bool
-	AllUsers      []_ORMUser
+	AllUsers      []User
 	GeneratedName string
 	Style         template.HTMLAttr
 	RowNums       []gridinfo

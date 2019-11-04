@@ -27,7 +27,7 @@ type _ORMUser struct {
 	Name        string    `xorm:"unique"`
 	DisplayName string    `xorm:"unique"`
 	Created     time.Time `xorm:"created" json:"time"`
-	Admin       bool
+	Admin       int
 	Hash        []byte
 	Points      int
 	Verified    int
@@ -149,10 +149,15 @@ func ormNewUser(user User) error {
 		return errUserExisting
 	}
 
+	admin := 1;
+	if user.Admin {
+		admin = 2
+	}
+
 	_, err = engine.Insert(_ORMUser{
 		Name:        user.Name,
 		Hash:        user.Hash,
-		Admin:       user.Admin,
+		Admin:       admin,
 		DisplayName: user.DisplayName,
 		Points:      0,
 	})
@@ -209,9 +214,14 @@ func ormUpdateUser(user User) error {
 		return errUserNotExisting
 	}
 
-	verified := 0
+	verified := 1
 	if user.VerifiedInfo.IsVerified {
-		verified = 1
+		verified = 2
+	}
+
+	admin := 1
+	if user.Admin {
+		admin = 2
 	}
 
 	u = _ORMUser{
@@ -219,7 +229,7 @@ func ormUpdateUser(user User) error {
 		Hash:           user.Hash,
 		DisplayName:    user.DisplayName,
 		Points:         user.Points,
-		Admin:          user.Admin,
+		Admin:          admin,
 		Verified:       verified,
 		VerifyToken:    user.VerifiedInfo.VerifyToken,
 		VerifyDeadline: user.VerifiedInfo.VerifyDeadline,
@@ -348,14 +358,26 @@ func ormSolvedChallenge(user User, chall *Challenge) error {
 	return err
 }
 
-func ormAllUsersSortedByPoints() ([]_ORMUser, error) {
-	var a []_ORMUser
-	err := engine.Desc("Points").Find(&a)
-	if err != nil {
-		return a, err
+func ormAllUsersSortedByPoints() ([]User, error) {
+	var users []User
 
-	}
-	return a, nil
+	fmt.Println("---")
+
+	_ = engine.Desc("Points").Iterate(_ORMUser{}, func(i int, bean interface{}) error {
+		u      := bean.(*_ORMUser)
+
+		if u.Name != "" {
+			user,_ := ormLoadUser(u.Name)
+			fmt.Printf("%s, %#v\n", user.Name, user.Created.String())
+
+			users = append(users, user)
+		}
+
+		return  nil
+	})
+
+
+	return users, nil
 
 }
 
@@ -381,16 +403,21 @@ func ormLoadUser(name string) (User, error) {
 	}
 
 	verified := false
-	if user.Verified == 1 {
+	if user.Verified == 2 {
 		verified = true
+	}
+	admin := false
+	if user.Admin == 2 {
+		admin = true
 	}
 
 	u = User{
 		Name:        user.Name,
 		Hash:        user.Hash,
 		DisplayName: user.DisplayName,
-		Admin:       user.Admin,
+		Admin:       admin,
 		Points:      user.Points,
+		Created:     user.Created,
 		VerifiedInfo: VerifyInfo {
 			IsVerified: verified,
 			VerifyToken: user.VerifyToken,
