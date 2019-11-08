@@ -13,7 +13,7 @@
 <!--Micro badger docker image size-->
 <!-- Docker hub stars-->
 
-![icon](https://raw.githubusercontent.com/wtfd-tech/wtfd/master/icon.svg)
+![](https://raw.githubusercontent.com/wtfd-tech/wtfd/master/icon.svg?sanitize=true)
 
 a [CTFd](https://ctfd.io/)-like Server in go
 
