@@ -14,6 +14,7 @@
 <!-- Docker hub stars-->
 
 ![icon](https://raw.githubusercontent.com/wtfd-tech/wtfd/master/icon.svg)
+
 a [CTFd](https://ctfd.io/)-like Server in go
 
 ![demo](https://raw.githubusercontent.com/wtfd-tech/wtfd/master/demo.png)

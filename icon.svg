@@ -2,22 +2,167 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="100mm"
-   height="100mm"
-   viewBox="0 0 100 100"
+   width="23.774mm"
+   height="18.490999mm"
+   viewBox="0 0 23.774 18.490999"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
    sodipodi:docname="icon.svg">
   <defs
-     id="defs2" />
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient7368">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop7364" />
+      <stop
+         style="stop-color:#f70000;stop-opacity:1"
+         offset="1"
+         id="stop7366" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient7173">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop7169" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop7171" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient6897"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop6895" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient6222"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1;"
+         offset="0"
+         id="stop6220" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6897"
+       id="linearGradient6905"
+       x1="9.14499"
+       y1="134.59805"
+       x2="29.486923"
+       y2="134.59805"
+       gradientUnits="userSpaceOnUse" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath7062">
+      <g
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd"
+         id="use7064"
+         inkscape:label="Clip">
+        <g
+           id="g7148"
+           style="fill:#000000;fill-opacity:1;fill-rule:evenodd">
+          <text
+             id="text7134"
+             y="134.23286"
+             x="45.703087"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Noto Sans Mono';-inkscape-font-specification:'Noto Sans Mono';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07000434;stroke-miterlimit:4;stroke-dasharray:0.07000434, 0.14000867;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+             xml:space="preserve"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07000434;stroke-miterlimit:4;stroke-dasharray:0.07000434, 0.14000867;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+               y="134.23286"
+               x="45.703087"
+               id="tspan7132"
+               sodipodi:role="line">W Fd</tspan></text>
+          <rect
+             y="116.74989"
+             x="56.665115"
+             height="17.556999"
+             width="1"
+             id="rect7136"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07000434;stroke-miterlimit:4;stroke-dasharray:0.07000434, 0.14000867;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
+          <rect
+             transform="rotate(25.458552)"
+             y="80.055115"
+             x="101.34862"
+             height="1"
+             width="9.0163708"
+             id="rect7138"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07000434;stroke-miterlimit:4;stroke-dasharray:0.07000434, 0.14000867;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
+          <a
+             id="a7142"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd">
+            <rect
+               style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07395493;stroke-miterlimit:4;stroke-dasharray:0.07395493, 0.14790986;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+               id="rect7140"
+               width="20.341934"
+               height="1.0878803"
+               x="9.14499"
+               y="134.05411"
+               transform="matrix(0.94931908,-0.31431398,0.27558664,0.96127624,0,0)" />
+          </a>
+          <rect
+             y="115.847"
+             x="56.665115"
+             height="0.90289646"
+             width="0.42985806"
+             id="rect7144"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07000434;stroke-miterlimit:4;stroke-dasharray:0.07000434, 0.14000867;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
+          <rect
+             y="119.72276"
+             x="64.805969"
+             height="0.90291923"
+             width="0.42985758"
+             id="rect7146"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.2238787;stroke-miterlimit:4;stroke-dasharray:0.2238787, 0.44775739;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
+        </g>
+      </g>
+    </clipPath>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7173"
+       id="linearGradient7175"
+       x1="45.830086"
+       y1="130.26411"
+       x2="69.399124"
+       y2="130.26411"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7368"
+       id="linearGradient7370"
+       x1="177.66058"
+       y1="439.02521"
+       x2="265.29132"
+       y2="541.17688"
+       gradientUnits="userSpaceOnUse"
+       gradientTransform="matrix(0.26458333,0,0,0.26458333,-45.625122,162.66143)" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7368"
+       id="linearGradient7372"
+       x1="47.006027"
+       y1="116.15875"
+       x2="70.191658"
+       y2="143.18639"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -25,17 +170,20 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.9552708"
-     inkscape:cx="239.10848"
-     inkscape:cy="62.358994"
+     inkscape:zoom="22.627416"
+     inkscape:cx="88.249862"
+     inkscape:cy="21.761133"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
-     inkscape:window-width="1920"
-     inkscape:window-height="1080"
-     inkscape:window-x="0"
-     inkscape:window-y="0"
-     inkscape:window-maximized="1" />
+     inkscape:window-width="941"
+     inkscape:window-height="1024"
+     inkscape:window-x="13"
+     inkscape:window-y="13"
+     inkscape:window-maximized="1"
+     units="mm"
+     width="22.774mm"
+     inkscape:pagecheckerboard="false" />
   <metadata
      id="metadata5">
     <rdf:RDF>
@@ -52,61 +200,15 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(0,-197)">
-    <circle
-       style="fill:#6c5353;stroke-width:1.13350093"
-       cy="247"
-       cx="50"
-       id="circle47"
-       r="50" />
-    <text
-       id="text53"
-       y="248.61903"
-       x="10.583347"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.33333588px;line-height:0.75;font-family:monospace;-inkscape-font-specification:monospace;letter-spacing:0px;word-spacing:0px;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:1.05833316"
-       xml:space="preserve"><tspan
-         id="tspan49"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.75;font-family:'Hack Nerd Font Mono';-inkscape-font-specification:'Hack Nerd Font Mono';fill:#e6e6e6;stroke-width:1.05833316"
-         y="248.61903"
-         x="10.583347"
-         sodipodi:role="line">WTF</tspan><tspan
-         id="tspan51"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.75;font-family:'Hack Nerd Font Mono';-inkscape-font-specification:'Hack Nerd Font Mono';fill:#e6e6e6;stroke-width:1.05833316"
-         y="280.36905"
-         x="10.583347"
-         sodipodi:role="line"> D </tspan></text>
-    <circle
-       r="50"
-       id="circle55"
-       cx="50"
-       cy="247"
-       style="fill:#6c5353;stroke-width:1.13350093" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.33333588px;line-height:0.75;font-family:monospace;-inkscape-font-specification:monospace;letter-spacing:0px;word-spacing:0px;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:1.05833316"
-       x="10.583347"
-       y="248.61903"
-       id="text61"><tspan
-         sodipodi:role="line"
-         x="10.583347"
-         y="248.61903"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.75;font-family:'Hack Nerd Font Mono';-inkscape-font-specification:'Hack Nerd Font Mono';fill:#e6e6e6;stroke-width:1.05833316"
-         id="tspan57">WTF</tspan><tspan
-         sodipodi:role="line"
-         x="10.583347"
-         y="280.36905"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.75;font-family:'Hack Nerd Font Mono';-inkscape-font-specification:'Hack Nerd Font Mono';fill:#e6e6e6;stroke-width:1.05833316"
-         id="tspan59"> D </tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Tinos Nerd Font Mono';-inkscape-font-specification:'Tinos Nerd Font Mono';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="0.10048054"
-       y="248.33534"
-       id="text65"><tspan
-         sodipodi:role="line"
-         id="tspan63"
-         x="0.10048054"
-         y="248.33534"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.93333244px;font-family:'Noto Sans New Tai Lue';-inkscape-font-specification:'Noto Sans New Tai Lue';stroke-width:0.26458332">Placeholder</tspan></text>
+     transform="translate(0,-278.509)">
+    <path
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:url(#linearGradient7370);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07000434;stroke-miterlimit:4;stroke-dasharray:0.07000434, 0.14000867;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       d="m 11.040152,278.50862 v 0.90279 5.58312 L 0,288.65012 l 0.29972264,1.04593 1.90530956,7.19801 h 0.96325 l 1.4288532,-4.92114 c 0.09878,-0.32457 0.1798955,-0.63489 0.2433955,-0.93121 0.070559,-0.30339 0.1092173,-0.50101 0.1162711,-0.59273 0.0141,0.0635 0.039135,0.1762 0.074414,0.33848 0.035279,0.15522 0.08101,0.3354 0.1374589,0.54002 0.056441,0.20461 0.1125379,0.40931 0.1689815,0.61391 l 1.4712288,4.95267 h 0.96325 l 2.0107302,-7.55613 H 8.788093 l -1.1642699,4.60386 c -0.084669,0.33161 -0.1587076,0.65228 -0.2222076,0.96273 -0.0635,0.30338 -0.1130327,0.58591 -0.1483122,0.84698 -0.03528,-0.24694 -0.08809,-0.52948 -0.1586468,-0.84698 -0.070559,-0.32456 -0.1549585,-0.64904 -0.2537301,-0.97358 L 5.4544462,289.33793 H 4.470011 l -1.3332513,4.56148 c -0.09172,0.31045 -0.172839,0.62785 -0.2433981,0.9524 -0.070549,0.32455 -0.1238832,0.62452 -0.1591628,0.89969 -0.03528,-0.26811 -0.084291,-0.55392 -0.1477936,-0.85732 -0.056452,-0.30338 -0.127209,-0.6175 -0.211873,-0.94206 l -1.160653,-4.55889 9.8262728,-3.25355 v 10.8288 h 0.99994 v -11.15953 l 7.570597,-2.50682 -0.0041,-0.015 h 0.0041 v -0.90279 L 11.4701,278.50862 Z m 0.99994,1.37873 5.916951,2.8174 -5.916951,1.95905 z m 10.80244,8.96379 v 2.26446 c 0,0.10584 0.0071,0.25063 0.02119,0.43409 0.02117,0.17637 0.03532,0.31031 0.04237,0.40204 h -0.06356 c -0.17639,-0.23284 -0.40559,-0.43045 -0.687814,-0.59273 -0.275166,-0.16228 -0.631224,-0.2434 -1.068667,-0.2434 -0.705557,0 -1.2739,0.25043 -1.70429,0.75138 -0.423334,0.49389 -0.634585,1.22776 -0.634585,2.20141 0,0.97367 0.211251,1.70753 0.634585,2.20142 0.423333,0.48683 0.98788,0.73019 1.693436,0.73019 0.4445,0 0.808152,-0.0844 1.090375,-0.25373 0.28222,-0.16934 0.507627,-0.37403 0.67696,-0.61392 h 0.04238 l 0.137459,0.76171 h 0.751892 v -8.04292 z m -9.143627,0.48679 v 7.55613 h 0.952397 v -3.20652 h 3.069063 v -0.83613 h -3.069063 v -2.67735 h 3.270083 v -0.83613 z m 7.513751,2.55024 c 0.627946,0 1.058564,0.19054 1.291394,0.57154 0.232834,0.37394 0.349335,0.91398 0.349335,1.61954 v 0.16898 c 0,0.66322 -0.123579,1.1608 -0.37052,1.49241 -0.239892,0.32456 -0.659632,0.4868 -1.259356,0.4868 -0.508,0 -0.889082,-0.18675 -1.143082,-0.56069 -0.246943,-0.37395 -0.370519,-0.89983 -0.370519,-1.57717 0,-0.67028 0.123576,-1.20273 0.370519,-1.59783 0.254,-0.40217 0.631286,-0.60358 1.132229,-0.60358 z m -4.066934,4.17959 a 0.44966482,0.44966479 0 0 0 -0.449585,0.44958 0.44966482,0.44966479 0 0 0 0.449585,0.44959 0.44966482,0.44966479 0 0 0 0.450101,-0.44959 0.44966482,0.44966479 0 0 0 -0.450101,-0.44958 z"
+       id="path7332"
+       inkscape:connector-curvature="0" />
+    <a
+       id="a6965"
+       style="fill:url(#linearGradient7372);fill-opacity:1;fill-rule:evenodd"
+       transform="translate(-45.625122,162.66143)" />
   </g>
 </svg>
