@@ -2,22 +2,166 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
+   xmlns:osb="http://www.openswatchbook.org/uri/2009/osb"
    xmlns:dc="http://purl.org/dc/elements/1.1/"
    xmlns:cc="http://creativecommons.org/ns#"
    xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
    xmlns:svg="http://www.w3.org/2000/svg"
    xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
-   width="100mm"
-   height="100mm"
-   viewBox="0 0 100 100"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 210 297"
    version="1.1"
    id="svg8"
    inkscape:version="0.92.4 5da689c313, 2019-01-14"
-   sodipodi:docname="icon.svg">
+   sodipodi:docname="wtfd-logo-2.svg">
   <defs
-     id="defs2" />
+     id="defs2">
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient7368">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop7364" />
+      <stop
+         style="stop-color:#f70000;stop-opacity:1"
+         offset="1"
+         id="stop7366" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       id="linearGradient7173">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop7169" />
+      <stop
+         style="stop-color:#000000;stop-opacity:0;"
+         offset="1"
+         id="stop7171" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient6897"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#000000;stop-opacity:1;"
+         offset="0"
+         id="stop6895" />
+    </linearGradient>
+    <linearGradient
+       id="linearGradient6222"
+       osb:paint="solid">
+      <stop
+         style="stop-color:#ff0000;stop-opacity:1;"
+         offset="0"
+         id="stop6220" />
+    </linearGradient>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient6897"
+       id="linearGradient6905"
+       x1="9.14499"
+       y1="134.59805"
+       x2="29.486924"
+       y2="134.59805"
+       gradientUnits="userSpaceOnUse" />
+    <clipPath
+       clipPathUnits="userSpaceOnUse"
+       id="clipPath7062">
+      <g
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd"
+         id="use7064"
+         inkscape:label="Clip">
+        <g
+           id="g7148"
+           style="fill:#000000;fill-opacity:1;fill-rule:evenodd">
+          <text
+             id="text7134"
+             y="134.23286"
+             x="45.703087"
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Noto Sans Mono';-inkscape-font-specification:'Noto Sans Mono';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07000434;stroke-miterlimit:4;stroke-dasharray:0.07000434, 0.14000867;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+             xml:space="preserve"><tspan
+               style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07000434;stroke-miterlimit:4;stroke-dasharray:0.07000434, 0.14000867;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+               y="134.23286"
+               x="45.703087"
+               id="tspan7132"
+               sodipodi:role="line">W Fd</tspan></text>
+          <rect
+             y="116.74989"
+             x="56.665115"
+             height="17.556999"
+             width="1"
+             id="rect7136"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07000434;stroke-miterlimit:4;stroke-dasharray:0.07000434, 0.14000867;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
+          <rect
+             transform="rotate(25.458552)"
+             y="80.055115"
+             x="101.34862"
+             height="1"
+             width="9.0163708"
+             id="rect7138"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07000434;stroke-miterlimit:4;stroke-dasharray:0.07000434, 0.14000867;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
+          <a
+             id="a7142"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd">
+            <rect
+               style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07395493;stroke-miterlimit:4;stroke-dasharray:0.07395493, 0.14790986;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+               id="rect7140"
+               width="20.341934"
+               height="1.0878803"
+               x="9.14499"
+               y="134.05411"
+               transform="matrix(0.94931908,-0.31431398,0.27558664,0.96127624,0,0)" />
+          </a>
+          <rect
+             y="115.847"
+             x="56.665115"
+             height="0.90289646"
+             width="0.42985806"
+             id="rect7144"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.07000434;stroke-miterlimit:4;stroke-dasharray:0.07000434, 0.14000867;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
+          <rect
+             y="119.72276"
+             x="64.805969"
+             height="0.90291923"
+             width="0.42985758"
+             id="rect7146"
+             style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.2238787;stroke-miterlimit:4;stroke-dasharray:0.2238787, 0.44775739;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill" />
+        </g>
+      </g>
+    </clipPath>
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7173"
+       id="linearGradient7175"
+       x1="45.830087"
+       y1="130.26411"
+       x2="69.399125"
+       y2="130.26411"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7368"
+       id="linearGradient7370"
+       x1="177.66058"
+       y1="439.02521"
+       x2="265.29132"
+       y2="541.17688"
+       gradientUnits="userSpaceOnUse" />
+    <linearGradient
+       inkscape:collect="always"
+       xlink:href="#linearGradient7368"
+       id="linearGradient7372"
+       x1="47.006027"
+       y1="116.15875"
+       x2="70.191658"
+       y2="143.18639"
+       gradientUnits="userSpaceOnUse" />
+  </defs>
   <sodipodi:namedview
      id="base"
      pagecolor="#ffffff"
@@ -25,9 +169,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="1.9552708"
-     inkscape:cx="239.10848"
-     inkscape:cy="62.358994"
+     inkscape:zoom="11.313708"
+     inkscape:cx="221.96575"
+     inkscape:cy="647.55066"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
      showgrid="false"
@@ -51,62 +195,14 @@
   <g
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
-     id="layer1"
-     transform="translate(0,-197)">
-    <circle
-       style="fill:#6c5353;stroke-width:1.13350093"
-       cy="247"
-       cx="50"
-       id="circle47"
-       r="50" />
-    <text
-       id="text53"
-       y="248.61903"
-       x="10.583347"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.33333588px;line-height:0.75;font-family:monospace;-inkscape-font-specification:monospace;letter-spacing:0px;word-spacing:0px;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:1.05833316"
-       xml:space="preserve"><tspan
-         id="tspan49"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.75;font-family:'Hack Nerd Font Mono';-inkscape-font-specification:'Hack Nerd Font Mono';fill:#e6e6e6;stroke-width:1.05833316"
-         y="248.61903"
-         x="10.583347"
-         sodipodi:role="line">WTF</tspan><tspan
-         id="tspan51"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.75;font-family:'Hack Nerd Font Mono';-inkscape-font-specification:'Hack Nerd Font Mono';fill:#e6e6e6;stroke-width:1.05833316"
-         y="280.36905"
-         x="10.583347"
-         sodipodi:role="line"> D </tspan></text>
-    <circle
-       r="50"
-       id="circle55"
-       cx="50"
-       cy="247"
-       style="fill:#6c5353;stroke-width:1.13350093" />
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:42.33333588px;line-height:0.75;font-family:monospace;-inkscape-font-specification:monospace;letter-spacing:0px;word-spacing:0px;fill:#e6e6e6;fill-opacity:1;stroke:none;stroke-width:1.05833316"
-       x="10.583347"
-       y="248.61903"
-       id="text61"><tspan
-         sodipodi:role="line"
-         x="10.583347"
-         y="248.61903"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.75;font-family:'Hack Nerd Font Mono';-inkscape-font-specification:'Hack Nerd Font Mono';fill:#e6e6e6;stroke-width:1.05833316"
-         id="tspan57">WTF</tspan><tspan
-         sodipodi:role="line"
-         x="10.583347"
-         y="280.36905"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:0.75;font-family:'Hack Nerd Font Mono';-inkscape-font-specification:'Hack Nerd Font Mono';fill:#e6e6e6;stroke-width:1.05833316"
-         id="tspan59"> D </tspan></text>
-    <text
-       xml:space="preserve"
-       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Tinos Nerd Font Mono';-inkscape-font-specification:'Tinos Nerd Font Mono';letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:0.26458332"
-       x="0.10048054"
-       y="248.33534"
-       id="text65"><tspan
-         sodipodi:role="line"
-         id="tspan63"
-         x="0.10048054"
-         y="248.33534"
-         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:16.93333244px;font-family:'Noto Sans New Tai Lue';-inkscape-font-specification:'Noto Sans New Tai Lue';stroke-width:0.26458332">Placeholder</tspan></text>
+     id="layer1">
+    <path
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:10.58333302px;line-height:1.25;font-family:'Noto Sans';-inkscape-font-specification:'Noto Sans';letter-spacing:0px;word-spacing:0px;fill:url(#linearGradient7370);fill-opacity:1;fill-rule:evenodd;stroke:none;stroke-width:0.26458332;stroke-miterlimit:4;stroke-dasharray:0.26458333, 0.52916662999999997;stroke-dashoffset:0;stroke-opacity:1;paint-order:markers stroke fill"
+       d="M 214.16797 437.84766 L 214.16797 441.25977 L 214.16797 462.36133 L 172.44141 476.17773 L 173.57422 480.13086 L 180.77539 507.33594 L 184.41602 507.33594 L 189.81641 488.73633 C 190.18975 487.50964 190.49633 486.33678 190.73633 485.2168 C 191.00301 484.07013 191.14912 483.32322 191.17578 482.97656 C 191.22907 483.21656 191.32369 483.64252 191.45703 484.25586 C 191.59037 484.84252 191.76321 485.52351 191.97656 486.29688 C 192.18988 487.0702 192.4019 487.8439 192.61523 488.61719 L 198.17578 507.33594 L 201.81641 507.33594 L 209.41602 478.77734 L 205.65625 478.77734 L 201.25586 496.17773 C 200.93585 497.43106 200.65602 498.64305 200.41602 499.81641 C 200.17602 500.96304 199.98881 502.03089 199.85547 503.01758 C 199.72213 502.08426 199.52253 501.01641 199.25586 499.81641 C 198.98918 498.58972 198.67019 497.36336 198.29688 496.13672 L 193.05664 478.77734 L 189.33594 478.77734 L 184.29688 496.01758 C 183.95022 497.19093 183.64363 498.39054 183.37695 499.61719 C 183.11031 500.84383 182.90873 501.97757 182.77539 503.01758 C 182.64205 502.00425 182.45681 500.92405 182.2168 499.77734 C 182.00344 498.63071 181.73601 497.44348 181.41602 496.2168 L 177.0293 478.98633 L 214.16797 466.68945 L 214.16797 507.61719 L 217.94727 507.61719 L 217.94727 465.43945 L 246.56055 455.96484 L 246.54492 455.9082 L 246.56055 455.9082 L 246.56055 452.49609 L 215.79297 437.84766 L 214.16797 437.84766 z M 217.94727 443.05859 L 240.31055 453.70703 L 217.94727 461.11133 L 217.94727 443.05859 z M 258.77539 476.9375 L 258.77539 485.49609 C 258.77539 485.89612 258.80222 486.44336 258.85547 487.13672 C 258.93548 487.80335 258.98898 488.30955 259.01562 488.65625 L 258.77539 488.65625 C 258.10872 487.77622 257.24245 487.02936 256.17578 486.41602 C 255.13578 485.80267 253.79005 485.49609 252.13672 485.49609 C 249.47005 485.49609 247.32198 486.44258 245.69531 488.33594 C 244.09531 490.20261 243.29688 492.97628 243.29688 496.65625 C 243.29688 500.33626 244.09531 503.10989 245.69531 504.97656 C 247.29531 506.81655 249.42903 507.73633 252.0957 507.73633 C 253.7757 507.73633 255.15013 507.41733 256.2168 506.77734 C 257.28346 506.13732 258.13539 505.3637 258.77539 504.45703 L 258.93555 504.45703 L 259.45508 507.33594 L 262.29688 507.33594 L 262.29688 476.9375 L 258.77539 476.9375 z M 224.2168 478.77734 L 224.2168 507.33594 L 227.81641 507.33594 L 227.81641 495.2168 L 239.41602 495.2168 L 239.41602 492.05664 L 227.81641 492.05664 L 227.81641 481.9375 L 240.17578 481.9375 L 240.17578 478.77734 L 224.2168 478.77734 z M 252.61523 488.41602 C 254.98857 488.41602 256.6161 489.13617 257.49609 490.57617 C 258.37609 491.98949 258.81641 494.03058 258.81641 496.69727 L 258.81641 497.33594 C 258.81641 499.8426 258.34934 501.72323 257.41602 502.97656 C 256.50934 504.20325 254.92292 504.81641 252.65625 504.81641 C 250.73625 504.81641 249.29594 504.11058 248.33594 502.69727 C 247.40261 501.28391 246.93555 499.29635 246.93555 496.73633 C 246.93555 494.20299 247.40261 492.19056 248.33594 490.69727 C 249.29594 489.17725 250.7219 488.41602 252.61523 488.41602 z M 237.24414 504.21289 A 1.6995206 1.6995205 0 0 0 235.54492 505.91211 A 1.6995206 1.6995205 0 0 0 237.24414 507.61133 A 1.6995206 1.6995205 0 0 0 238.94531 505.91211 A 1.6995206 1.6995205 0 0 0 237.24414 504.21289 z "
+       transform="scale(0.26458333)"
+       id="path7332" />
+    <a
+       id="a6965"
+       style="fill:url(#linearGradient7372);fill-opacity:1;fill-rule:evenodd" />
   </g>
 </svg>
