@@ -100,7 +100,7 @@ WTFd is HTTP only, if you need HTTPS use a reverse proxy like [Traefik](https://
 
 ## Development notes
 
-To make working with the Javascirpt easier, you can do 
+To make working with the TypeScript easier, you can do 
 
 ```bash
 npx webpack --config webpack.dev.js -w
