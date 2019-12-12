@@ -10,6 +10,7 @@
 [![Contributors](https://img.shields.io/github/contributors/wtfd-tech/wtfd?style=flat-square&label=Contributors)](https://github.com/wtfd-tech/wtfd/graphs/contributors)
 [![Open Issues](https://img.shields.io/github/issues/wtfd-tech/wtfd?style=flat-square&label=Issues)](https://github.com/wtfd-tech/wtfd/issues)
 [![Open PRs](https://img.shields.io/github/issues-pr/wtfd-tech/wtfd?style=flat-square&label=Pull%20Requests)](https://github.com/wtfd-tech/wtfd/pulls)
+[![Rawsec's CyberSecurity Inventory](https://inventory.rawsec.ml/img/badges/Rawsec-inventoried-FF5050_flat-square.svg)](https://inventory.rawsec.ml/ctf_platforms.html#WTFd)
 <!--Micro badger docker image size-->
 <!-- Docker hub stars-->
 
