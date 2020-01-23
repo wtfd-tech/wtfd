@@ -3,10 +3,11 @@ package db
 import (
 	"errors"
 	"fmt"
+	"time"
+
 	"github.com/go-xorm/xorm"
 	_ "github.com/mattn/go-sqlite3" // needed for xorm
 	"github.com/wtfd-tech/wtfd/internal/types"
-	"time"
 	"xorm.io/core"
 )
 
@@ -275,7 +276,7 @@ func (d xormdb) AllUsersSortedByPoints() ([]User, error) {
 
 		if u.Name != "" {
 			user, _ := d.LoadUser(u.Name)
-			fmt.Printf("%s, %#v\n", user.Name, user.Created.String())
+			//fmt.Printf("%s, %#v\n", user.Name, user.Created.String())
 
 			users = append(users, user)
 		}
@@ -388,6 +389,7 @@ func (d xormdb) UserByToken(token string) (User, error) {
 	// Load all data into real User struct
 	return d.LoadUser(user.Name)
 }
+
 // Contains looks if a username is in the datenbank
 func (d xormdb) Contains(username, displayname string) bool {
 	count, _ := d.UserExists(User{Name: username, DisplayName: displayname})

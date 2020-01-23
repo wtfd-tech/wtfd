@@ -4,11 +4,12 @@ import (
 	"encoding/base64"
 	"encoding/json"
 	"fmt"
-	"github.com/gorilla/securecookie"
 	"html/template"
 	"io/ioutil"
 	"os"
 	"time"
+
+	"github.com/gorilla/securecookie"
 )
 
 const (
@@ -95,7 +96,6 @@ func getConfigJSON() (Config, error) {
 		if err := json.Unmarshal(configBytes, &config); err != nil {
 			return config, err
 		}
-
 	}
 	fmt.Fprintf(os.Stderr, "a: %v", config)
 	return config, nil

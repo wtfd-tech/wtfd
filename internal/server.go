@@ -417,8 +417,6 @@ func register(w http.ResponseWriter, r *http.Request) {
 }
 
 func changePassword(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("HERE HERE HERE")
-
 	if r.Method != "POST" {
 		w.WriteHeader(http.StatusBadRequest)
 		_, _ = fmt.Fprintf(w, "Invalid Request")
