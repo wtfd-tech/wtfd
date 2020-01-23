@@ -1,3 +1,4 @@
+import './dragscroll';
 import Leaderboard from './leaderboard';
 import AdminPage from './admin';
 import MainPage from './main';
@@ -21,7 +22,6 @@ switch(location.pathname){
   }
   default: {
     new MainPage();
-    import './dragscroll';
     break;
   }
 }
