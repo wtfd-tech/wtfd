@@ -1,4 +1,5 @@
 import dialogPolyfill from 'dialog-polyfill';
+import './dragscroll'
 import {showDialog} from './util';
 
 function absolute(a: number): number {
