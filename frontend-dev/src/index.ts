@@ -21,6 +21,7 @@ switch(location.pathname){
   }
   default: {
     new MainPage();
+    import './dragscroll';
     break;
   }
 }
