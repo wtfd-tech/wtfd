@@ -60,7 +60,7 @@ constructor() {
     }
   });
 
-  let ws = new WebSocket("ws://" + window.location.host + "/ws");
+  let ws = new WebSocket("wss://" + window.location.host + "/ws");
   ws.onopen = function() {
     // Web Socket is connected, send data uting send()
     console.log("ws connected");
