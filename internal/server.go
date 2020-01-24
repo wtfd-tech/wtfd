@@ -696,7 +696,8 @@ func Server() error {
 
 	gob.Register(&db.User{})
 
-	config, err := cfg.GetConfig()
+	var err error
+	config, err = cfg.GetConfig()
 	if err != nil {
 		return err
 	}
