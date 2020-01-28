@@ -23,6 +23,7 @@ jobs:
 
       - name: Build
         run: |
+          go get -u github.com/gobuffalo/packr/v2/packr2
           make
       - name: Prepare artifact upload
         run: |
