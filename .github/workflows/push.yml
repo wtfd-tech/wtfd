@@ -25,8 +25,7 @@ jobs:
     - name: Build
       run: |
         go get -u github.com/gobuffalo/packr/v2/packr2
-        export PATH=$PATH:$(go env GOPATH)/bin
-        make
+        PATH=$PATH:$(go env GOPATH)/bin make
     - name: Prepare artifact upload
       run: |
         set -e
