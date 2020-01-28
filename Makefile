@@ -66,9 +66,7 @@ tmp/.js-deps.sentinel: tmp/.check-deps.sentinel
 
 tmp/.check-deps.sentinel:
 > mkdir -p $(@D)
-> RIP=0
-> which go || (echo "go not installed" && RIP=1)
-> which packr2 || (echo "packr2 not installed, run 'go get -u github.com/gobuffalo/packr/v2/packr2' please" && RIP=1)
-> which npm || (echo "npm not installed" && RIP=1)
-> [[ $${RIP} == 0 ]]
+> which go || echo "go not installed"; exit 1
+> which packr2 || echo "packr2 not installed, run 'go get -u github.com/gobuffalo/packr/v2/packr2' please"; exit 1
+> which npm || echo "npm not installed"; exit 1
 > touch $@
