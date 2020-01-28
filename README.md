@@ -86,11 +86,7 @@ You need to have `go`, `sqlite3` and `npm` installed
 ```bash
 git clone https://github.com/wtfd-tech/wtfd
 cd wtfd
-cd frontend-dev
-npm install # Install JS Dependencies
-npx webpack --config webpack.prod.js # Compile the JS
-cd ..
-go build ./cmd/wtfd.go
+make
 ```
 
 ## Running WTFd
@@ -104,7 +100,7 @@ WTFd is HTTP only, if you need HTTPS use a reverse proxy like [Traefik](https://
 To make working with the TypeScript easier, you can do 
 
 ```bash
-npx webpack --config webpack.dev.js -w
+make js-run
 ```
 
 to automatically compile the JS on changes
