@@ -1,3 +1,4 @@
+//go:generate packr2
 package wtfd
 
 import (
@@ -821,24 +822,24 @@ func Server() error {
 	challs.FillChallengeURI(config.SSHHost)
 	// Packr
 
-	box := packr.New("Box", "./html")
-	maintemplatetext, err := box.FindString("html/index.html")
+	box := packr.New("Box", "../html")
+	maintemplatetext, err := box.FindString("index.html")
 	if err != nil {
 		return err
 	}
-	headertemplatetext, err := box.FindString("html/header.html")
+	headertemplatetext, err := box.FindString("header.html")
 	if err != nil {
 		return err
 	}
-	footertemplatetext, err := box.FindString("html/footer.html")
+	footertemplatetext, err := box.FindString("footer.html")
 	if err != nil {
 		return err
 	}
-	admintemplatetext, err := box.FindString("html/admin.html")
+	admintemplatetext, err := box.FindString("admin.html")
 	if err != nil {
 		return err
 	}
-	leaderboardtemplatetext, err := box.FindString("html/leaderboard.html")
+	leaderboardtemplatetext, err := box.FindString("leaderboard.html")
 	if err != nil {
 		return err
 	}

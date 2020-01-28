@@ -40,3 +40,6 @@ config.json
 node_modules
 html/static/bundle.js
 *.js.map
+tmp/
+internal/packrd/
+internal/wtfd-packr.go
