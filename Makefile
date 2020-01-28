@@ -57,7 +57,7 @@ tmp/.js.sentinel: $(shell find frontend-dev/src -type f) tmp/.js-deps.sentinel
 > popd
 > touch $@
 
-tmp/.js-deps.sentinel: frontend-dev/node_modules tmp/.check-deps.sentinel
+tmp/.js-deps.sentinel: tmp/.check-deps.sentinel
 > mkdir -p $(@D)
 > pushd frontend-dev
 > npm install
