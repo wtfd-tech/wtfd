@@ -23,8 +23,8 @@ type Config struct {
 	Port                                 int64         `json:"port"`
 	SocialMedia                          template.HTML `json:"social"`
 	Icon                                 string        `json:"icon"`
-	FirstLine                            template.HTML `json:"firstline"`
-	SecondLine                           template.HTML `json:"secondline"`
+	CoinIcon                             string        `json:"coinicon"`
+	UpperLeft                            template.HTML `json:"upperleft"`
 	Key                                  string        `json:"key"`
 	ChallengeInfoDir                     string        `json:"challinfodir"`
 	SSHHost                              string        `json:"sshhost"`
@@ -73,9 +73,9 @@ func getConfigJSON() (Config, error) {
 			RestrictEmailDomains:                 nil,
 			RequireEmailVerification:             false,
 			SocialMedia:                          `<a class="link sociallink" href="https://github.com/wtfd-tech/wtfd"><span class="mdi mdi-github-circle"></span> GitHub</a>`,
+			CoinIcon:                             "coinicon.svg",
 			Icon:                                 "icon.svg",
-			FirstLine:                            "WTFd",
-			SecondLine:                           `CTF`,
+			UpperLeft:                            "// WTFd<br>//CTF",
 			EmailVerificationTokenLifetimeString: "168h", // One week
 		}
 		configBytes, _ := json.MarshalIndent(config, "", "\t")

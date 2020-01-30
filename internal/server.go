@@ -907,6 +907,9 @@ func Server() error {
 	r.HandleFunc("/dist/"+config.Icon, func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, config.Icon)
 	})
+	r.HandleFunc("/dist/"+config.CoinIcon, func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, config.CoinIcon)
+	})
 
 	Port := config.Port
 	if portenv := os.Getenv("WTFD_PORT"); portenv != "" {
