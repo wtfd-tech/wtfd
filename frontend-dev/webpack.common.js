@@ -15,10 +15,11 @@ const webpack = require('webpack');
  */
 
 module.exports = {
-	entry: './src/index.ts',
+  entry: { bundle: './src/index.ts' },
 	output: {
-		filename: 'bundle.js',
-		path: path.resolve(__dirname, '..', 'html', 'static')
+		filename: 'static/[name].js',
+		chunkFilename: 'static/[name].[contenthash].js',
+		path: path.resolve(__dirname, '..', 'html')
 	},
 	plugins: [new webpack.ProgressPlugin()],
 	module: {
@@ -36,7 +37,8 @@ module.exports = {
  			cacheGroups: {
  				vendors: {
  					priority: -10,
- 					test: /[\\/]node_modules[\\/]/
+ 					test: /[\\/]node_modules[\\/]/,
+                                        chunks: 'all',
  				}
  			},
  

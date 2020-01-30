@@ -24,6 +24,7 @@ test: tmp/.test.sentinel
 clean: tmp/.check-deps.sentinel
 > rm -rf tmp
 > rm wtfd
+> rm -rf html/static/*.js html/static/*.js.map
 > pushd internal
 > packr2 clean
 > popd
@@ -39,7 +40,7 @@ wtfd: $(shell find . -name '*.go') tmp/.gen.sentinel
 > go build ./cmd/wtfd.go
 
 
-tmp/.test.sentinel: $(shell find . -name '*.go') tmp/.check-deps.sentinel
+tmp/.test.sentinel: $(shell find . -name '*.go') tmp/.check-deps.sentinel 
 > mkdir -p $(@D)
 > go test ./...
 > touch $@
@@ -50,7 +51,7 @@ tmp/.gen.sentinel: tmp/.js.sentinel
 > go generate ./...
 > touch $@
 
-tmp/.js.sentinel: $(shell find frontend-dev/src -type f) tmp/.js-deps.sentinel
+tmp/.js.sentinel: $(shell find frontend-dev/src -type f) tmp/.js-deps.sentinel $(shell find  frontend-dev/ -name 'webpack.*.js')
 > mkdir -p $(@D)
 > pushd frontend-dev
 > npm run build
