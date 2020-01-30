@@ -3,7 +3,7 @@
     "allowSyntheticDefaultImports": true,
     "noImplicitAny": true,
     "sourceMap": true,
-    "module": "es6",
+    "module": "esnext",
     "target": "es6",
     "allowJs": true
   }
