@@ -66,7 +66,10 @@ body {
     display: flex;
     min-height: 100vh;
     flex-direction: column;
-    overflow: hidden;
+}
+
+html {
+    scrollbar-width: hidden;
 }
 
 header {
@@ -259,8 +262,8 @@ td, th {
 
 dialog {
     border: none;
-    max-width: 80%;
-
+    margin: 0 auto;
+    position: absolute;
     /*noinspection CssFloatPxLength*/
     box-shadow: 2.5px 2.5px 10px -2.5px;
 }
