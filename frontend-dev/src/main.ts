@@ -123,6 +123,14 @@ constructor() {
 
     // @ts-ignore
     start(this);
+
+    //// Open challenge if it is specified in the URL
+    console.log(window.location.hash);
+    if (window.location.hash != "") {
+        console.log("Opening challenge details for "+window.location.hash.substr(1));
+        document.getElementById(window.location.hash.substr(1)).click();
+    }
+    //// END OPEN CHALLENGE
 }
 
 addChallEventListener(title: string, points: number) {
@@ -140,7 +148,7 @@ addChallEventListener(title: string, points: number) {
         let checkLoading = document.getElementById("checkloading");
         let challUri = <HTMLAnchorElement> document.getElementById("challuri");
         let challAuthor = document.getElementById("challauthor");
-        history.pushState({foo: "bar"}, "challenge " + title, title);
+        history.pushState({foo: "bar"}, "challenge " + title, "#"+title);
         this.flagsubmitbutton.removeEventListener("click", this.flagsubmiteventlistenerfunc);
         flagInput.removeEventListener("keypress", this.flaginputeventlistenerfunc);
         solutionbutton.removeEventListener("click", this.solutioneventlistenerfunc);

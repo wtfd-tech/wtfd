@@ -240,8 +240,6 @@ func leaderboardpage(w http.ResponseWriter, r *http.Request) {
 
 }
 func mainpage(w http.ResponseWriter, r *http.Request) {
-	vars := mux.Vars(r)
-	hasChall := vars["chall"] != ""
 	userobj, ok := getUser(r)
 	user := &userobj
 	genu := ""
@@ -273,8 +271,6 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		Challenges:             challs,
 		GeneratedName:          genu,
 		ADC:                    AllDepsCompleted,
-		HasSelectedChallengeID: hasChall,
-		SelectedChallengeID:    vars["chall"],
 		User:                   user,
 		IsUser:                 ok,
 		RowNums:                rnums,
@@ -895,7 +891,6 @@ func Server() error {
 	r.HandleFunc("/request_verify", requestVerify)
 	r.HandleFunc("/verify", verify)
 	r.HandleFunc("/reportbug", reportBug)
-	r.HandleFunc("/{chall}", mainpage)
 	r.HandleFunc("/detailview/{chall}", detailview)
 	r.HandleFunc("/solutionview/{chall}", solutionview)
 	r.HandleFunc("/getUserData/{user}", getUserData)
