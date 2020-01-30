@@ -262,8 +262,10 @@ td, th {
 
 dialog {
     border: none;
+    position: fixed;
+    top: 25%;
     margin: 0 auto;
-    position: absolute;
+
     /*noinspection CssFloatPxLength*/
     box-shadow: 2.5px 2.5px 10px -2.5px;
 }
@@ -319,7 +321,7 @@ h3 {
 }
 
 #detailview {
-    width: 512px;
+    max-width: 60vw;
 }
 
 .closebtn {
