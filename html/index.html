@@ -33,7 +33,6 @@ colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
           {{ end }}
           console.log(o);
           connectAll(o);
-  {{if .HasSelectedChallengeID }} document.getElementById("{{.SelectedChallengeID}}").click();{{else}}{{end}}
         }
         function connectAll(o){
           console.log(o);
