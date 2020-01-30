@@ -38,7 +38,7 @@ testdblog
 
 config.json
 node_modules
-html/static/bundle.js
+html/static/*.js
 *.js.map
 tmp/
 internal/packrd/
