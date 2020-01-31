@@ -47,11 +47,10 @@
                     cont.md = function(e) {
                         if (e.target.tagName === "SELECT"
                           || e.target.tagName === "INPUT"
-                          || e.target.tagName === "TEXTAREA"
+                          || e.target.tagName === "TEXTAREA" || e.target.closest("dialog") != null
                         ) {                      
                             return true
                         }
-
                         if (!el.hasAttribute('nochilddrag') ||
                             _document.elementFromPoint(
                                 e.pageX, e.pageY
@@ -98,4 +97,3 @@
 
     exports.reset = reset;
 }));
-
