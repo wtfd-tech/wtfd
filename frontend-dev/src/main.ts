@@ -186,6 +186,7 @@ addChallEventListener(title: string, points: number) {
                 .then(response => response.text())
                 .then((response) => {
                     solutioninnerdiv.innerHTML = response;
+                    this.checkHighlight(solutioninnerdiv);
                 });
 
 
@@ -205,8 +206,9 @@ addChallEventListener(title: string, points: number) {
         detTitle.innerHTML = "LOADING";
         detPoints.innerHTML = "-";
         challAuthor.innerHTML = "LOADING..."
-        fetch("/detailview/" + title).then(resp => resp.text()).then(function (response) {
+        fetch("/detailview/" + title).then(resp => resp.text()).then(response => {
             detDescription.innerHTML = response;
+            this.checkHighlight(detDescription);
             detTitle.innerHTML = title;
             detPoints.innerHTML = points.toString();
         });
@@ -396,6 +398,21 @@ let vals: any  = colnum.values();
     }
   }
   });
+
+}
+
+async checkHighlight(div: HTMLElement){
+  if(div.getElementsByTagName("code").length != 0){
+    const { default: Prism } = await import('prismjs');
+    document.querySelectorAll('pre code').forEach((block) => {
+      let lang = block.className.split("-")[1];
+      import('prismjs/components/prism-'+lang).then( ({default: loadLanguages}) => {
+      
+      Prism.highlightElement(block);
+      }).catch(()=> console.log("highlighting did not work"));
+    });
+
+  }
 
 }
 
