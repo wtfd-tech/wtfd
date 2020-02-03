@@ -26,6 +26,7 @@ type Config struct {
 	CoinIcon                             string        `json:"coinicon"`
 	UpperLeft                            template.HTML `json:"upperleft"`
 	Key                                  string        `json:"key"`
+	Header                               string        `json:"header"`
 	ChallengeInfoDir                     string        `json:"challinfodir"`
 	SSHHost                              string        `json:"sshhost"`
 	ServiceDeskAddress                   string        `json:"servicedeskaddress"`
@@ -64,6 +65,7 @@ func getConfigJSON() (Config, error) {
 			Key:                                  base64.StdEncoding.EncodeToString(key),
 			Port:                                 defaultPort,
 			ChallengeInfoDir:                     "../challenges/info/",
+			Header:                               "WTFd CTF",
 			ServiceDeskAddress:                   "-", // service desk disabled
 			SMTPRelayString:                      "mail@example.com:25",
 			SMTPRelayPasswd:                      "passwd",
