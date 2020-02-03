@@ -260,15 +260,21 @@ td, th {
     margin-top: 75px;
 }
 
+#detaildescription {
+
+  margin-bottom: 1vh;
+    overflow-y: auto;
+    max-height: 65vh;
+
+}
+
 dialog {
     /*border: none;*/
     position: fixed;
     top: 12vh;
     margin: 0 auto;
-    overflow-y: auto;
     max-height: 80vh;
-    border-width: 0 0 -2vh 0;
-    border-color: white;
+    border: none;
 
     /*noinspection CssFloatPxLength*/
     box-shadow: 2.5px 2.5px 10px -2.5px;
