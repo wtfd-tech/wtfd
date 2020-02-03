@@ -534,10 +534,17 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
+
+/* verbatim text */
+
 code {
     font-family: "Fira Mono", monospace;
 }
 
+code:not([class*="language-"]){
+    background: #f8f8f8;
+    border: 1px solid #dddddd;
+}
 /**
  * GHColors theme by Avi Aryan (http://aviaryan.in)
  * Inspired by Github syntax coloring
