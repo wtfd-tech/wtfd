@@ -56,7 +56,7 @@ tmp/.js.sentinel: $(shell find frontend-dev/src -type f) tmp/.js-deps.sentinel $
 > pushd frontend-dev
 > npm run build
 > popd
-> rm tmp/.gen.sentinel
+> rm tmp/.gen.sentinel || true
 > pushd internal
 > packr2 clean
 > popd
