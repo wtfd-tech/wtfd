@@ -36,7 +36,7 @@ js-run: tmp/.js-deps.sentinel
 > popd
 .PHONY: js-run
 
-wtfd: $(shell find . -name '*.go') tmp/.gen.sentinel
+wtfd: $(shell find . -name '*.go') tmp/.gen.sentinel $(shell find html -name '*.html')
 > go build ./cmd/wtfd.go
 
 
@@ -46,7 +46,7 @@ tmp/.test.sentinel: $(shell find . -name '*.go') tmp/.check-deps.sentinel
 > touch $@
 
 # go generate
-tmp/.gen.sentinel: tmp/.js.sentinel
+tmp/.gen.sentinel: tmp/.js.sentinel $(shell find html/static/ -type f | grep -v '.js$$' | grep -v '.map$$')
 > mkdir -p $(@D)
 > go generate ./...
 > touch $@
