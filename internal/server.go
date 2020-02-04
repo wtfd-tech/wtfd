@@ -294,7 +294,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 			_, _ = fmt.Fprintf(w, "ParseForm() err: %v", err)
 			return
 		}
-		if _, ok := getLoginEmail(r); ok {
+		if _, ok := getUser(r); ok {
 			w.WriteHeader(http.StatusBadRequest)
 			_, _ = fmt.Fprintf(w, "Already logged in")
 		} else {
@@ -370,7 +370,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 			_, _ = fmt.Fprintf(w, "ParseForm() err: %v", err)
 			return
 		}
-		if _, ok := getLoginEmail(r); ok {
+		if _, ok := getUser(r); ok {
 			w.WriteHeader(http.StatusBadRequest)
 			_, _ = fmt.Fprintf(w, "Server Error: Already logged in")
 		} else {
