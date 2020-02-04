@@ -15,6 +15,10 @@ build: wtfd
 .PHONY: build
 
 run: tmp/.js.sentinel
+> rm tmp/.gen.sentinel || true
+> pushd internal
+> packr2 clean
+> popd
 > go run ./cmd/wtfd.go
 .PHONY: run
 
