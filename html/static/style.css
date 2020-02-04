@@ -285,7 +285,7 @@ dialog + .backdrop {
 }
 
 .pointicon {
-    content: url("logo_outline.svg");
+    content: url("dist/coinicon.svg");
     width: 1em;
     height: 1em;
     margin-right: .25em;

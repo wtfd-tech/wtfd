@@ -24,6 +24,7 @@ type Config struct {
 	SocialMedia                          template.HTML `json:"social"`
 	Icon                                 string        `json:"icon"`
 	CoinIcon                             string        `json:"coinicon"`
+	Favicon                              string        `json:"favicon"`
 	UpperLeft                            template.HTML `json:"upperleft"`
 	Key                                  string        `json:"key"`
 	Header                               string        `json:"header"`
@@ -76,6 +77,7 @@ func getConfigJSON() (Config, error) {
 			RequireEmailVerification:             false,
 			SocialMedia:                          `<a class="link sociallink" href="https://github.com/wtfd-tech/wtfd"><span class="mdi mdi-github-circle"></span> GitHub</a>`,
 			CoinIcon:                             "coinicon.svg",
+			Favicon:                              "favicon.svg",
 			Icon:                                 "icon.svg",
 			UpperLeft:                            "// WTFd<br>//CTF",
 			EmailVerificationTokenLifetimeString: "168h", // One week
