@@ -682,9 +682,6 @@ func authorview(w http.ResponseWriter, r *http.Request) {
 	_, _ = fmt.Fprint(w, chall.Author)
 }
 
-func favicon(w http.ResponseWriter, r *http.Request) {
-	http.ServeFile(w, r, "html/static/favicon.ico")
-}
 
 // Server is the main server func, start it with
 //  log.Fatal(wtfd.Server())
@@ -880,7 +877,6 @@ func Server() error {
 	r.HandleFunc("/", mainpage)
 	r.HandleFunc("/leaderboard", leaderboardpage)
 	r.HandleFunc("/admin", adminpage)
-	r.HandleFunc("/favicon.ico", favicon)
 	r.HandleFunc("/login", login)
 	r.HandleFunc("/logout", logout)
 	r.HandleFunc("/register", register)
