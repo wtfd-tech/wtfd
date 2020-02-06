@@ -3,7 +3,6 @@ package cfg
 import (
 	"encoding/base64"
 	"fmt"
-	"html/template"
 	"io/ioutil"
 	"os"
 	"time"
@@ -17,43 +16,6 @@ const (
 	bRRateLimitReports          = 2   // 2 Reports during interval before beeing rate limited
 	bRRateLimitInterval float64 = 180 // 3 Minutes
 )
-
-type BugreportConfig struct {
-	ServiceDeskAddress           string  `json:"servicedeskaddress"`
-	ServiceDeskRateLimitInterval float64 `json:"servicedeskratelimitinterval"` // See bugreport.go
-	ServiceDeskRateLimitReports  int     `json:"servicedeskratelimitreports"`  // See bugreport.go
-
-}
-
-type EmailConfig struct {
-	RestrictEmailDomains                 []string      `json:"restrict_email_domains"`
-	RequireEmailVerification             bool          `json:"require_email_verification"`
-	EmailVerificationTokenLifetimeString string        `json:"email_verification_token_lifetime"`
-	EmailVerificationTokenLifetime       time.Duration `json:"-"`
-	SMTPRelayString                      string        `json:"smtprelaymailwithport"`
-	SMTPRelayPasswd                      string        `json:"smtprelaymailpassword"`
-}
-
-type DesignConfig struct {
-	SocialMedia template.HTML `json:"social"`
-	Icon        string        `json:"icon"`
-	CoinIcon    string        `json:"coinicon"`
-	Favicon     string        `json:"favicon"`
-	UpperLeft   template.HTML `json:"upperleft"`
-	Header      string        `json:"header"`
-}
-
-// Config stores settings
-type Config struct {
-	Port             int64           `json:"port"`
-	StartDate        string          `json:"startdate"`
-	Key              string          `json:"key"`
-	ChallengeInfoDir string          `json:"challinfodir"`
-	SSHHost          string          `json:"sshhost"`
-	BugreportConfig  BugreportConfig `json:"bugreport"`
-	EmailConfig      EmailConfig     `json:"email"`
-	DesignConfig     DesignConfig    `json:"design"`
-}
 
 // GetConfig returns a config struct generated either from a config.json or (TODO) from Environment
 func GetConfig() (Config, error) {
