@@ -22,31 +22,7 @@ a [CTFd](https://ctfd.io/)-like Server in go
 
 ## Configuration
 
-You need a `config.json` in the same path as your wtfd binary (or the path you're in if you do `go run ./cmd/wtfd.go`)
-
-It shall look like that:
-
-```
-{
-        "Port": <The Port WTFd should run (ports <1024 need root (don't run WTFd as root))>,
-        "challinfodir": "<The (relative or absolute) directory with your challenge infos>",
-        "social": "<Html for the down left corner (e.g. \u003ca class=\"link sociallink\" href=\"https://github.com/wtfd-tech/wtfd\"\u003e\u003cspan class=\"mdi mdi-github-circle\"\u003e\u003c/span\u003e GitHub\u003c/a\u003e)>",
-        "icon": "<top left icon (e.g. icon.svg)>",
-        "firstline": "<first line in the top left>",
-	"secondline": "<second line in the top left>",
-       	"sshhost": "<The domain of your ssh challenges>"
-	"servicedeskaddress": <Mail address for a GitLab service desk instance (or '-' if it is disabled),
-	"smtprelaymailwithport": "<Sender address (e.g. wtfdsender@wtfd.tech:25)>",
-	"smtprelaymailpassword": "<Password for sender>",
-	"ServiceDeskRateLimitInterval": <Interval (in seconds) where access is tracked>,
-	"ServiceDeskRateLimitReports": <Maximun ammount of access per user in interval> 
-	"restrict_email_domains": <array of domains>
-	"require_email_verification": <bool>
-	"email_verification_token_lifetime": <duration string (in "ns", "us" (or "µs"), "ms", "s", "m", "h")>
-}
-```
-
-WTFd will also generate the field `Key` in which the cookie session key will be stored
+At start, a `config.yaml` is generated. You should edit it  with the settings you need
 
 
 The Challenge info Dir shall look like that:
