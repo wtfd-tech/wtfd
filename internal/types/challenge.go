@@ -2,7 +2,6 @@ package types
 
 import (
 	"fmt"
-
 )
 
 // Challenges Array of challenges but in nice with funcitons
@@ -59,4 +58,3 @@ func (c Challenges) Find(id string) (*Challenge, error) {
 	}
 	return &Challenge{}, fmt.Errorf("no challenge with this id")
 }
-

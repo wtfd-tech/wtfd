@@ -3,9 +3,9 @@ package wtfd
 import (
 	"encoding/json"
 	"fmt"
-	"testing"
-	"github.com/wtfd-tech/wtfd/internal/types"
 	"github.com/wtfd-tech/wtfd/internal/db"
+	"github.com/wtfd-tech/wtfd/internal/types"
+	"testing"
 )
 
 func TestChallenges(t *testing.T) {
