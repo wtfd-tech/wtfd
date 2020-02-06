@@ -37,6 +37,7 @@ dblog
 testdblog
 
 config.json
+config.yaml
 node_modules
 html/static/*.js
 *.js.map

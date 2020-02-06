@@ -380,9 +380,9 @@ func register(w http.ResponseWriter, r *http.Request) {
 				_, _ = fmt.Fprintf(w, "Server Error: The entered e-mail address is invalid")
 			} else {
 				// Check if registration is restricted to certain email domains
-				if len(config.RestrictEmailDomains) != 0 {
+				if len(config.EmailConfig.RestrictEmailDomains) != 0 {
 					valid := false
-					for _, domain := range config.RestrictEmailDomains {
+					for _, domain := range config.EmailConfig.RestrictEmailDomains {
 						if strings.Split(r.Form.Get("username"), "@")[1] == domain {
 							valid = true
 						}
@@ -567,7 +567,7 @@ func requestVerify(w http.ResponseWriter, r *http.Request) {
 
 	/* Setup user info */
 	user.VerifiedInfo.VerifyToken = token
-	user.VerifiedInfo.VerifyDeadline = time.Now().Add(config.EmailVerificationTokenLifetime)
+	user.VerifiedInfo.VerifyDeadline = time.Now().Add(config.EmailConfig.EmailVerificationTokenLifetime)
 	if err = wtfdDB.UpdateUser(user); err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
 		log.Printf("ORM error: %s\n", err.Error())
@@ -697,14 +697,14 @@ func Server() error {
 	}
 
 	// setup servicedesk vars
-	if config.ServiceDeskAddress == "-" {
+	if config.BugreportConfig.ServiceDeskAddress == "-" {
 		BRServiceDeskEnabled = false
 	} else {
-		BRServiceDeskAddress = config.ServiceDeskAddress
-		smtp.Config.Password = config.SMTPRelayPasswd
+		BRServiceDeskAddress = config.BugreportConfig.ServiceDeskAddress
+		smtp.Config.Password = config.EmailConfig.SMTPRelayPasswd
 
 		// Parse relay mail string
-		split := strings.Split(config.SMTPRelayString, ":")
+		split := strings.Split(config.EmailConfig.SMTPRelayString, ":")
 
 		if len(split) < 2 {
 			return errors.New("Invalid smtprelaymailwithport format")
@@ -722,8 +722,8 @@ func Server() error {
 		smtp.Config.Enabled = true
 		BRServiceDeskEnabled = true
 	}
-	BRRateLimitReports = config.ServiceDeskRateLimitReports
-	BRRateLimitInterval = config.ServiceDeskRateLimitInterval
+	BRRateLimitReports =  config.BugreportConfig.ServiceDeskRateLimitReports
+	BRRateLimitInterval = config.BugreportConfig.ServiceDeskRateLimitInterval
 	if BRServiceDeskEnabled {
 		fmt.Printf("ServiceDesk running at %s (Send via %s@%s:%d)  (Max %dR/%.02fs)\n",
 			BRServiceDeskAddress, smtp.Config.User, smtp.Config.Host, smtp.Config.Port,
@@ -733,7 +733,7 @@ func Server() error {
 	}
 
 	// Email verification
-	config.EmailVerificationTokenLifetime, err = time.ParseDuration(config.EmailVerificationTokenLifetimeString)
+	config.EmailConfig.EmailVerificationTokenLifetime, err = time.ParseDuration(config.EmailConfig.EmailVerificationTokenLifetimeString)
 	if err != nil {
 		log.Printf("Could not parse email_verification_lifetime: %s", err.Error())
 		return err
@@ -895,14 +895,14 @@ func Server() error {
 	// static
 	r.PathPrefix("/static").Handler(
 		http.FileServer(box))
-	r.HandleFunc("/dist/"+config.Icon, func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, config.Icon)
+	r.HandleFunc("/dist/"+config.DesignConfig.Icon, func(w http.ResponseWriter, r *http.Request) {
+		http.ServeFile(w, r, config.DesignConfig.Icon)
 	})
 	r.HandleFunc("/dist/coinicon.svg", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, config.CoinIcon)
+		http.ServeFile(w, r, config.DesignConfig.CoinIcon)
 	})
 	r.HandleFunc("/favicon.ico", func(w http.ResponseWriter, r *http.Request) {
-		http.ServeFile(w, r, config.Favicon)
+		http.ServeFile(w, r, config.DesignConfig.Favicon)
 	})
 
 	Port := config.Port

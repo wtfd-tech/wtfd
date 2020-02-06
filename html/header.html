@@ -3,7 +3,7 @@
 <!--suppress HtmlUnknownTarget -->
 <html lang="en">
   <head>
-    <title>{{.Config.Header}}</title>
+    <title>{{.Config.DesignConfig.Header}}</title>
     <link rel="stylesheet" type="text/css" href="static/clearsans/clearsans.css" />
     <link rel="stylesheet" type="text/css" href="static/fira/fira.css"/>
     <link rel="stylesheet" type="text/css" href="static/materialdesignicons/css/materialdesignicons.min.css" />
@@ -27,9 +27,9 @@
   <body class="clearsans dragscroll">
     <header>
       <div class="flexcell" id="logo">
-        <img alt="Logo" id="logo-img" src="dist/{{.Config.Icon}}" />
+        <img alt="Logo" id="logo-img" src="dist/{{.Config.DesignConfig.Icon}}" />
         <div>
-          {{.Config.UpperLeft}}
+          {{.Config.DesignConfig.UpperLeft}}
         </div>
       <div class="flexcell" id="siteselectcol">
         <span class="big-link"></span>
