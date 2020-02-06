@@ -21,6 +21,11 @@ type EmailConfig struct {
 	SMTPRelayPasswd                      string        `json:"smtprelaymailpassword"`
 }
 
+type FooterLink struct {
+	Name string `json:"name"`
+	Icon string `json:"icon"`
+	Url  string `json:"url"`
+}
 
 type DesignConfig struct {
 	Icon        string        `json:"icon"`
@@ -28,7 +33,7 @@ type DesignConfig struct {
 	Favicon     string        `json:"favicon"`
 	UpperLeft   template.HTML `json:"upperleft"`
 	Header      string        `json:"header"`
-	SocialMedia template.HTML `json:"social"`
+	FooterLinks []FooterLink  `json:"links"`
 }
 
 // Config stores settings

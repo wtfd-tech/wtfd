@@ -57,12 +57,23 @@ func getConfigYAML() (Config, error) {
 				RequireEmailVerification:             false,
 			},
 			DesignConfig: DesignConfig{
-				Header:      "WTFd CTF",
-				SocialMedia: `<a class="link sociallink" href="https://github.com/wtfd-tech/wtfd"><span class="mdi mdi-github-circle"></span> GitHub</a>`,
-				CoinIcon:    "coinicon.svg",
-				Favicon:     "favicon.svg",
-				Icon:        "icon.svg",
-				UpperLeft:   "// WTFd<br>//CTF",
+				Header: "WTFd CTF",
+				FooterLinks: []FooterLink{
+					FooterLink{
+						Name: "FOSS-AG",
+						Icon: "web",
+						Url:  "https://foss-ag.de",
+					},
+					FooterLink{
+						Name: "WTFd",
+						Icon: "github-circle",
+						Url:  "http://wtfd.tech",
+					},
+				},
+				CoinIcon:  "coinicon.svg",
+				Favicon:   "favicon.svg",
+				Icon:      "icon.svg",
+				UpperLeft: "// WTFd<br>//CTF",
 			},
 		}
 		configBytes, _ := yaml.Marshal(config)
