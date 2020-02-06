@@ -44,6 +44,11 @@ wtfd: $(shell find . -name '*.go') tmp/.gen.sentinel $(shell find html -name '*.
 > go build ./cmd/wtfd.go
 
 
+.PHONY: fmt
+fmt: 
+> find -type f -name "*.go" -exec go fmt {} \;
+
+
 tmp/.test.sentinel: $(shell find . -name '*.go') tmp/.check-deps.sentinel 
 > mkdir -p $(@D)
 > go test ./...
