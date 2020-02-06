@@ -9,7 +9,7 @@ import (
 	"time"
 
 	"github.com/gorilla/securecookie"
-        "gopkg.in/yaml.v2"
+	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -46,6 +46,7 @@ type DesignConfig struct {
 // Config stores settings
 type Config struct {
 	Port             int64           `json:"port"`
+	StartDate        string    `json:"startdate"`
 	Key              string          `json:"key"`
 	ChallengeInfoDir string          `json:"challinfodir"`
 	SSHHost          string          `json:"sshhost"`
@@ -76,9 +77,10 @@ func getConfigYAML() (Config, error) {
 
 		//Write default config to disk
 		config = Config{
-			Key:     base64.StdEncoding.EncodeToString(key),
-			SSHHost: "ctf.wtfd.tech",
-			Port:    defaultPort,
+			Key:              base64.StdEncoding.EncodeToString(key),
+			SSHHost:          "ctf.wtfd.tech",
+			Port:             defaultPort,
+                        StartDate: time.Now().Format(time.RubyDate),
 			ChallengeInfoDir: "../challenges/info/",
 			BugreportConfig: BugreportConfig{
 				ServiceDeskAddress:           "-", // service desk disabled
@@ -120,7 +122,9 @@ func getConfigYAML() (Config, error) {
 			return config, err
 		}
 	}
-	fmt.Fprintf(os.Stderr, "a: %v", config)
+        if _, err := time.Parse(time.RubyDate, config.StartDate); err != nil {
+			return config, err
+        }
 	return config, nil
 
 }

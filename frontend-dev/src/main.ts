@@ -153,7 +153,7 @@ addChallEventListener(title: string, points: number) {
         flagInput.removeEventListener("keypress", this.flaginputeventlistenerfunc);
         solutionbutton.removeEventListener("click", this.solutioneventlistenerfunc);
 
-        this.flagsubmiteventlistenerfunc = function () {
+        this.flagsubmiteventlistenerfunc = () => {
             const data = new URLSearchParams();
             checkLoading.style.display = "block";
             data.append("flag", flagInput.value);

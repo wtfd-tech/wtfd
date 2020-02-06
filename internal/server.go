@@ -266,15 +266,15 @@ func mainpage(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	data := mainPageData{
-		PageTitle:              "foss-ag O-Phasen CTF",
-		Config:                 config,
-		Challenges:             challs,
-		GeneratedName:          genu,
-		ADC:                    AllDepsCompleted,
-		User:                   user,
-		IsUser:                 ok,
-		RowNums:                rnums,
-		ColNums:                cnums,
+		PageTitle:     "foss-ag O-Phasen CTF",
+		Config:        config,
+		Challenges:    challs,
+		GeneratedName: genu,
+		ADC:           AllDepsCompleted,
+		User:          user,
+		IsUser:        ok,
+		RowNums:       rnums,
+		ColNums:       cnums,
 	}
 	err = mainpagetemplate.Execute(w, data)
 	if err != nil {
@@ -321,6 +321,12 @@ func submitFlag(w http.ResponseWriter, r *http.Request) {
 	} else {
 		if err := r.ParseForm(); err != nil {
 			_, _ = fmt.Fprintf(w, "ParseForm() err: %v", err)
+			return
+		}
+		t, _ := time.Parse(time.RubyDate, config.StartDate)
+		if time.Now().Before(t) {
+			w.WriteHeader(http.StatusBadRequest)
+			_, _ = fmt.Fprintf(w, "The challenge has not yet begun")
 			return
 		}
 
@@ -682,7 +688,6 @@ func authorview(w http.ResponseWriter, r *http.Request) {
 	_, _ = fmt.Fprint(w, chall.Author)
 }
 
-
 // Server is the main server func, start it with
 //  log.Fatal(wtfd.Server())
 func Server() error {
@@ -722,7 +727,7 @@ func Server() error {
 		smtp.Config.Enabled = true
 		BRServiceDeskEnabled = true
 	}
-	BRRateLimitReports =  config.BugreportConfig.ServiceDeskRateLimitReports
+	BRRateLimitReports = config.BugreportConfig.ServiceDeskRateLimitReports
 	BRRateLimitInterval = config.BugreportConfig.ServiceDeskRateLimitInterval
 	if BRServiceDeskEnabled {
 		fmt.Printf("ServiceDesk running at %s (Send via %s@%s:%d)  (Max %dR/%.02fs)\n",
