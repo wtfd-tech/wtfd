@@ -46,7 +46,7 @@ type DesignConfig struct {
 // Config stores settings
 type Config struct {
 	Port             int64           `json:"port"`
-	StartDate        string    `json:"startdate"`
+	StartDate        string          `json:"startdate"`
 	Key              string          `json:"key"`
 	ChallengeInfoDir string          `json:"challinfodir"`
 	SSHHost          string          `json:"sshhost"`
@@ -80,7 +80,7 @@ func getConfigYAML() (Config, error) {
 			Key:              base64.StdEncoding.EncodeToString(key),
 			SSHHost:          "ctf.wtfd.tech",
 			Port:             defaultPort,
-                        StartDate: time.Now().Format(time.RubyDate),
+			StartDate:        time.Now().Format(time.RubyDate),
 			ChallengeInfoDir: "../challenges/info/",
 			BugreportConfig: BugreportConfig{
 				ServiceDeskAddress:           "-", // service desk disabled
@@ -122,9 +122,9 @@ func getConfigYAML() (Config, error) {
 			return config, err
 		}
 	}
-        if _, err := time.Parse(time.RubyDate, config.StartDate); err != nil {
-			return config, err
-        }
+	if _, err := time.Parse(time.RubyDate, config.StartDate); err != nil {
+		return config, err
+	}
 	return config, nil
 
 }
