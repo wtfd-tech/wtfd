@@ -112,7 +112,12 @@ func updateScoreboard() error {
 		solves := wtfdDB.GetSolvesWithTime(u.Name)
 		data := make([]chartDataPoint, len(solves)+1)
 		sum := 0
-		data[0] = chartDataPoint{T: u.Created.Format(time.RubyDate), Y: sum, Label: "User Created"}
+                timeChallengeStart, _ := time.Parse(time.RubyDate, config.StartDate)
+                timecreated := timeChallengeStart
+                if u.Created.After(timeChallengeStart) {
+                  timecreated = u.Created
+                }
+		data[0] = chartDataPoint{T: timecreated.Format(time.RubyDate), Y: sum, Label: "User Created"}
 		for i, s := range solves {
 			chall, err := challs.Find(s.ChallengeName)
 			if err != nil {
