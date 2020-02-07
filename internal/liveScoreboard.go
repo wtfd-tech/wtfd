@@ -125,7 +125,7 @@ func updateScoreboard() error {
 				return err
 			}
 			sum += chall.Points
-			data[i+1] = chartDataPoint{T: s.Created.Format(time.RubyDate), Y: sum, Label: s.ChallengeName}
+			data[i+1] = chartDataPoint{T: s.Created.Format(time.RubyDate), Y: sum, Label: chall.Title}
 		}
 		a := fmt.Sprintf("#%X", crc32.ChecksumIEEE([]byte(u.DisplayName)))[0:7]
 		datas = append(datas, chartData{Pcolor: a, Color: a, Label: u.DisplayName, Data: data})
