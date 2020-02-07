@@ -29,7 +29,7 @@ func stringCompareLess(si, sj string) bool {
 func generateRandomString(n int) string {
 	b := make([]byte, n)
 	for i := 0; i < n; i++ {
-		b[i] = letterBytes[int(rand.Int() & 0b00111111)]
+		b[i] = letterBytes[int(rand.Int()&0b00111111)]
 	}
 	return string(b)
 }

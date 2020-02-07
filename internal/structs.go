@@ -2,18 +2,15 @@ package wtfd
 
 import (
 	"fmt"
+	"github.com/wtfd-tech/wtfd/internal/db"
+	"github.com/wtfd-tech/wtfd/internal/types"
 	"sort"
-        "github.com/wtfd-tech/wtfd/internal/types"
-        "github.com/wtfd-tech/wtfd/internal/db"
-
 )
-
 
 type gridinfo struct {
 	Index int
 	Pos   int
 }
-
 
 func resolveDeps(a []string) []*types.Challenge {
 	var toReturn []*types.Challenge
@@ -189,4 +186,3 @@ func AllDepsCompleted(u *db.User, c *types.Challenge) bool {
 	}
 	return true
 }
-

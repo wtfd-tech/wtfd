@@ -1,7 +1,9 @@
 {{ define "footer" }}
     <footer>
       <div class="flexcell flex-left">
-        {{.Config.DesignConfig.SocialMedia}}
+        {{range .Config.DesignConfig.FooterLinks}}
+        <a class="link sociallink" href="{{.Url}}"><span class="mdi mdi-{{.Icon}}"></span> {{.Name}}</a>
+        {{end}}
       </div>
       <div class="flexcell flex-center">
         <a class="link" href="https://github.com/wtfd-tech/wtfd">Powered by WTFd</a>

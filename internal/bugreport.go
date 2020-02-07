@@ -2,8 +2,8 @@ package wtfd
 
 import (
 	"errors"
-	"github.com/wtfd-tech/wtfd/internal/smtp"
 	"github.com/wtfd-tech/wtfd/internal/db"
+	"github.com/wtfd-tech/wtfd/internal/smtp"
 	"time"
 )
 

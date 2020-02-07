@@ -1,8 +1,8 @@
 package wtfd
 
 import (
-	"net/http"
 	"github.com/wtfd-tech/wtfd/internal/db"
+	"net/http"
 )
 
 func getLoginEmail(r *http.Request) (string, bool) {

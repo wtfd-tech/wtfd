@@ -816,8 +816,8 @@ func Server() error {
 		return err
 	}
 
-	// Fill in SSHHost
-	challs.FillChallengeURI(config.SSHHost)
+	// Fill in ChallHost
+	challs.FillChallengeURI(config.ChallHost)
 	// Packr
 
 	box := packr.New("Box", "../html")
