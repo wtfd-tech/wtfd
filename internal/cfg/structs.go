@@ -6,44 +6,44 @@ import (
 )
 
 type BugreportConfig struct {
-	ServiceDeskAddress           string  `json:"servicedeskaddress"`
-	ServiceDeskRateLimitInterval float64 `json:"servicedeskratelimitinterval"` // See bugreport.go
-	ServiceDeskRateLimitReports  int     `json:"servicedeskratelimitreports"`  // See bugreport.go
+	ServiceDeskAddress           string  `yaml:"address"`
+	ServiceDeskRateLimitInterval float64 `yaml:"rateLimitInterval"` // See bugreport.go
+	ServiceDeskRateLimitReports  int     `yaml:"rateLimitReports"`  // See bugreport.go
 
 }
 
 type EmailConfig struct {
-	RestrictEmailDomains                 []string      `json:"restrict_email_domains"`
-	RequireEmailVerification             bool          `json:"require_email_verification"`
-	EmailVerificationTokenLifetimeString string        `json:"email_verification_token_lifetime"`
-	EmailVerificationTokenLifetime       time.Duration `json:"-"`
-	SMTPRelayString                      string        `json:"smtprelaymailwithport"`
-	SMTPRelayPasswd                      string        `json:"smtprelaymailpassword"`
+	RestrictEmailDomains                 []string      `yaml:"allowedDomains"`
+	RequireEmailVerification             bool          `yaml:"verification"`
+	EmailVerificationTokenLifetimeString string        `yaml:"verificationTokenLifetime"`
+	EmailVerificationTokenLifetime       time.Duration `yaml:"-"`
+	SMTPRelayString                      string        `yaml:"smtpAddressWithPort"`
+	SMTPRelayPasswd                      string        `yaml:"smtpPassword"`
 }
 
 type FooterLink struct {
-	Name string `json:"name"`
-	Icon string `json:"icon"`
-	Url  string `json:"url"`
+	Name string `yaml:"name"`
+	Icon string `yaml:"icon"`
+	Url  string `yaml:"url"`
 }
 
 type DesignConfig struct {
-	Icon        string        `json:"icon"`
-	CoinIcon    string        `json:"coinicon"`
-	Favicon     string        `json:"favicon"`
-	UpperLeft   template.HTML `json:"upperleft"`
-	Header      string        `json:"header"`
-	FooterLinks []FooterLink  `json:"links"`
+	Icon        string        `yaml:"logo"`
+	CoinIcon    string        `yaml:"coinicon"`
+	Favicon     string        `yaml:"favicon"`
+	UpperLeft   template.HTML `yaml:"logoText"`
+	Header      string        `yaml:"title"`
+	FooterLinks []FooterLink  `yaml:"links"`
 }
 
 // Config stores settings
 type Config struct {
-	Port             int64           `json:"port"`
-	StartDate        string          `json:"startdate"`
-	Key              string          `json:"key"`
-	ChallengeInfoDir string          `json:"challinfodir"`
-	SSHHost          string          `json:"sshhost"`
-	BugreportConfig  BugreportConfig `json:"bugreport"`
-	EmailConfig      EmailConfig     `json:"email"`
-	DesignConfig     DesignConfig    `json:"design"`
+	Port             int64           `yaml:"port"`
+	StartDate        string          `yaml:"startDate"`
+	Key              string          `yaml:"cookieKey"`
+	ChallengeInfoDir string          `yaml:"challDir"`
+	SSHHost          string          `yaml:"challHost"`
+	BugreportConfig  BugreportConfig `yaml:"bugreport"`
+	EmailConfig      EmailConfig     `yaml:"email"`
+	DesignConfig     DesignConfig    `yaml:"design"`
 }
