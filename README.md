@@ -29,27 +29,25 @@ The Challenge info Dir shall look like that:
 
 ```
 ├── chall-1
-│   ├── meta.json
+│   ├── meta.yaml
 │   ├── README.md
 │   └── SOLUTION.md
 ├── chall-2
-│   ├── meta.json
+│   ├── meta.yaml
 │   ├── README.md
 │   └── SOLUTION.md
 ```
 
-For each Challenge you need a `meta.json`, a `README.md` and a `SOLUTION.md`
+For each Challenge you need a `meta.yaml`, a `README.md` and a `SOLUTION.md`
 
-The `meta.json` shall look like that:
+The `meta.yaml` shall look like that:
 
 ```
-{
-	"points": <How many points the challenge should have>,
-        "uri": "<Protocol and user of your ssh Challenges (e.g. `ssh://chall-1@%s`>",
-	"deps": [<Dependencies the Challenge has>],
-	"flag": "<The flag>",
-	"author": "<The author of the challenge>"
-}
+points: <How many points the challenge should have>
+uri: "<Protocol and user of your ssh Challenges (e.g. `ssh://chall-1@%s`>"
+deps: [<Dependencies the Challenge has>]
+flag: "<The flag>"
+author: "<The author of the challenge>"
 ```
 
 The `README.md` and `SOLUTION.md` are markdown files ([syntax](https://github.com/gomarkdown/markdown#extensions)).
