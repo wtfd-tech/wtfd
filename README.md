@@ -48,6 +48,7 @@ uri: "<Protocol and user of your ssh Challenges (e.g. `ssh://chall-1@%s`>"
 deps: [<Dependencies the Challenge has>]
 flag: "<The flag>"
 author: "<The author of the challenge>"
+title: "(optional) the title of the challenge, else the directory name is used"
 ```
 
 The `README.md` and `SOLUTION.md` are markdown files ([syntax](https://github.com/gomarkdown/markdown#extensions)).
