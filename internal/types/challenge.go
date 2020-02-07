@@ -10,6 +10,7 @@ type Challenges []*Challenge
 // Challenge is a challenge obv
 type Challenge struct {
 	Name        string `json:"name"`
+	Title       string
 	Description string `json:"desc"`
 	Flag        string `json:"flag"`
 	Points      int    `json:"points"`
@@ -24,16 +25,17 @@ type Challenge struct {
 	HasURI      bool // This emerges from URI != ""
 }
 
-// ChallengeJSON is Challenge as JSON
-type ChallengeJSON struct {
-	Name        string   `json:"name"`
-	Description string   `json:"desc"`
-	Solution    string   `json:"solution"`
-	Author      string   `json:"author"`
-	Flag        string   `json:"flag"`
-	Points      int      `json:"points"`
-	URI         string   `json:"uri"`
-	Deps        []string `json:"deps"`
+// ChallengeYAML is Challenge as YAML
+type ChallengeYAML struct {
+	Name        string   `yaml:"name"`
+	Title       string   `yaml:"title"`
+	Description string   `yaml:"desc"`
+	Solution    string   `yaml:"solution"`
+	Author      string   `yaml:"author"`
+	Flag        string   `yaml:"flag"`
+	Points      int      `yaml:"points"`
+	URI         string   `yaml:"uri"`
+	Deps        []string `yaml:"deps"`
 	HasURI      bool     // This emerges from URI != ""
 }
 

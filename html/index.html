@@ -4,7 +4,7 @@
       {{ $user := .User }}
       {{ $adc := .ADC }}
       {{ range.Challenges }}
-      <div id="{{.Name}}" class="{{if $user.HasSolvedChallenge . }}completed {{end}}{{if call $adc $user .}}{{else}}not-available{{end}} challenge row-{{.Row}} col-{{.DepCount}}">
+      <div id="{{.Title}}" class="{{if $user.HasSolvedChallenge . }}completed {{end}}{{if call $adc $user .}}{{else}}not-available{{end}} challenge row-{{.Row}} col-{{.DepCount}}">
         <p class="chall-title">{{.Name}}</p>
         <p class="score firamono"><span class="pointicon"></span> {{.Points}}</p>
       </div>

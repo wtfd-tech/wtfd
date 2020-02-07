@@ -26,6 +26,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
 	"golang.org/x/crypto/bcrypt"
+	"gopkg.in/yaml.v2"
 )
 
 var (
@@ -752,7 +753,7 @@ func Server() error {
 	store = sessions.NewFilesystemStore("", key) // generates filesystem store at os.tempdir
 
 	//Load challs from dirs
-	var challsStructure []*types.ChallengeJSON
+	var challsStructure []*types.ChallengeYAML
 
 	files, err := ioutil.ReadDir(config.ChallengeInfoDir)
 	if err != nil {
@@ -762,49 +763,49 @@ func Server() error {
 	for _, current := range files {
 		var (
 			challDir     = config.ChallengeInfoDir + "/" + current.Name()
-			jsonName     = challDir + "/meta.json"
+			yamlName     = challDir + "/meta.yaml"
 			readmeName   = challDir + "/README.md"
 			solutionName = challDir + "/SOLUTION.md"
 
-			jsonBytes     []byte
+			yamlBytes     []byte
 			readmeBytes   []byte
 			solutionBytes []byte
 
-			jsonStruct types.ChallengeJSON
+			yamlStruct types.ChallengeYAML
 
 			err error
 		)
 
-		// Check if meta.json exists and load it into a ChallengeJSON struct
+		// Check if meta.yaml exists and load it into a ChallengeYAML struct
 		if !current.IsDir() {
 			continue
 		}
-		if jsonBytes, err = ioutil.ReadFile(jsonName); err != nil {
+		if yamlBytes, err = ioutil.ReadFile(yamlName); err != nil {
 			log.Println(err)
 			continue
 		}
-		if json.Unmarshal(jsonBytes, &jsonStruct) != nil {
+		if yaml.Unmarshal(yamlBytes, &yamlStruct) != nil {
 			log.Println(err)
 			continue
 		}
 
 		// Set name from folder name
-		jsonStruct.Name = current.Name()
+		yamlStruct.Name = current.Name()
 
 		// Load and compile markdown files
 		if readmeBytes, err = ioutil.ReadFile(readmeName); err == nil {
-			jsonStruct.Description = string(markdown.ToHTML(readmeBytes, nil, nil))
+			yamlStruct.Description = string(markdown.ToHTML(readmeBytes, nil, nil))
 		} else {
-			jsonStruct.Description = "<i>Description unavailable</i>"
+			yamlStruct.Description = "<i>Description unavailable</i>"
 		}
 
 		if solutionBytes, err = ioutil.ReadFile(solutionName); err == nil {
-			jsonStruct.Solution = string(markdown.ToHTML(solutionBytes, nil, nil))
+			yamlStruct.Solution = string(markdown.ToHTML(solutionBytes, nil, nil))
 		} else {
-			jsonStruct.Description = "<i>Solution unavailable</i>"
+			yamlStruct.Description = "<i>Solution unavailable</i>"
 		}
 
-		challsStructure = append(challsStructure, &jsonStruct)
+		challsStructure = append(challsStructure, &yamlStruct)
 	}
 
 	fixDeps(challsStructure)

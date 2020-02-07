@@ -114,7 +114,7 @@ func calculateRowNums() {
 		}
 	}
 }
-func resolveChalls(jsons []*types.ChallengeJSON) {
+func resolveChalls(jsons []*types.ChallengeYAML) {
 	i := 0
 	var idsInChalls []string
 	for len(jsons) != 0 {
@@ -136,8 +136,8 @@ func resolveChalls(jsons []*types.ChallengeJSON) {
 	calculateRowNums()
 }
 
-func fixDeps(jsons []*types.ChallengeJSON) {
-	challsByName := make(map[string]*types.ChallengeJSON)
+func fixDeps(jsons []*types.ChallengeYAML) {
+	challsByName := make(map[string]*types.ChallengeYAML)
 	for _, chall := range jsons {
 		challsByName[chall.Name] = chall
 	}
