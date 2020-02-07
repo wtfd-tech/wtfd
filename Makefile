@@ -15,7 +15,7 @@ build: wtfd
 .PHONY: build
 
 run: tmp/.js.sentinel
-> rm tmp/.gen.sentinel || true
+> rm -f tmp/.gen.sentinel
 > pushd internal
 > packr2 clean
 > popd
@@ -27,7 +27,7 @@ test: tmp/.test.sentinel
 
 clean: tmp/.check-deps.sentinel
 > rm -rf tmp
-> rm wtfd
+> rm -f wtfd
 > rm -rf html/static/*.js html/static/*.js.map
 > pushd internal
 > packr2 clean
@@ -65,7 +65,7 @@ tmp/.js.sentinel: $(shell find frontend-dev/src -type f) tmp/.js-deps.sentinel $
 > pushd frontend-dev
 > npm run build
 > popd
-> rm tmp/.gen.sentinel || true
+> rm -f tmp/.gen.sentinel
 > pushd internal
 > packr2 clean
 > popd
