@@ -42,7 +42,7 @@ type Config struct {
 	StartDate        string          `yaml:"startDate"`
 	Key              string          `yaml:"cookieKey"`
 	ChallengeInfoDir string          `yaml:"challDir"`
-	SSHHost          string          `yaml:"challHost"`
+	ChallHost          string          `yaml:"challHost"`
 	BugreportConfig  BugreportConfig `yaml:"bugreport"`
 	EmailConfig      EmailConfig     `yaml:"email"`
 	DesignConfig     DesignConfig    `yaml:"design"`

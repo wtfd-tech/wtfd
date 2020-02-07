@@ -76,8 +76,8 @@ func TestChallenges(t *testing.T) {
 		t.Errorf("JSON Unmarshal Error: %v", err)
 	}
 	resolveChalls(challsStructure)
-	sshHost := "localhost:2222"
-	challs.FillChallengeURI(sshHost)
+	challHost := "localhost:2222"
+	challs.FillChallengeURI(challHost)
 	challn, err := challs.Find("chall-n")
 	if err != nil {
 		t.Errorf("Chall not found err: %v", err)
@@ -91,8 +91,8 @@ func TestChallenges(t *testing.T) {
 	if !challn.HasURI {
 		t.Errorf("ChallHasUri is wrong: %v", fmt.Errorf("challn.HasURI is false instead of true"))
 	}
-	if challn.URI != fmt.Sprintf("ssh://asdf@%s", sshHost) {
-		t.Errorf("ChallUri is wrong: %v", fmt.Errorf("challn.URI is %v instead of 'ssh://asdf@%s'", challn.URI, sshHost))
+	if challn.URI != fmt.Sprintf("ssh://asdf@%s", challHost) {
+		t.Errorf("ChallUri is wrong: %v", fmt.Errorf("challn.URI is %v instead of 'ssh://asdf@%s'", challn.URI, challHost))
 
 	}
 	t.Run("TestAllDepsCompleted", func(t *testing.T) {

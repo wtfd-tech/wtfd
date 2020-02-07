@@ -40,7 +40,7 @@ func getConfigYAML() (Config, error) {
 		//Write default config to disk
 		config = Config{
 			Key:              base64.StdEncoding.EncodeToString(key),
-			SSHHost:          "ctf.wtfd.tech",
+			ChallHost:          "ctf.wtfd.tech",
 			Port:             defaultPort,
 			StartDate:        time.Now().Format(time.RubyDate),
 			ChallengeInfoDir: "../challenges/info/",
