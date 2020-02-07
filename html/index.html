@@ -21,7 +21,7 @@ colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
           {{ if .IsUser }}
               {{ range.Challenges }}
                   {{ if call $adc $user .}}
-                    o.addChallEventListener("{{.Name}}", "{{.Points}}");
+          o.addChallEventListener("{{.Name}}", "{{.Points}}", "{{.Title}}");
                   {{end}}
               {{end}}
           {{ else }}

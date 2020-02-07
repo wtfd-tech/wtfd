@@ -133,7 +133,7 @@ constructor() {
     //// END OPEN CHALLENGE
 }
 
-addChallEventListener(title: string, points: number) {
+addChallEventListener(title: string, points: number, name: string) {
     let elem = document.getElementById(title);
     elem.addEventListener("click", () => {
         let detView = <HTMLDialogElement> document.getElementById("detailview");
@@ -209,7 +209,7 @@ addChallEventListener(title: string, points: number) {
         fetch("/detailview/" + title).then(resp => resp.text()).then(response => {
             detDescription.innerHTML = response;
             this.checkHighlight(detDescription);
-            detTitle.innerHTML = title;
+            detTitle.innerHTML = name;
             detPoints.innerHTML = points.toString();
         });
         if (elem.getAttribute("class").includes("completed")) {

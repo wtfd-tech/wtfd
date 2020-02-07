@@ -74,7 +74,7 @@ func calculateRowNums() {
 		}
 	}
 
-	fmt.Println("col\t[         <name>]\tmin\trow")
+	fmt.Println("col\t[         <name>]\tmin\trow\t[        <title>]")
 	for i := 0; i <= maxcol; i++ {
 		if _, ok := cols[i]; !ok {
 			continue
@@ -110,7 +110,7 @@ func calculateRowNums() {
 				maxrow = row
 			}
 			row++
-			fmt.Printf("%1d\t[%15s]\t%3d %3d\n", i, cols[i][j].Name, cols[i][j].MinRow, cols[i][j].Row)
+			fmt.Printf("%1d\t[%15s]\t%3d\t%3d\t[%15s]\n", i, cols[i][j].Name, cols[i][j].MinRow, cols[i][j].Row, cols[i][j].Title)
 		}
 	}
 }

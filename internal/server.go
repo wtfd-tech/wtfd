@@ -791,9 +791,10 @@ func Server() error {
 
 		// Set name from folder name
 		yamlStruct.Name = current.Name()
+
 		if len(yamlStruct.Title) == 0 {
 			yamlStruct.Title = yamlStruct.Name
-		}
+                }
 
 		// Load and compile markdown files
 		if readmeBytes, err = ioutil.ReadFile(readmeName); err == nil {
