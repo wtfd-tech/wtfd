@@ -145,6 +145,7 @@ addChallEventListener(title: string, points: number, name: string) {
         let solutioninnerdiv = document.getElementById("solutioninnerdiv");
         let flagInput = <HTMLInputElement> document.getElementById("flaginput");
         let msgBox = document.getElementById("flagsubmitmsg");
+        let flagsubmitbody = document.getElementById("flagsubmitbody");
         let checkLoading = document.getElementById("checkloading");
         let challUri = <HTMLAnchorElement> document.getElementById("challuri");
         let challAuthor = document.getElementById("challauthor");
@@ -213,13 +214,11 @@ addChallEventListener(title: string, points: number, name: string) {
             detPoints.innerHTML = points.toString();
         });
         if (elem.getAttribute("class").includes("completed")) {
-            this.flagsubmitbutton.style.display = "none";
-            flagInput.style.display = "none";
+            flagsubmitbody.style.display = "none";
             solutionbutton.style.display = "";
             solutiondiv.style.display = "";
         } else {
-            this.flagsubmitbutton.style.display = "";
-            flagInput.style.display = "";
+            flagsubmitbody.style.display = "";
             solutionbutton.style.display = "none";
             solutiondiv.style.display = "none";
         }

@@ -263,8 +263,14 @@ td, th {
 #detaildescription {
 
   margin-bottom: 1vh;
-    overflow-y: auto;
-    max-height: 65vh;
+
+}
+
+#detailbody {
+
+    overflow: auto;
+    max-height: 60vh;
+    scrollbar-width: none;
 
 }
 
@@ -275,6 +281,7 @@ dialog {
     margin: 0 auto;
     max-height: 80vh;
     border: none;
+    scrollbar-width: none;
 
     /*noinspection CssFloatPxLength*/
     box-shadow: 2.5px 2.5px 10px -2.5px;
@@ -549,6 +556,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 code {
     font-family: "Fira Mono", monospace;
+}
+
+pre {
+    scrollbar-width: none;
+}
+
+#flagsubmitbody {
+
+  margin-top: 1vh;
+
 }
 
 code:not([class*="language-"]){

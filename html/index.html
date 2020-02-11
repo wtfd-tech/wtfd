@@ -80,17 +80,21 @@ colnum.set("{{.Name}}",{col: "{{.DepCount}}", row: "{{.Row}}"});
         </div>
       </h3>
       </br>
-      <div id="detaildescription"></div>
-      <div id="flagsubmitmsg"></div>
-      <div id="detailform">
-        <input type="text" placeholder="FOSS{**********}" id="flaginput" class="firamono flexcell"/>
-        <input class="button flagsubmitbutton" type="submit" id="flagsubmitbutton" value="Submit Flag"/>
+      <div id="detailbody">
+        <div id="detaildescription"></div>
+        <div id="solutiondiv">
+          <button class="button" id="solutionbutton" value="Show Reccomended Solution">Show Reccomended Solution</button>
+          <div id="solutioninnerdiv"></div>
+        </div>
+        <span id="checkloading" class="loadingbar" style="display: none;"></span>
       </div>
-      <div id="solutiondiv">
-        <button class="button" id="solutionbutton" value="Show Reccomended Solution">Show Reccomended Solution</button>
-        <div id="solutioninnerdiv"></div>
+      <div id=flagsubmitbody>
+        <div id="flagsubmitmsg"></div>
+        <div id="detailform">
+          <input type="text" placeholder="FOSS{**********}" id="flaginput" class="firamono flexcell"/>
+          <input class="button flagsubmitbutton" type="submit" id="flagsubmitbutton" value="Submit Flag"/>
+        </div>
       </div>
-      <span id="checkloading" class="loadingbar" style="display: none;"></span>
     </dialog>
 
     <dialog id="bugreportview">
