@@ -180,7 +180,7 @@ addChallEventListener(title: string, points: number, name: string) {
                 this.flagsubmiteventlistenerfunc(e);
             }
         };
-        this.solutioneventlistenerfunc = function () {
+        this.solutioneventlistenerfunc = () => {
             solutioninnerdiv.innerHTML = "<i>Loading, please wait...</i>";
             fetch("/solutionview/" + title)
                 .then(response => response.text())
