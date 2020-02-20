@@ -65,9 +65,13 @@ func leaderboardWS(w http.ResponseWriter, r *http.Request) {
 	for {
 		select {
 		case text, _ := <-client:
-			writer, _ := ws.NextWriter(websocket.TextMessage)
+			writer, err := ws.NextWriter(websocket.TextMessage)
+                        if err == nil {
 			writer.Write([]byte(text))
 			writer.Close()
+                      } else {
+                        log.Printf("scoreboard update error: %v", err)
+                      }
 		}
 	}
 

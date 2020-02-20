@@ -7,6 +7,9 @@ constructor() {
   let chart = new Chart(canvas.getContext("2d"), {
     type: "line",
     options: {
+      animation: {
+        duration: 0
+      },
       spanGaps: true,
       scales: {
         xAxes: [
