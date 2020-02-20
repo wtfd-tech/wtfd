@@ -407,8 +407,11 @@ h3 {
     margin-right: 30px;
 }
 
-.link {
+.footertext {
     font-size: 10pt;
+}
+
+.link {
     text-decoration: none;
     transition-duration: 0.2s;
     color: #6d6d6d;

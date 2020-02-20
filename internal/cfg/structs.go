@@ -34,6 +34,7 @@ type DesignConfig struct {
 	UpperLeft   template.HTML `yaml:"logoText"`
 	Header      string        `yaml:"title"`
 	FooterLinks []FooterLink  `yaml:"links"`
+	Slogan      template.HTML `yaml:"slogan"`
 }
 
 // Config stores settings
@@ -42,7 +43,7 @@ type Config struct {
 	StartDate        string          `yaml:"startDate"`
 	Key              string          `yaml:"cookieKey"`
 	ChallengeInfoDir string          `yaml:"challDir"`
-	ChallHost          string          `yaml:"challHost"`
+	ChallHost        string          `yaml:"challHost"`
 	BugreportConfig  BugreportConfig `yaml:"bugreport"`
 	EmailConfig      EmailConfig     `yaml:"email"`
 	DesignConfig     DesignConfig    `yaml:"design"`

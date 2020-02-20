@@ -1,15 +1,15 @@
 {{ define "footer" }}
     <footer>
-      <div class="flexcell flex-left">
+      <div class="flexcell flex-left footertext">
         {{range .Config.DesignConfig.FooterLinks}}
         <a class="link sociallink" href="{{.Url}}"><span class="mdi mdi-{{.Icon}}"></span> {{.Name}}</a>
         {{end}}
       </div>
-      <div class="flexcell flex-center">
+      <div class="flexcell flex-center footertext">
         <a class="link" href="https://github.com/wtfd-tech/wtfd">Powered by WTFd</a>
       </div>
-      <div class="flexcell flex-right">
-        Proudly made without PHP, Java, Perl, MySQL and MongoDB
+      <div class="flexcell flex-right footertext">
+        {{.Config.DesignConfig.Slogan}}
       </div>
       <span class="mdi mdi-bug bugbtn" id="mainbugreport"></span>
     </footer>
