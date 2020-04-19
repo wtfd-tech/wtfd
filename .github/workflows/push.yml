@@ -1,5 +1,5 @@
 name: Push
-on: 
+on:
   push:
     branches:
       - '**'
@@ -61,9 +61,9 @@ jobs:
     - name: Build (with musl)
       env:
         CC: musl-gcc
-      run: | 
+      run: |
         set -e
-        pushd frontend-dev
+        pushd frontend
         npm install
         npx webpack --config webpack.prod.js
         popd
