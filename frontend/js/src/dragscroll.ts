@@ -1,9 +1,9 @@
 /**
  * @fileoverview dragscroll - scroll area by dragging
  * @version 0.0.8
- * 
+ *
  * @license MIT, see http://github.com/asvd/dragscroll
- * @copyright 2015 asvd <heliosframework@gmail.com> 
+ * @copyright 2015 asvd <heliosframework@gmail.com>
  */
 
 // https://github.com/ethaizone/dragscroll/tree/patch-2
@@ -48,7 +48,7 @@
                         if (e.target.tagName === "SELECT"
                           || e.target.tagName === "INPUT"
                           || e.target.tagName === "TEXTAREA" || e.target.closest("dialog") != null
-                        ) {                      
+                        ) {
                             return true
                         }
                         if (!el.hasAttribute('nochilddrag') ||
@@ -88,7 +88,7 @@
         }
     }
 
-      
+
     if (_document.readyState == 'complete') {
         reset();
     } else {
