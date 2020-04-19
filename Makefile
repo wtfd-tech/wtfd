@@ -37,7 +37,7 @@ clean: tmp/.check-deps.sentinel
 .PHONY: clean
 
 js-run: tmp/.js-deps.sentinel
-> pushd frontend-dev
+> pushd frontend
 > yarn run start
 > popd
 .PHONY: js-run
@@ -62,9 +62,9 @@ tmp/.gen.sentinel: tmp/.js.sentinel $(shell find html/static/ -type f | grep -v 
 > go generate ./...
 > touch $@
 
-tmp/.js.sentinel: $(shell find frontend-dev/src -type f) tmp/.js-deps.sentinel $(shell find  frontend-dev/ -name 'webpack.*.js')
+tmp/.js.sentinel: $(shell find frontend/src -type f) tmp/.js-deps.sentinel $(shell find  frontend/ -name 'webpack.*.js')
 > mkdir -p $(@D)
-> pushd frontend-dev
+> pushd frontend
 > yarn run build
 > popd
 > rm -f tmp/.gen.sentinel
@@ -75,7 +75,7 @@ tmp/.js.sentinel: $(shell find frontend-dev/src -type f) tmp/.js-deps.sentinel $
 
 tmp/.js-deps.sentinel: tmp/.check-deps.sentinel
 > mkdir -p $(@D)
-> pushd frontend-dev
+> pushd frontend
 > yarn
 > popd
 > touch $@
