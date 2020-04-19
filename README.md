@@ -56,7 +56,7 @@ The `SOLUTION.md` contents can only be seen by users who already solved the chal
 
 ## Building WTFd yourself
 
-You need to have `go`, `sqlite3` and `npm` installed
+You need to have `go`, `sqlite3` and `yarn` installed
 
 ```bash
 git clone https://github.com/wtfd-tech/wtfd
