@@ -15,11 +15,11 @@ const webpack = require('webpack');
  */
 
 module.exports = {
-  entry: { bundle: './src/index.ts' },
+	entry: { bundle: './src/index.ts' },
 	output: {
-		filename: 'static/[name].js',
-		chunkFilename: 'static/[name].[contenthash].js',
-		path: path.resolve(__dirname, '..', 'html')
+		filename: 'build/js/[name].js',
+		chunkFilename: 'build/js/[name].[contenthash].js',
+		path: path.resolve(__dirname, '..')
 	},
 	plugins: [new webpack.ProgressPlugin()],
 	module: {
@@ -32,22 +32,22 @@ module.exports = {
 			}
 		]
 	},
- 	optimization: {
- 		splitChunks: {
- 			cacheGroups: {
- 				vendors: {
- 					priority: -10,
- 					test: /[\\/]node_modules[\\/]/,
-                                        chunks: 'all',
- 				}
- 			},
- 
- 			chunks: 'async',
- 			minChunks: 1,
- 			minSize: 30000,
- 			name: true
- 		}
- 	},
+	optimization: {
+		splitChunks: {
+			cacheGroups: {
+				vendors: {
+					priority: -10,
+					test: /[\\/]node_modules[\\/]/,
+					chunks: 'all',
+				}
+			},
+
+			chunks: 'async',
+			minChunks: 1,
+			minSize: 30000,
+			name: true
+		}
+	},
 	resolve: {
 		extensions: ['.tsx', '.ts', '.js']
 	}
