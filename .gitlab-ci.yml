@@ -11,26 +11,37 @@ before_script:
 
 ## BACKEND
 
-test-backend:
+Test Backend:
   stage: test
   image: golang:latest
   allow_failure: true
+  only:
+    refs:
+      - master
   script:
     - cd backend
+    - go mod download
     - go test -cover $(go list ./... | grep -v /vendor/)
 
-lint-backend:
+Lint Backend:
   stage: test
   image: golang:latest
   allow_failure: true
+  only:
+    refs:
+      - master
   script:
     - cd backend
+    - go mod download
     - go get -u golang.org/x/lint/golint
     - /cache/go/bin/golint -set_exit_status $(go list ./... | grep -v /vendor/)
 
-build-backend:
+Build Backend:
   stage: build
   image: golang:latest
+  only:
+    refs:
+      - master
   script:
     - cd backend
     - go build -ldflags="-s -w" wtfd.go
@@ -40,9 +51,12 @@ build-backend:
 
 ## FRONTEND
 
-build-frontend:
+Build Frontend:
   stage: build
   image: node:latest
+  only:
+    refs:
+      - master
   script:
     - cd frontend
     - make clean
@@ -54,6 +68,9 @@ build-frontend:
 
 pages:
   stage: deploy
+  only:
+    refs:
+      - master
   script:
     - cp -vr frontend/build/. public
   cache:
