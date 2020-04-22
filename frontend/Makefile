@@ -36,4 +36,4 @@ run: .html.sentinel .static.sentinel
 .PHONY: clean
 clean:
 	rm -rf build
-	rm .*.sentinel
+	rm -f .*.sentinel
