@@ -8,6 +8,9 @@ stages:
 before_script:
   - export GOPATH=/cache/go
 
+cache:
+  key: ${CI_PROJECT_NAME}-${CI_PROJECT_ID}
+
 
 ## BACKEND
 
