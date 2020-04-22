@@ -78,4 +78,7 @@ pages:
       - api
   script:
     - cp -vr frontend/build/. public
+  artifacts:
+    paths:
+      - public/
 
