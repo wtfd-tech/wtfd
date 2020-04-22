@@ -59,6 +59,7 @@ Build Frontend:
       - master
   script:
     - cd frontend
+    - pwd
     - make clean
     - make
   cache:
