@@ -68,7 +68,7 @@ Lint Frontend:
     paths:
       - frontend/node_modules
 
-Build Frontend:
+pages:
   stage: build
   image: node:latest
   only:
