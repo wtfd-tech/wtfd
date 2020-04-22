@@ -44,3 +44,7 @@ html/static/*.js
 tmp/
 internal/packrd/
 internal/wtfd-packr.go
+
+yarn-error.log
+build/
+*.sentinel
