@@ -61,6 +61,7 @@ Lint Frontend:
       - api
   script:
     - cd frontend
+    - yarn
     - yarn run lint
   cache:
     paths:
@@ -74,6 +75,7 @@ Build Frontend:
       - api
   script:
     - cd frontend
+    - yarn
     - yarn run build
     - cp -vr frontend/dist/. public
   artifacts:
