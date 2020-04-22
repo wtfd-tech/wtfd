@@ -64,9 +64,11 @@ Build Frontend:
     - cd frontend
     - make clean
     - make
+  artifacts:
+    paths:
+      - frontend/build/
   cache:
     paths:
-      - frontend/build
       - frontend/js/node_modules
 
 pages:
@@ -76,7 +78,4 @@ pages:
       - api
   script:
     - cp -vr frontend/build/. public
-  cache:
-    paths:
-      - frontend/build
 
