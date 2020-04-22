@@ -1,28 +1,62 @@
-image: golang
+image: alpine:latest
 
 stages:
   - test
   - build
+  - deploy
+
 before_script:
   - export GOPATH=/cache/go
 
-unit_tests:
-  stage: test
-  script:
-    - go test -cover $(go list  ./... | grep -v /vendor/)
 
-lint_code:
+## BACKEND
+
+test-backend:
   stage: test
+  image: golang:latest
   allow_failure: true
   script:
+    - cd backend
+    - go test -cover $(go list ./... | grep -v /vendor/)
+
+lint-backend:
+  stage: test
+  image: golang:latest
+  allow_failure: true
+  script:
+    - cd backend
     - go get -u golang.org/x/lint/golint
     - /cache/go/bin/golint -set_exit_status $(go list ./... | grep -v /vendor/)
 
-build:
+build-backend:
   stage: build
+  image: golang:latest
   script:
-    - go get -u github.com/gobuffalo/packr/v2/packr2
-    - $(go env GOPATH)/bin/packr2 build -ldflags="-s -w" cmd/wtfd.go
+    - cd backend
+    - go build -ldflags="-s -w" wtfd.go
   artifacts:
     paths:
-      - cmd/wtfd
+      - backend/wtfd
+
+## FRONTEND
+
+build-frontend:
+  stage: build
+  image: node:latest
+  script:
+    - cd frontend
+    - make clean
+    - make
+  cache:
+    paths:
+      - frontend/build
+      - frontend/node_modules
+
+pages:
+  stage: deploy
+  script:
+    - cp -vr frontend/build/. public
+  cache:
+    paths:
+      - frontend/build
+
