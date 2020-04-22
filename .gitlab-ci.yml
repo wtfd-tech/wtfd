@@ -17,7 +17,7 @@ Test Backend:
   allow_failure: true
   only:
     refs:
-      - master
+      - api
   script:
     - cd backend
     - go mod download
@@ -29,7 +29,7 @@ Lint Backend:
   allow_failure: true
   only:
     refs:
-      - master
+      - api
   script:
     - cd backend
     - go mod download
@@ -41,7 +41,7 @@ Build Backend:
   image: golang:latest
   only:
     refs:
-      - master
+      - api
   script:
     - cd backend
     - go build -ldflags="-s -w" wtfd.go
@@ -56,10 +56,9 @@ Build Frontend:
   image: node:latest
   only:
     refs:
-      - master
+      - api
   script:
     - cd frontend
-    - pwd
     - make clean
     - make
   cache:
@@ -71,7 +70,7 @@ pages:
   stage: deploy
   only:
     refs:
-      - master
+      - api
   script:
     - cp -vr frontend/build/. public
   cache:
