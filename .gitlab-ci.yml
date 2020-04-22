@@ -67,7 +67,7 @@ Build Frontend:
   cache:
     paths:
       - frontend/build
-      - frontend/node_modules
+      - frontend/js/node_modules
 
 pages:
   stage: deploy
