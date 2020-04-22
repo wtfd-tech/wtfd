@@ -47,6 +47,7 @@ internal/wtfd-packr.go
 
 yarn-error.log
 build/
+dist/
 *.sentinel
 
 *.bak

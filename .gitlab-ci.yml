@@ -11,7 +11,6 @@ before_script:
 cache:
   key: ${CI_PROJECT_NAME}-${CI_PROJECT_ID}
 
-
 ## BACKEND
 
 Test Backend:
@@ -54,6 +53,19 @@ Build Backend:
 
 ## FRONTEND
 
+Lint Frontend:
+  stage: test
+  image: node:latest
+  only:
+    refs:
+      - api
+  script:
+    - cd frontend
+    - yarn run lint
+  cache:
+    paths:
+      - frontend/node_modules
+
 Build Frontend:
   stage: build
   image: node:latest
@@ -62,23 +74,11 @@ Build Frontend:
       - api
   script:
     - cd frontend
-    - make clean
-    - make
-  artifacts:
-    paths:
-      - frontend/build/
-  cache:
-    paths:
-      - frontend/js/node_modules
-
-pages:
-  stage: deploy
-  only:
-    refs:
-      - api
-  script:
-    - cp -vr frontend/build/. public
+    - yarn run build
+    - cp -vr frontend/dist/. public
   artifacts:
     paths:
       - public/
-
+  cache:
+    paths:
+      - frontend/node_modules
