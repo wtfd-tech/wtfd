@@ -17,9 +17,6 @@ Test Backend:
   stage: test
   image: golang:latest
   allow_failure: true
-  only:
-    refs:
-      - api
   script:
     - cd backend
     - go mod download
@@ -29,9 +26,6 @@ Lint Backend:
   stage: test
   image: golang:latest
   allow_failure: true
-  only:
-    refs:
-      - api
   script:
     - cd backend
     - go mod download
@@ -41,9 +35,6 @@ Lint Backend:
 Build Backend:
   stage: build
   image: golang:latest
-  only:
-    refs:
-      - api
   script:
     - cd backend
     - go build -ldflags="-s -w" wtfd.go
@@ -57,9 +48,6 @@ Lint Frontend:
   stage: test
   image: node:latest
   allow_failure: true
-  only:
-    refs:
-      - api
   script:
     - cd frontend
     - yarn
@@ -68,7 +56,21 @@ Lint Frontend:
     paths:
       - frontend/node_modules
 
-pages:
+Build Frontend:
+  stage: build
+  image: node:latest
+  script:
+    - cd frontend
+    - yarn
+    - yarn run build
+  artifacts:
+    paths:
+      - frontend/dist/
+  cache:
+    paths:
+      - frontend/node_modules
+
+pages: # STAGING DEPLOYMENT
   stage: build
   image: node:latest
   only:
@@ -77,7 +79,7 @@ pages:
   script:
     - cd frontend
     - yarn
-    - yarn run build
+    - yarn run vue-cli-service build --mode development
     - cp -vr dist/. ../public
   artifacts:
     paths:
